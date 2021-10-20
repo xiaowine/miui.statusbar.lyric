@@ -10,7 +10,7 @@ android {
         applicationId "miui.statusbar.lyric"
         minSdkVersion 28
         targetSdkVersion 29
-        versionCode 17
+        versionCode 18
         versionName "1.4.10"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

@@ -55,6 +55,7 @@ public class SettingsActivity extends PreferenceActivity {
                     .create()
                     .show();
         }
+        Toast.makeText(activity,"部分功能停止播放后生效",Toast.LENGTH_LONG).show();
 
 
         // 隐藏桌面图标
@@ -351,6 +352,9 @@ public class SettingsActivity extends PreferenceActivity {
         author.setOnPreferenceClickListener((preference) -> {
             new AlertDialog.Builder(activity)
                     .setTitle("作者主页")
+                    .setMessage("577fkj：Hook获取歌词主要开发者\n" +
+                            "xiaowine：摸鱼修复Bug和UI负责人\n" +
+                            "感谢酷安 @潇风残月 的大力支持\n")
                     .setNegativeButton("577fkj", (dialog, which) -> {
                         Uri uri = Uri.parse("https://github.com/577fkj");
                         Intent intent = new Intent();

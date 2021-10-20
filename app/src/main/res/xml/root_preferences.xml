@@ -1,130 +1,132 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<!--suppress DeprecatedClassUsageInspection -->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+>
     <SwitchPreference
-        android:defaultValue="false"
-        android:key="hideLauncherIcon"
-        android:summary=""
-        android:title="隐藏桌面图标" />
-    <PreferenceCategory android:title="基础设置" />
+            android:defaultValue="false"
+            android:key="hideLauncherIcon"
+            android:summary=""
+            android:title="隐藏桌面图标"/>
+    <PreferenceCategory android:title="基础设置"/>
 
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="lyricService"
-        android:summary=""
-        android:title="总开关" />
+            android:defaultValue="true"
+            android:key="lyricService"
+            android:summary=""
+            android:title="总开关"/>
 
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="lyricOff"
-        android:summary=""
-        android:title="歌曲暂停关闭歌词" />
+            android:defaultValue="true"
+            android:key="lyricOff"
+            android:summary=""
+            android:title="歌曲暂停关闭歌词"/>
 
 
     <EditTextPreference
-        android:defaultValue="-1"
-        android:key="lyricWidth"
-        android:summary="自适应"
-        android:title="歌词宽度" />
+            android:defaultValue="-1"
+            android:key="lyricWidth"
+            android:summary="自适应"
+            android:title="歌词宽度"/>
 
     <EditTextPreference
-        android:defaultValue="-1"
-        android:key="lyricMaxWidth"
-        android:summary="关闭"
-        android:title="歌词自适应最大宽度" />
+            android:defaultValue="-1"
+            android:key="lyricMaxWidth"
+            android:summary="关闭"
+            android:title="歌词自适应最大宽度"/>
 
     <EditTextPreference
-        android:defaultValue="自适应"
-        android:key="lyricColour"
-        android:summary="自适应"
-        android:title="歌词颜色" />
+            android:defaultValue="自适应"
+            android:key="lyricColour"
+            android:summary="自适应"
+            android:title="歌词颜色"/>
 
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="lyricIcon"
-        android:summary=""
-        android:title="歌词图标" />
+            android:defaultValue="true"
+            android:key="lyricIcon"
+            android:summary=""
+            android:title="歌词图标"/>
 
-    <PreferenceCategory android:title="高级设置" />
+    <PreferenceCategory android:title="高级设置"/>
 
     <Preference
-        android:key="iconPath"
-        android:summary=""
-        android:title="图标路径" />
+            android:key="iconPath"
+            android:summary=""
+            android:title="图标路径"/>
 
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="iconAutoColor"
-        android:summary=""
-        android:title="图标自动反色" />
+            android:defaultValue="true"
+            android:key="iconAutoColor"
+            android:summary=""
+            android:title="图标自动反色"/>
 
     <SwitchPreference
-        android:defaultValue="false"
-        android:key="hideNoticeIcon"
-        android:summary="自动隐藏通知图标"
-        android:title="隐藏通知图标" />
+            android:defaultValue="false"
+            android:key="hideNoticeIcon"
+            android:summary="自动隐藏通知图标"
+            android:title="隐藏通知图标"/>
 
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="hideNetWork"
-        android:summary="自动隐藏实时网速"
-        android:title="隐藏实时网速" />
+            android:defaultValue="true"
+            android:key="hideNetWork"
+            android:summary="自动隐藏实时网速"
+            android:title="隐藏实时网速"/>
 
     <SwitchPreference
-        android:defaultValue="false"
-        android:key="hideCUK"
-        android:summary="自动隐藏锁屏运营商名称"
-        android:title="隐藏锁屏运营商名称" />
+            android:defaultValue="false"
+            android:key="hideCUK"
+            android:summary="自动隐藏锁屏运营商名称"
+            android:title="隐藏锁屏运营商名称"/>
 
     <SwitchPreference
-        android:defaultValue="false"
-        android:key="debug"
-        android:summary=""
-        android:title="Debug模式" />
+            android:defaultValue="false"
+            android:key="debug"
+            android:summary=""
+            android:title="Debug模式"/>
 
     <PreferenceScreen
-        android:key="restartUI"
-        android:summary="lsp激活后需重启系统界面生效，edxp需重启手机"
-        android:title="重启系统界面" />
+            android:key="restartUI"
+            android:summary="lsp激活后需重启系统界面生效，edxp需重启手机"
+            android:title="重启系统界面"/>
 
     <Preference
-        android:key="reset"
-        android:summary="如果出现某些莫名其妙的问题请点击此处"
-        android:title="重置模块" />
+            android:key="reset"
+            android:summary="如果出现某些莫名其妙的问题请点击此处"
+            android:title="重置模块"/>
 
-    <PreferenceCategory android:title="关于" />
-
-    <Preference
-
-        android:key="ver_explain"
-        android:summary=""
-        android:title="版本说明" />
+    <PreferenceCategory android:title="关于"/>
 
     <Preference
-        android:key="author"
-        android:summary="GitHub （577fkj &amp;&amp; xiaowine）"
-        android:title="开发者" />
+
+            android:key="ver_explain"
+            android:summary=""
+            android:title="版本说明"/>
 
     <Preference
-        android:key="sourceCode"
-        android:summary="https://github.com/577fkj/MIUIStatusBarlyric_new"
-        android:title="项目地址">
+            android:key="author"
+            android:summary="GitHub （577fkj &amp;&amp; xiaowine）"
+            android:title="开发者"/>
+
+    <Preference
+            android:key="sourceCode"
+            android:summary="https://github.com/xiaowine/MIUIStatusBarlyric_new"
+            android:title="项目地址">
         <intent
-            android:action="android.intent.action.VIEW"
-            android:data="https://github.com/577fkj/MIUIStatusBarlyric_new" />
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/xiaowine/MIUIStatusBarlyric_new"/>
     </Preference>
 
     <Preference
-        android:key="contact"
-        android:summary="https://t.me/MIUIStatusBatLyric"
-        android:title="联系方式（电报群）">
+            android:key="contact"
+            android:summary="https://t.me/MIUIStatusBatLyric"
+            android:title="联系方式（电报群）">
         <intent
-            android:action="android.intent.action.VIEW"
-            android:data="https://t.me/MIUIStatusBatLyric" />
+                android:action="android.intent.action.VIEW"
+                android:data="https://t.me/MIUIStatusBatLyric"/>
     </Preference>
 
     <Preference
-        android:key="CheckUpdate"
-        android:summary=""
-        android:title="检查更新" />
+            android:key="CheckUpdate"
+            android:summary=""
+            android:title="检查更新(待添加)"/>
 
 
 </PreferenceScreen>
