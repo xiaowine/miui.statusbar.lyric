@@ -80,7 +80,7 @@ public class MainHook implements IXposedHookLoadPackage {
 
         switch (lpparam.packageName) {
             case "com.android.systemui":
-                log("Hook SystemUI");
+                log("正在hook系统界面");
                 // 状态栏歌词
                 XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.phone.CollapsedStatusBarFragment", lpparam.classLoader, "onViewCreated", View.class, Bundle.class, new XC_MethodHook() {
                     @Override
@@ -138,6 +138,7 @@ public class MainHook implements IXposedHookLoadPackage {
                         lyricTextView.setVisibility(View.GONE);
                         lyricTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
 
+
                         // 将歌词文字加入时钟布局
                         LinearLayout clockLayout = (LinearLayout) clock.getParent();
                         clockLayout.setGravity(Gravity.CENTER);
@@ -152,8 +153,13 @@ public class MainHook implements IXposedHookLoadPackage {
                         iconView.setLayoutParams(layoutParams);
                         clockLayout.addView(iconView, 1);
 
+
                         final Handler iconUpdate = new Handler(Looper.getMainLooper(), message -> {
-                            iconView.setCompoundDrawables((Drawable) message.obj, null, null, null);
+                            if (new Config().getIcon()) {
+                                iconView.setCompoundDrawables((Drawable) message.obj, null, null, null);
+                            } else {
+                                iconView.setCompoundDrawables(null, null, null, null);
+                            }
                             return true;
                         });
 
@@ -161,39 +167,45 @@ public class MainHook implements IXposedHookLoadPackage {
                         Handler LyricUpdate = new Handler(Looper.getMainLooper(), message -> {
                             Config config = new Config();
                             String string = message.getData().getString(KEY_LYRIC);
-                            if (!string.equals("")) {
-                                if (!string.equals(lyricTextView.getText().toString())) {
-                                    // 设置状态栏
-                                    if (config.getHideNoticeIcon() && MiuiStatusBarManager.isShowNotificationIcon(application)) {
-                                        MiuiStatusBarManager.setShowNotificationIcon(application, false);
-                                    }
-                                    if (config.getHideNetSpeed() && MiuiStatusBarManager.isShowNetworkSpeed(application)) {
-                                        MiuiStatusBarManager.setShowNetworkSpeed(application, false);
-                                    }
-                                    if (config.getHideCUK() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1) == 1) {
-                                        Settings.System.putInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", 0);
-                                    }
-                                    // 设置歌词文本
-                                    lyricTextView.setText(string);
-                                    // 歌词显示
-                                    lyricTextView.setVisibility(View.VISIBLE);
-
-                                    // 自适应/歌词宽度
-                                    if (config.getLyricWidth() == -1) {
-                                        TextPaint paint1 = lyricTextView.getPaint(); // 获取字体
-                                        if (config.getLyricMaxWidth() == -1 || ((int) paint1.measureText(string)) + 6 <= (dw * config.getLyricMaxWidth()) / 100) {
-                                            lyricTextView.setWidth(((int) paint1.measureText(string)) + 6);
-
-                                        } else {
-                                            lyricTextView.setWidth((dw * config.getLyricMaxWidth()) / 100);
+                            if (config.getLyricService()) {
+                                if (!string.equals("")) {
+                                    if (!string.equals(lyricTextView.getText().toString())) {
+                                        // 设置状态栏
+                                        if (config.getHideNoticeIcon() && MiuiStatusBarManager.isShowNotificationIcon(application)) {
+                                            MiuiStatusBarManager.setShowNotificationIcon(application, false);
                                         }
-                                    } else {
-                                        lyricTextView.setWidth((dw * config.getLyricWidth()) / 100);
+                                        if (config.getHideNetSpeed() && MiuiStatusBarManager.isShowNetworkSpeed(application)) {
+                                            MiuiStatusBarManager.setShowNetworkSpeed(application, false);
+                                        }
+                                        if (config.getHideCUK() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1) == 1) {
+                                            Settings.System.putInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", 0);
+                                        }
+//                                        // 是否显示图标
+//                                        if (!config.getIcon()) {
+//                                            iconView.setCompoundDrawables(null, null, null, null);
+//                                        }
+                                        // 设置歌词文本
+                                        lyricTextView.setText(string);
+                                        // 歌词显示
+                                        lyricTextView.setVisibility(View.VISIBLE);
+
+                                        // 自适应/歌词宽度
+                                        if (config.getLyricWidth() == -1) {
+                                            TextPaint paint1 = lyricTextView.getPaint(); // 获取字体
+                                            if (config.getLyricMaxWidth() == -1 || ((int) paint1.measureText(string)) + 6 <= (dw * config.getLyricMaxWidth()) / 100) {
+                                                lyricTextView.setWidth(((int) paint1.measureText(string)) + 6);
+
+                                            } else {
+                                                lyricTextView.setWidth((dw * config.getLyricMaxWidth()) / 100);
+                                            }
+                                        } else {
+                                            lyricTextView.setWidth((dw * config.getLyricWidth()) / 100);
+                                        }
                                     }
+                                    // 隐藏时钟
+                                    clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                                    return false;
                                 }
-                                // 隐藏时钟
-                                clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
-                                return false;
                             }
                             // 清除图标
                             iconView.setCompoundDrawables(null, null, null, null);
@@ -279,7 +291,6 @@ public class MainHook implements IXposedHookLoadPackage {
                                                             obtainMessage2.obj = createFromPath;
                                                             iconUpdate.sendMessage(obtainMessage2);
                                                         }
-                                                        iconReverseColorStatus = false;
                                                     }
                                                 }
                                             }
@@ -335,6 +346,7 @@ public class MainHook implements IXposedHookLoadPackage {
                 });
                 break;
             case "com.netease.cloudmusic":
+                log("正在hook网易云音乐");
                 XposedHelpers.findAndHookMethod("com.netease.cloudmusic.module.player.t.e", lpparam.classLoader, "o", new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -406,6 +418,7 @@ public class MainHook implements IXposedHookLoadPackage {
                 });
                 break;
             case "cn.kuwo.player":
+                log("正在hook酷我音乐");
                 XposedHelpers.findAndHookMethod("android.bluetooth.BluetoothAdapter", lpparam.classLoader, "isEnabled", new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -441,6 +454,7 @@ public class MainHook implements IXposedHookLoadPackage {
                 });
                 break;
             case "com.tencent.qqmusic":
+                log("正在hookQQ音乐");
                 XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass("com.tencent.qqmusicplayerprocess.servicenew.mediasession.d$d"), "run", new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

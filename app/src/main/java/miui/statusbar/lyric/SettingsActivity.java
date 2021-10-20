@@ -182,7 +182,7 @@ public class SettingsActivity extends PreferenceActivity {
         });
 
 
-        // 隐藏桌面图标
+        // 歌词图标
         SwitchPreference icon = (SwitchPreference) findPreference("lyricIcon");
         assert icon != null;
         icon.setChecked(config.getIcon());
