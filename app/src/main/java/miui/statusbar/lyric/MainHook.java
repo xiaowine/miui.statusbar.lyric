@@ -138,7 +138,6 @@ public class MainHook implements IXposedHookLoadPackage {
                         lyricTextView.setVisibility(View.GONE);
                         lyricTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
 
-
                         // 将歌词文字加入时钟布局
                         LinearLayout clockLayout = (LinearLayout) clock.getParent();
                         clockLayout.setGravity(Gravity.CENTER);
@@ -153,13 +152,8 @@ public class MainHook implements IXposedHookLoadPackage {
                         iconView.setLayoutParams(layoutParams);
                         clockLayout.addView(iconView, 1);
 
-
                         final Handler iconUpdate = new Handler(Looper.getMainLooper(), message -> {
-                            if (new Config().getIcon()) {
-                                iconView.setCompoundDrawables((Drawable) message.obj, null, null, null);
-                            } else {
-                                iconView.setCompoundDrawables(null, null, null, null);
-                            }
+                            iconView.setCompoundDrawables((Drawable) message.obj, null, null, null);
                             return true;
                         });
 
@@ -167,45 +161,39 @@ public class MainHook implements IXposedHookLoadPackage {
                         Handler LyricUpdate = new Handler(Looper.getMainLooper(), message -> {
                             Config config = new Config();
                             String string = message.getData().getString(KEY_LYRIC);
-                            if (config.getLyricService()) {
-                                if (!string.equals("")) {
-                                    if (!string.equals(lyricTextView.getText().toString())) {
-                                        // 设置状态栏
-                                        if (config.getHideNoticeIcon() && MiuiStatusBarManager.isShowNotificationIcon(application)) {
-                                            MiuiStatusBarManager.setShowNotificationIcon(application, false);
-                                        }
-                                        if (config.getHideNetSpeed() && MiuiStatusBarManager.isShowNetworkSpeed(application)) {
-                                            MiuiStatusBarManager.setShowNetworkSpeed(application, false);
-                                        }
-                                        if (config.getHideCUK() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1) == 1) {
-                                            Settings.System.putInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", 0);
-                                        }
-//                                        // 是否显示图标
-//                                        if (!config.getIcon()) {
-//                                            iconView.setCompoundDrawables(null, null, null, null);
-//                                        }
-                                        // 设置歌词文本
-                                        lyricTextView.setText(string);
-                                        // 歌词显示
-                                        lyricTextView.setVisibility(View.VISIBLE);
-
-                                        // 自适应/歌词宽度
-                                        if (config.getLyricWidth() == -1) {
-                                            TextPaint paint1 = lyricTextView.getPaint(); // 获取字体
-                                            if (config.getLyricMaxWidth() == -1 || ((int) paint1.measureText(string)) + 6 <= (dw * config.getLyricMaxWidth()) / 100) {
-                                                lyricTextView.setWidth(((int) paint1.measureText(string)) + 6);
-
-                                            } else {
-                                                lyricTextView.setWidth((dw * config.getLyricMaxWidth()) / 100);
-                                            }
-                                        } else {
-                                            lyricTextView.setWidth((dw * config.getLyricWidth()) / 100);
-                                        }
+                            if (!string.equals("")) {
+                                if (!string.equals(lyricTextView.getText().toString())) {
+                                    // 设置状态栏
+                                    if (config.getHideNoticeIcon() && MiuiStatusBarManager.isShowNotificationIcon(application)) {
+                                        MiuiStatusBarManager.setShowNotificationIcon(application, false);
                                     }
-                                    // 隐藏时钟
-                                    clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
-                                    return false;
+                                    if (config.getHideNetSpeed() && MiuiStatusBarManager.isShowNetworkSpeed(application)) {
+                                        MiuiStatusBarManager.setShowNetworkSpeed(application, false);
+                                    }
+                                    if (config.getHideCUK() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1) == 1) {
+                                        Settings.System.putInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", 0);
+                                    }
+                                    // 设置歌词文本
+                                    lyricTextView.setText(string);
+                                    // 歌词显示
+                                    lyricTextView.setVisibility(View.VISIBLE);
+
+                                    // 自适应/歌词宽度
+                                    if (config.getLyricWidth() == -1) {
+                                        TextPaint paint1 = lyricTextView.getPaint(); // 获取字体
+                                        if (config.getLyricMaxWidth() == -1 || ((int) paint1.measureText(string)) + 6 <= (dw * config.getLyricMaxWidth()) / 100) {
+                                            lyricTextView.setWidth(((int) paint1.measureText(string)) + 6);
+
+                                        } else {
+                                            lyricTextView.setWidth((dw * config.getLyricMaxWidth()) / 100);
+                                        }
+                                    } else {
+                                        lyricTextView.setWidth((dw * config.getLyricWidth()) / 100);
+                                    }
                                 }
+                                // 隐藏时钟
+                                clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                                return false;
                             }
                             // 清除图标
                             iconView.setCompoundDrawables(null, null, null, null);
@@ -265,9 +253,10 @@ public class MainHook implements IXposedHookLoadPackage {
                                                     }
                                                 }
                                             }
+
                                             if (enable && !lyric.equals("")) {
                                                 // 设置颜色
-                                                log((!config.getLyricColor().equals("off") && !config.getLyricColor().equals("")) + "  :  " + config.getLyricColor());
+
                                                 if (!config.getLyricColor().equals("off") && !config.getLyricColor().equals("")) {
                                                     if (color != ColorStateList.valueOf(Color.parseColor(config.getLyricColor()))) {
                                                         color = ColorStateList.valueOf(Color.parseColor(config.getLyricColor()));
@@ -278,7 +267,6 @@ public class MainHook implements IXposedHookLoadPackage {
                                                     lyricTextView.setTextColor(color);
                                                     iconReverseColorStatus = true;
                                                 }
-
                                                 if (!iconPath.equals("")) {
                                                     if (iconReverseColorStatus) {
                                                         if (new File(iconPath).exists()) {
@@ -292,6 +280,11 @@ public class MainHook implements IXposedHookLoadPackage {
                                                             iconUpdate.sendMessage(obtainMessage2);
                                                         }
                                                     }
+                                                } else {
+                                                    Drawable createFromPath = Drawable.createFromPath(null);
+                                                    Message obtainMessage2 = iconUpdate.obtainMessage();
+                                                    obtainMessage2.obj = createFromPath;
+                                                    iconUpdate.sendMessage(obtainMessage2);
                                                 }
                                             }
                                             count = 0;
@@ -509,7 +502,7 @@ public class MainHook implements IXposedHookLoadPackage {
             if (intent.getAction().equals("Lyric_Server")) {
                 lyric = intent.getStringExtra("Lyric_Data");
                 if (new Config().getIcon()) {
-                    iconPath = new Config().getIconPath() + intent.getStringExtra("Lyric_Icon") + ".png";
+                    iconPath = new Config().getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
                 } else {
                     iconPath = "";
                 }

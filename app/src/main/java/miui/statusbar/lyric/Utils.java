@@ -36,8 +36,6 @@ import de.robv.android.xposed.XposedBridge;
 public class Utils {
     public static String PATH = Environment.getExternalStorageDirectory() + "/Android/media/miui.statusbar.lyric/";
 
-    public static String ConfigPATH = PATH + "Config.json";
-
     public static String getLocalVersionCode(Context context) {
         String localVersion = "";
         try {
@@ -103,17 +101,17 @@ public class Utils {
     }
 
     public static void initIcon(Context context) {
-        if (!new File(new Config().getIconPath(), "kugou.png").exists()) {
-            copyAssets(context, "icon/kugou.png", new Config().getIconPath() + "kugou.png");
+        if (!new File(new Config().getIconPath(), "kugou.webp").exists()) {
+            copyAssets(context, "icon/kugou.webp", new Config().getIconPath() + "kugou.webp");
         }
-        if (!new File(new Config().getIconPath(), "netease.png").exists()) {
-            copyAssets(context, "icon/netease.png", new Config().getIconPath() + "netease.png");
+        if (!new File(new Config().getIconPath(), "netease.webp").exists()) {
+            copyAssets(context, "icon/netease.webp", new Config().getIconPath() + "netease.webp");
         }
-        if (!new File(new Config().getIconPath(), "qqmusic.png").exists()) {
-            copyAssets(context, "icon/qqmusic.png", new Config().getIconPath() + "qqmusic.png");
+        if (!new File(new Config().getIconPath(), "qqmusic.webp").exists()) {
+            copyAssets(context, "icon/qqmusic.webp", new Config().getIconPath() + "qqmusic.webp");
         }
-        if (!new File(new Config().getIconPath(), "kuwo.png").exists()) {
-            copyAssets(context, "icon/kuwo.png", new Config().getIconPath() + "kuwo.png");
+        if (!new File(new Config().getIconPath(), "kuwo.webp").exists()) {
+            copyAssets(context, "icon/kuwo.webp", new Config().getIconPath() + "kuwo.webp");
         }
         if (!new File(new Config().getIconPath(), ".nomedia").exists()) {
             try {

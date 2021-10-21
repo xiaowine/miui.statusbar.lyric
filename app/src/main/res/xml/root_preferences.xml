@@ -98,11 +98,11 @@
 
             android:key="ver_explain"
             android:summary=""
-            android:title="版本说明"/>
+            android:title="使用说明"/>
 
     <Preference
             android:key="author"
-            android:summary="GitHub （577fkj &amp;&amp; xiaowine）"
+            android:summary="577fkj &amp;&amp; xiaowine"
             android:title="开发者"/>
 
     <Preference

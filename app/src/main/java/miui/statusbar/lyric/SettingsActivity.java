@@ -45,17 +45,20 @@ public class SettingsActivity extends PreferenceActivity {
         if (!count) {
             new AlertDialog.Builder(activity)
                     .setTitle("警告")
-                    .setMessage("本软件发布不久，可能会有许多\n使用本模块造成的破坏，，一律不负责\n继续代表同意\n说此软件抄袭，请拿出实质证明")
+                    .setMessage("本软件发布不久，可能会有许多\n" +
+                            "使用本模块造成的破坏，软件不负责\n" +
+                            "继续代表同意")
                     .setNegativeButton("继续", (dialog, which) -> {
                         SharedPreferences.Editor a = preferences.edit();
                         a.putBoolean("protocol", true);
                         a.apply();
                     })
                     .setPositiveButton("不同意", (dialog, which) -> activity.finish())
+                    .setCancelable(false)
                     .create()
                     .show();
         }
-        Toast.makeText(activity,"部分功能停止播放后生效",Toast.LENGTH_LONG).show();
+        Toast.makeText(activity, "部分功能停止播放后生效", Toast.LENGTH_LONG).show();
 
 
         // 隐藏桌面图标
@@ -231,10 +234,9 @@ public class SettingsActivity extends PreferenceActivity {
         // 图标反色
         SwitchPreference iconColor = (SwitchPreference) findPreference("iconAutoColor");
         assert iconColor != null;
+        iconColor.setSummary("关闭");
         if (config.getIconAutoColor()) {
             iconColor.setSummary("开启");
-        } else {
-            iconColor.setSummary("关闭");
         }
         iconColor.setOnPreferenceChangeListener((preference, newValue) -> {
             config.setIconAutoColor((boolean) newValue);
@@ -317,7 +319,7 @@ public class SettingsActivity extends PreferenceActivity {
                         SharedPreferences.Editor editor = userSettings.edit();
                         editor.clear();
                         editor.apply();
-                        new File(Utils.ConfigPATH).delete();
+                        new File(Utils.PATH + "Config.json").delete();
                         Toast.makeText(activity, "重置成功", Toast.LENGTH_SHORT).show();
                         activity.finishAffinity();
                     })
@@ -338,7 +340,8 @@ public class SettingsActivity extends PreferenceActivity {
                     .setMessage("酷狗音乐:v10.8.4 （需打开蓝牙歌词）\n" +
                             "酷我音乐:v9.4.6.2 （需打开蓝牙歌词）\n" +
                             "网易云音乐:v8.5.40 （完美使用，无需操作）\n" +
-                            "QQ音乐:v10.17.0.11 （需打开蓝牙歌词和戴耳机）\n")
+                            "QQ音乐:v10.17.0.11 （需打开蓝牙歌词和戴耳机）\n\n\n" +
+                            "每个版本需要hook内容不同,所以需要适配")
                     .setPositiveButton("确定", null)
                     .create()
                     .show();

@@ -7,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import static miui.statusbar.lyric.Utils.PATH;
+
 public class Config {
     JSONObject config;
 
@@ -24,7 +26,7 @@ public class Config {
     public static String getConfig() {
         String str = "";
         try {
-            FileInputStream fileInputStream = new FileInputStream(Utils.ConfigPATH);
+            FileInputStream fileInputStream = new FileInputStream(Utils.PATH + "Config.json");
             byte[] bArr = new byte[fileInputStream.available()];
             fileInputStream.read(bArr);
             str = new String(bArr);
@@ -37,7 +39,7 @@ public class Config {
 
     public static void setConfig(String str) {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(Utils.ConfigPATH);
+            FileOutputStream fileOutputStream = new FileOutputStream(Utils.PATH + "Config.json");
             fileOutputStream.write(str.getBytes());
             fileOutputStream.close();
         } catch (IOException e) {
@@ -241,7 +243,7 @@ public class Config {
         try {
             return (String) this.config.get("IconPath");
         } catch (JSONException e) {
-            return Utils.PATH;
+            return PATH;
         }
     }
 
