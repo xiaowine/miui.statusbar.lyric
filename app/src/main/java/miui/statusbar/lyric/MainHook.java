@@ -132,11 +132,13 @@ public class MainHook implements IXposedHookLoadPackage {
                         layoutParams.setMargins(10, 0, 0, 0);
                         lyricTextView.setLayoutParams(layoutParams);
 
-                        // 设置跑马灯效果
-                        lyricTextView.setSingleLine(true);
-                        lyricTextView.setMarqueeRepeatLimit(-1);
-                        lyricTextView.setVisibility(View.GONE);
+                        // 设置跑马灯
                         lyricTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                        // 设置跑马灯重复次数，-1为无限重复
+                        lyricTextView.setMarqueeRepeatLimit(-1);
+                        // 单行显示
+                        lyricTextView.setSingleLine(true);
+                        lyricTextView.setMaxLines(1);
 
                         // 将歌词文字加入时钟布局
                         LinearLayout clockLayout = (LinearLayout) clock.getParent();
@@ -152,12 +154,13 @@ public class MainHook implements IXposedHookLoadPackage {
                         iconView.setLayoutParams(layoutParams);
                         clockLayout.addView(iconView, 1);
 
+                        // 图标更新
                         final Handler iconUpdate = new Handler(Looper.getMainLooper(), message -> {
                             iconView.setCompoundDrawables((Drawable) message.obj, null, null, null);
                             return true;
                         });
 
-                        // 歌词更新 Handler
+                        // 歌词更新
                         Handler LyricUpdate = new Handler(Looper.getMainLooper(), message -> {
                             Config config = new Config();
                             String string = message.getData().getString(KEY_LYRIC);
@@ -471,6 +474,34 @@ public class MainHook implements IXposedHookLoadPackage {
                     }
                 });
                 break;
+            case "remix.myplayer":
+                log("正在Hook myplayer");
+                // 开启状态栏歌词
+                XposedHelpers.findAndHookMethod("remix.myplayer.util.p", lpparam.classLoader, "o", Context.class, new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        super.beforeHookedMethod(param);
+                    }
+
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        super.afterHookedMethod(param);
+                        param.setResult(true);
+                    }
+                });
+                XposedHelpers.findAndHookMethod("remix.myplayer.service.MusicService", lpparam.classLoader, "n1", String.class, new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        super.beforeHookedMethod(param);
+                    }
+
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        super.afterHookedMethod(param);
+                        log("myplayer: " + param.args[0].toString());
+                        sendLyric(context, param.args[0].toString(), "myplayer");
+                    }
+                });
         }
     }
 
