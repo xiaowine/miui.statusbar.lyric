@@ -113,6 +113,9 @@ public class Utils {
         if (!new File(new Config().getIconPath(), "kuwo.webp").exists()) {
             copyAssets(context, "icon/kuwo.webp", new Config().getIconPath() + "kuwo.webp");
         }
+        if (!new File(new Config().getIconPath(), "myplayer.webp").exists()) {
+            copyAssets(context, "icon/myplayer.webp", new Config().getIconPath() + "myplayer.webp");
+        }
         if (!new File(new Config().getIconPath(), ".nomedia").exists()) {
             try {
                 new File(new Config().getIconPath(), ".nomedia").createNewFile();

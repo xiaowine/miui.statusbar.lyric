@@ -159,6 +159,22 @@ public class Config {
         }
     }
 
+    public String getIconColour() {
+        try {
+            return (String) this.config.get("IconColour");
+        } catch (JSONException e) {
+            return "off";
+        }
+    }
+
+    public void setIconColour(String str) {
+        try {
+            this.config.put("IconColour", str);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
+
     public Boolean getHideNetSpeed() {
         try {
             return (Boolean) this.config.get("HideNetSpeed");

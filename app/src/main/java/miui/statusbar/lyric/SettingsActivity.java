@@ -184,6 +184,34 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
+        // 图标颜色
+        EditTextPreference iconColour = (EditTextPreference) findPreference("iconColour");
+        assert iconColour != null;
+        iconColour.setSummary(config.getIconColour());
+        if (config.getIconColour().equals("off")) {
+            iconColour.setSummary("自适应");
+        }
+        iconColour.setDefaultValue(String.valueOf(config.getIconColour()));
+        iconColour.setDialogMessage("请输入16进制颜色代码，例如: #C0C0C0，目前：" + config.getLyricColor());
+        iconColour.setOnPreferenceChangeListener((preference, newValue) -> {
+            String value = newValue.toString().replaceAll(" ", "");
+            if (value.equals("") | value.equals("关闭") | value.equals("自适应")) {
+                config.setLyricColor("off");
+                iconColour.setSummary("自适应");
+            } else {
+                try {
+                    Color.parseColor(newValue.toString());
+                    config.setIconColour(newValue.toString());
+                    iconColour.setSummary(newValue.toString());
+                } catch (Exception e) {
+                    config.setIconColour("off");
+                    iconColour.setSummary("自适应");
+                    Toast.makeText(activity, "颜色代码不正确!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            return true;
+        });
+
 
         // 歌词图标
         SwitchPreference icon = (SwitchPreference) findPreference("lyricIcon");

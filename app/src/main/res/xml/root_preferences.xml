@@ -39,6 +39,12 @@
             android:summary="自适应"
             android:title="歌词颜色"/>
 
+    <EditTextPreference
+            android:defaultValue="自适应"
+            android:key="iconColour"
+            android:summary="自适应"
+            android:title="图标颜色"/>
+
     <SwitchPreference
             android:defaultValue="true"
             android:key="lyricIcon"
