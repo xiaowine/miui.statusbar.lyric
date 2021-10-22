@@ -165,7 +165,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                 // 隐藏图标
                                 iconView.setVisibility(View.GONE);
                                 showLyric = false;
-                                clock.setOnClickListener((vieww) -> {
+                                clock.setOnClickListener((mView) -> {
                                     // 隐藏时钟
                                     clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
                                     // 显示图标

@@ -96,11 +96,11 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
-        // 歌词切换
+        // 歌词时间切换
         SwitchPreference lyricSwitch = (SwitchPreference) findPreference("lyricSwitch");
         assert lyricSwitch != null;
-        lyricOff.setChecked(config.getLyricSwitch());
-        lyricOff.setOnPreferenceChangeListener((preference, newValue) ->
+        lyricSwitch.setChecked(config.getLyricSwitch());
+        lyricSwitch.setOnPreferenceChangeListener((preference, newValue) ->
         {
             config.setLyricSwitch((Boolean) newValue);
             return true;
@@ -374,10 +374,10 @@ public class SettingsActivity extends PreferenceActivity {
         verExplain.setSummary("当前版本: " + Utils.getLocalVersionCode(activity));
         verExplain.setOnPreferenceClickListener((preference) -> {
             new AlertDialog.Builder(activity)
-                    .setTitle("当前版本[" + Utils.getLocalVersionCode(activity) + "]适用于")
+                    .setTitle("当前版本[" + Utils.getLocalVersionCode(activity) + "]适用于（其余部分版本也支持）")
                     .setMessage("酷狗音乐:v10.8.4 （需打开蓝牙歌词）\n" +
                             "酷我音乐:v9.4.6.2 （需打开蓝牙歌词）\n" +
-                            "网易云音乐:v8.5.40 （完美适配）\n" +
+                            "网易云音乐:v8.6.0 （完美适配）\n" +
                             "Aplayer:v1.5.7.9 （完美适配）\n" +
                             "QQ音乐:v10.17.0.11 （需打开蓝牙歌词和戴耳机）\n\n\n" +
                             "每个版本需要hook内容不同,所以需要适配")
