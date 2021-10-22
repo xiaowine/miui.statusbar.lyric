@@ -36,7 +36,7 @@ public class SettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.root_preferences);
         Utils.checkPermission(activity);
-        Utils.init();
+        Utils.init(activity);
         Utils.initIcon(activity);
         config = new Config();
 
@@ -58,7 +58,6 @@ public class SettingsActivity extends PreferenceActivity {
                     .create()
                     .show();
         }
-        Toast.makeText(activity, "部分功能停止播放后生效", Toast.LENGTH_LONG).show();
 
 
         // 隐藏桌面图标
@@ -187,6 +186,7 @@ public class SettingsActivity extends PreferenceActivity {
         // 图标颜色
         EditTextPreference iconColour = (EditTextPreference) findPreference("iconColour");
         assert iconColour != null;
+        iconColour.setEnabled(false);
         iconColour.setSummary(config.getIconColour());
         if (config.getIconColour().equals("off")) {
             iconColour.setSummary("自适应");
@@ -367,7 +367,8 @@ public class SettingsActivity extends PreferenceActivity {
                     .setTitle("当前版本[" + Utils.getLocalVersionCode(activity) + "]适用于")
                     .setMessage("酷狗音乐:v10.8.4 （需打开蓝牙歌词）\n" +
                             "酷我音乐:v9.4.6.2 （需打开蓝牙歌词）\n" +
-                            "网易云音乐:v8.5.40 （完美使用，无需操作）\n" +
+                            "网易云音乐:v8.5.40 （完美适配）\n" +
+                            "Aplayer:v1.5.7.9 （完美适配）\n" +
                             "QQ音乐:v10.17.0.11 （需打开蓝牙歌词和戴耳机）\n\n\n" +
                             "每个版本需要hook内容不同,所以需要适配")
                     .setPositiveButton("确定", null)

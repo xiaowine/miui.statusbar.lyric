@@ -43,7 +43,7 @@
             android:defaultValue="自适应"
             android:key="iconColour"
             android:summary="自适应"
-            android:title="图标颜色"/>
+            android:title="图标颜色（开发中）"/>
 
     <SwitchPreference
             android:defaultValue="true"
@@ -132,7 +132,7 @@
     <Preference
             android:key="CheckUpdate"
             android:summary=""
-            android:title="检查更新(待添加)"/>
+            android:title="检查更新（开发中）"/>
 
 
 </PreferenceScreen>

@@ -1,5 +1,6 @@
 package miui.statusbar.lyric;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
@@ -61,8 +62,8 @@ public class Utils {
     }
 
     public static void checkPermission(Activity activity) {
-        if (checkSelfPermission(activity, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
-            if (shouldShowRequestPermissionRationale(activity, "android.permission.WRITE_EXTERNAL_STORAGE")) {
+        if (checkSelfPermission(activity) != 0) {
+            if (shouldShowRequestPermissionRationale(activity)) {
                 Toast.makeText(activity, "请开通相关权限，否则无法正常使用本应用！", Toast.LENGTH_SHORT).show();
             }
             String[] strArr = new String[1];
@@ -71,7 +72,8 @@ public class Utils {
         }
     }
 
-    public static void init() {
+    public static void init(Activity activity) {
+        Toast.makeText(activity, "aaa", Toast.LENGTH_SHORT).show();
         File file = new File(Utils.PATH);
         File file2 = new File(Utils.PATH + "Config.json");
         if (!file.exists()) {
@@ -96,6 +98,7 @@ public class Utils {
                 config.setDebug(false);
             } catch (IOException e) {
                 e.printStackTrace();
+                Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -208,14 +211,14 @@ public class Utils {
         }).start();
     }
 
-    private static int checkSelfPermission(Context context, String permission) {
-
-        return context.checkPermission(permission, android.os.Process.myPid(), Process.myUid());
+    private static int checkSelfPermission(Context context) {
+        return context.checkPermission("android.permission.WRITE_EXTERNAL_STORAGE", android.os.Process.myPid(), Process.myUid());
     }
 
-    private static boolean shouldShowRequestPermissionRationale(Activity activity, String permission) {
-        return activity.shouldShowRequestPermissionRationale(permission);
+    private static boolean shouldShowRequestPermissionRationale(Activity activity) {
+        return activity.shouldShowRequestPermissionRationale("android.permission.WRITE_EXTERNAL_STORAGE");
     }
+
 
 }
 

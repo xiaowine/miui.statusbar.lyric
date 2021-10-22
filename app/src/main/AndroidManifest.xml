@@ -29,7 +29,7 @@
                 android:value="true"/>
         <meta-data
                 android:name="xposeddescription"
-                android:value="如果无法显示歌词，请尝试停止音乐软件并重启系统界面"/>
+                android:value="如果无法显示歌词，请尝试停止音乐软件并重启系统界面\n或查看 使用说明 自己是否使用正确版本"/>
         <meta-data
                 android:name="xposedminversion"
                 android:value="54"/>
