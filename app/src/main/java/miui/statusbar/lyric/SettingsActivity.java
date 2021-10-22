@@ -96,11 +96,11 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
-        // 歌词切换
+        // 歌词时间切换
         SwitchPreference lyricSwitch = (SwitchPreference) findPreference("lyricSwitch");
         assert lyricSwitch != null;
-        lyricOff.setChecked(config.getLyricSwitch());
-        lyricOff.setOnPreferenceChangeListener((preference, newValue) ->
+        lyricSwitch.setChecked(config.getLyricSwitch());
+        lyricSwitch.setOnPreferenceChangeListener((preference, newValue) ->
         {
             config.setLyricSwitch((Boolean) newValue);
             return true;

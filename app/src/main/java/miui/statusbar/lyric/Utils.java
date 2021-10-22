@@ -73,7 +73,6 @@ public class Utils {
     }
 
     public static void init(Activity activity) {
-        Toast.makeText(activity, "aaa", Toast.LENGTH_SHORT).show();
         File file = new File(Utils.PATH);
         File file2 = new File(Utils.PATH + "Config.json");
         if (!file.exists()) {
@@ -86,6 +85,7 @@ public class Utils {
                 config.setHideLauncherIcon(false);
                 config.setLyricService(true);
                 config.setLyricAutoOff(true);
+                config.setLyricSwitch(false);
                 config.setLyricWidth(-1);
                 config.setLyricMaxWidth(-1);
                 config.setLyricColor("off");
@@ -96,10 +96,9 @@ public class Utils {
                 config.setHideNetSpeed(true);
                 config.setHideCUK(false);
                 config.setDebug(false);
-                config.setLyricSwitch(false);
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "初始化失败，请重启软件", Toast.LENGTH_SHORT).show();
             }
         }
     }
