@@ -96,6 +96,16 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
+        // 歌词切换
+        SwitchPreference lyricSwitch = (SwitchPreference) findPreference("lyricSwitch");
+        assert lyricSwitch != null;
+        lyricOff.setChecked(config.getLyricSwitch());
+        lyricOff.setOnPreferenceChangeListener((preference, newValue) ->
+        {
+            config.setLyricSwitch((Boolean) newValue);
+            return true;
+        });
+
         // 歌词宽度
         EditTextPreference lyricWidth = (EditTextPreference) findPreference("lyricWidth");
         assert lyricWidth != null;
