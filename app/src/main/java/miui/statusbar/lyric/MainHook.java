@@ -410,47 +410,104 @@ public class MainHook implements IXposedHookLoadPackage {
                 break;
             case "com.netease.cloudmusic":
                 log("正在hook网易云音乐");
-                XposedHelpers.findAndHookMethod("com.netease.cloudmusic.module.player.t.e", lpparam.classLoader, "o", new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        super.beforeHookedMethod(param);
-                    }
+                String cloudmusicVer = "";
+                Class<?> ver_cls = XposedHelpers.findClass("com.netease.cloudmusic.app.b", lpparam.classLoader);
+                Field ver_field = XposedHelpers.findField(ver_cls, "f");
+                try {
+                    cloudmusicVer = ver_field.get(ver_cls).toString();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                if (cloudmusicVer.equals("8.6.00")) {
+                    XposedHelpers.findAndHookMethod("com.netease.cloudmusic.module.player.w.h", lpparam.classLoader, "o", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            super.beforeHookedMethod(param);
+                        }
 
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        super.afterHookedMethod(param);
-                        param.setResult(true);
-                    }
-                });
-                XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass("com.netease.cloudmusic.module.player.t.e"), "B", Class.forName("java.lang.String"), Class.forName("java.lang.String"), Class.forName("java.lang.String"), Long.TYPE, Class.forName("java.lang.Boolean"), new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        super.beforeHookedMethod(param);
-                    }
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            super.afterHookedMethod(param);
+                            param.setResult(true);
+                        }
+                    });
+                    XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass("com.netease.cloudmusic.module.player.w.h"), "B", Class.forName("java.lang.String"), Class.forName("java.lang.String"), Class.forName("java.lang.String"), Long.TYPE, Class.forName("java.lang.Boolean"), new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            super.beforeHookedMethod(param);
+                        }
 
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        super.afterHookedMethod(param);
-                        sendLyric(context, param.args[0].toString(), "netease");
-                        musicName = param.args[0].toString();
-                        log("网易云： " + param.args[0].toString());
-                    }
-                });
-                XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass("com.netease.cloudmusic.module.player.t.e"), "F", Class.forName("java.lang.String"), Class.forName("java.lang.String"), new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        super.beforeHookedMethod(param);
-                        sendLyric(context, param.args[0].toString(), "netease");
-                        log("网易云： " + param.args[0].toString());
-                        param.args[0] = musicName;
-                        param.setResult(param.args);
-                    }
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            super.afterHookedMethod(param);
+                            sendLyric(context, param.args[0].toString(), "netease");
+                            musicName = param.args[0].toString();
+                            log("网易云： " + param.args[0].toString());
+                        }
+                    });
+                    XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass("com.netease.cloudmusic.module.player.w.h"), "F", Class.forName("java.lang.String"), Class.forName("java.lang.String"), new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            super.beforeHookedMethod(param);
+                            sendLyric(context, param.args[0].toString(), "netease");
+                            log("网易云： " + param.args[0].toString());
+                            param.args[0] = musicName;
+                            param.setResult(param.args);
+                        }
 
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        super.afterHookedMethod(param);
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            super.afterHookedMethod(param);
+                        }
+                    });
+                } else {
+                    try {
+                        XposedHelpers.findAndHookMethod("com.netease.cloudmusic.module.player.t.e", lpparam.classLoader, "o", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                super.beforeHookedMethod(param);
+                            }
+
+                            @Override
+                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                super.afterHookedMethod(param);
+                                param.setResult(true);
+                            }
+                        });
+                        XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass("com.netease.cloudmusic.module.player.t.e"), "B", Class.forName("java.lang.String"), Class.forName("java.lang.String"), Class.forName("java.lang.String"), Long.TYPE, Class.forName("java.lang.Boolean"), new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                super.beforeHookedMethod(param);
+                            }
+
+                            @Override
+                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                super.afterHookedMethod(param);
+                                sendLyric(context, param.args[0].toString(), "netease");
+                                musicName = param.args[0].toString();
+                                log("网易云： " + param.args[0].toString());
+                            }
+                        });
+                        XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass("com.netease.cloudmusic.module.player.t.e"), "F", Class.forName("java.lang.String"), Class.forName("java.lang.String"), new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                super.beforeHookedMethod(param);
+                                sendLyric(context, param.args[0].toString(), "netease");
+                                log("网易云： " + param.args[0].toString());
+                                param.args[0] = musicName;
+                                param.setResult(param.args);
+                            }
+
+                            @Override
+                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                super.afterHookedMethod(param);
+                            }
+                        });
+                    } catch (Exception e) {
+                        log(e.toString());
+                        log("未知版本: " + cloudmusicVer);
                     }
-                });
+                }
                 break;
             case "com.kugou.android":
                 log("正在hook酷狗音乐");
