@@ -20,6 +20,12 @@
             android:summary=""
             android:title="歌曲暂停关闭歌词"/>
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="lyricSwitch"
+        android:summary=""
+        android:title="点击歌词切换时钟和歌词 (需重启SystemUI)"/>
+
 
     <EditTextPreference
             android:defaultValue="-1"

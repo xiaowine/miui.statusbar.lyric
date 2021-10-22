@@ -127,6 +127,21 @@ public class Config {
         }
     }
 
+    public Boolean getLyricSwitch() {
+        try {
+            return (Boolean) this.config.get("LyricSwitch");
+        } catch (JSONException e) {
+            return false;
+        }
+    }
+
+    public void setLyricSwitch(Boolean bool) {
+        try {
+            this.config.put("LyricSwitch", bool);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
     public Boolean getHideNoticeIcon() {
         try {
             return (Boolean) this.config.get("hideNoticeIcon");

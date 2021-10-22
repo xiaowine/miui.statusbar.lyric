@@ -5,7 +5,7 @@ import static miui.statusbar.lyric.Utils.log;
 import android.app.ActivityManager;
 import android.app.AndroidAppHelper;
 import android.app.Application;
-//import android.app.MiuiStatusBarManager;
+import android.app.MiuiStatusBarManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -48,6 +48,7 @@ public class MainHook implements IXposedHookLoadPackage {
     private static String lyric = "";
     private static String iconPath = "";
     private Context context = null;
+    private boolean showLyric = true;
 
     public static boolean isServiceRunning(Context context, String str) {
         List<ActivityManager.RunningServiceInfo> runningServices = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningServices(200);
@@ -60,38 +61,6 @@ public class MainHook implements IXposedHookLoadPackage {
             }
         }
         return false;
-    }
-
-    public static void setStatusBar(Context context, Config config, int isOff) {
-        int isOn = 0;
-        if (isOff == 0) {
-            isOn = 1;
-        }
-        log(isOff+" "+isOn);
-        try {
-            if (config.getHideNoticeIcon() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_notification_icon") == isOff) {
-                Settings.System.putInt(context.getContentResolver(), "status_bar_show_notification_icon", isOn);
-            }
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-            log(e.toString());
-        }
-        try {
-            if (config.getHideNetSpeed() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_network_speed") == isOff) {
-                Settings.System.putInt(context.getContentResolver(), "status_bar_show_network_speed", isOn);
-            }
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-            log(e.toString());
-        }
-        try {
-            if (config.getHideCUK() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard") == isOff) {
-                Settings.System.putInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", isOn);
-            }
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-            log(e.toString());
-        }
     }
 
     @Override
@@ -186,6 +155,30 @@ public class MainHook implements IXposedHookLoadPackage {
                         iconView.setLayoutParams(layoutParams);
                         clockLayout.addView(iconView, 1);
 
+                        // 歌词点击事件
+                        if (new Config().getLyricSwitch()) {
+                            lyricTextView.setOnClickListener((view) -> {
+                                // 显示时钟
+                                clock.setLayoutParams(new LinearLayout.LayoutParams(-2, -2));
+                                // 歌词隐藏
+                                lyricTextView.setVisibility(View.GONE);
+                                // 隐藏图标
+                                iconView.setVisibility(View.GONE);
+                                showLyric = false;
+                                clock.setOnClickListener((vieww) -> {
+                                    // 隐藏时钟
+                                    clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                                    // 显示图标
+                                    iconView.setVisibility(View.VISIBLE);
+                                    // 设置歌词文本
+                                    lyricTextView.setText(lyricTextView.getText());
+                                    // 歌词显示
+                                    lyricTextView.setVisibility(View.VISIBLE);
+                                    showLyric = true;
+                                });
+                            });
+                        }
+
                         final Handler iconUpdate = new Handler(Looper.getMainLooper(), message -> {
                             iconView.setCompoundDrawables((Drawable) message.obj, null, null, null);
                             return true;
@@ -198,30 +191,19 @@ public class MainHook implements IXposedHookLoadPackage {
                             if (!string.equals("")) {
                                 if (!string.equals(lyricTextView.getText().toString())) {
                                     // 设置状态栏
-//                                    try {
-//                                        if (config.getHideNoticeIcon() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_notification_icon") == 1) {
-//                                            //                                        MiuiStatusBarManager.setShowNotificationIcon(application, false);
-//                                            Settings.System.putInt(context.getContentResolver(), "status_bar_show_notification_icon", 0);
-//                                        }
-//                                    } catch (Settings.SettingNotFoundException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                    try {
-//                                        if (config.getHideNetSpeed() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_notification_icon") == 1) {
-//                                            //                                        MiuiStatusBarManager.setShowNetworkSpeed(application, false);
-//                                            Settings.System.putInt(context.getContentResolver(), "status_bar_show_network_speed", 0);
-//                                        }
-//                                    } catch (Settings.SettingNotFoundException e) {
-//                                        e.printStackTrace();
-//                                    }
-                                    setStatusBar(application, config, 1);
+                                    if (config.getHideNoticeIcon() && MiuiStatusBarManager.isShowNotificationIcon(application)) {
+                                        MiuiStatusBarManager.setShowNotificationIcon(application, false);
+                                    }
+                                    if (config.getHideNetSpeed() && MiuiStatusBarManager.isShowNetworkSpeed(application)) {
+                                        MiuiStatusBarManager.setShowNetworkSpeed(application, false);
+                                    }
                                     if (config.getHideCUK() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1) == 1) {
                                         Settings.System.putInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", 0);
                                     }
                                     // 设置歌词文本
                                     lyricTextView.setText(string);
                                     // 歌词显示
-                                    lyricTextView.setVisibility(View.VISIBLE);
+                                    if (showLyric) lyricTextView.setVisibility(View.VISIBLE);
 
                                     // 自适应/歌词宽度
                                     if (config.getLyricWidth() == -1) {
@@ -246,6 +228,8 @@ public class MainHook implements IXposedHookLoadPackage {
                             clock.setLayoutParams(new LinearLayout.LayoutParams(-2, -2));
                             // 歌词隐藏
                             lyricTextView.setVisibility(View.GONE);
+                            // 清除时钟点击事件
+                            if (config.getLyricSwitch()) clock.setOnClickListener(null);
                             return true;
                         });
 
@@ -286,27 +270,16 @@ public class MainHook implements IXposedHookLoadPackage {
                                                     obtainMessage.setData(bundle);
                                                     LyricUpdate.sendMessage(obtainMessage);
 
-//                                                    // 恢复状态栏
-//                                                    try {
-//                                                        if (config.getHideNoticeIcon() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_notification_icon") == 0) {
-//                                                            //                                                        MiuiStatusBarManager.setShowNotificationIcon(application, true);
-//                                                            Settings.System.putInt(context.getContentResolver(), "status_bar_show_notification_icon", 1);
-//                                                        }
-//                                                    } catch (Settings.SettingNotFoundException e) {
-//                                                        e.printStackTrace();
-//                                                    }
-//                                                    try {
-//                                                        if (config.getHideNetSpeed() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_network_speed") == 0) {
-//                                                            //                                                        MiuiStatusBarManager.setShowNetworkSpeed(application, true);
-//                                                            Settings.System.putInt(context.getContentResolver(), "status_bar_show_network_speed", 1);
-//                                                        }
-//                                                    } catch (Settings.SettingNotFoundException e) {
-//                                                        e.printStackTrace();
-//                                                    }
-//                                                    if (config.getHideCUK() && Settings.System.getInt(application.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1) != 1) {
-//                                                        Settings.System.putInt(application.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1);
-//                                                    }
-                                                    setStatusBar(application, config, 0);
+                                                    // 恢复状态栏
+                                                    if (config.getHideNoticeIcon() && !MiuiStatusBarManager.isShowNotificationIcon(application)) {
+                                                        MiuiStatusBarManager.setShowNotificationIcon(application, true);
+                                                    }
+                                                    if (config.getHideNetSpeed() && !MiuiStatusBarManager.isShowNetworkSpeed(application)) {
+                                                        MiuiStatusBarManager.setShowNetworkSpeed(application, true);
+                                                    }
+                                                    if (config.getHideCUK() && Settings.System.getInt(application.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1) != 1) {
+                                                        Settings.System.putInt(application.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1);
+                                                    }
                                                 }
                                             }
 
@@ -370,33 +343,16 @@ public class MainHook implements IXposedHookLoadPackage {
                                                     enable = false;
 
 
-//                                                    // 恢复状态栏
-//                                                    try {
-//                                                        if (config.getHideNoticeIcon() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_notification_icon") == 0) {
-//                                                            //                                                        MiuiStatusBarManager.setShowNotificationIcon(application, true);
-//                                                            Settings.System.putInt(context.getContentResolver(), "status_bar_show_notification_icon", 1);
-//                                                        }
-//                                                    } catch (Settings.SettingNotFoundException e) {
-//                                                        e.printStackTrace();
-//                                                    }
-//
-//                                                    try {
-//                                                        if (config.getHideNetSpeed() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_network_speed") == 0) {
-////                                                            MiuiStatusBarManager.setShowNetworkSpeed(application, true);
-//                                                            Settings.System.putInt(context.getContentResolver(), "status_bar_show_network_speed", 1);
-//                                                        }
-//                                                    } catch (Settings.SettingNotFoundException e) {
-//                                                        e.printStackTrace();
-//                                                    }
-//
-//                                                    try {
-//                                                        if (config.getHideCUK() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_network_speed") == 0) {
-//                                                            Settings.System.putInt(application.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1);
-//                                                        }
-//                                                    } catch (Settings.SettingNotFoundException e) {
-//                                                        e.printStackTrace();
-//                                                    }
-                                                    setStatusBar(application, config, 0);
+                                                    // 恢复状态栏
+                                                    if (config.getHideNoticeIcon() && !MiuiStatusBarManager.isShowNotificationIcon(application)) {
+                                                        MiuiStatusBarManager.setShowNotificationIcon(application, true);
+                                                    }
+                                                    if (config.getHideNetSpeed() && !MiuiStatusBarManager.isShowNetworkSpeed(application)) {
+                                                        MiuiStatusBarManager.setShowNetworkSpeed(application, true);
+                                                    }
+                                                    if (config.getHideCUK() && Settings.System.getInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1) != 1) {
+                                                        Settings.System.putInt(context.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1);
+                                                    }
                                                 }
                                             }
                                         }

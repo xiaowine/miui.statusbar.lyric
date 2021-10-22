@@ -96,6 +96,7 @@ public class Utils {
                 config.setHideNetSpeed(true);
                 config.setHideCUK(false);
                 config.setDebug(false);
+                config.setLyricSwitch(false);
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show();
