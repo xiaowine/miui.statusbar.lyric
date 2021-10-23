@@ -40,6 +40,7 @@ public class SettingsActivity extends PreferenceActivity {
         Utils.initIcon(activity);
         config = new Config();
 
+
         SharedPreferences preferences = activity.getSharedPreferences("protocol", 0);
         boolean count = preferences.getBoolean("protocol", false);
         if (!count) {
@@ -187,36 +188,7 @@ public class SettingsActivity extends PreferenceActivity {
                 } catch (Exception e) {
                     config.setLyricColor("off");
                     lyricColour.setSummary("自适应");
-                    Toast.makeText(activity, "颜色代码不正确!", Toast.LENGTH_SHORT).show();
-                }
-            }
-            return true;
-        });
-
-        // 图标颜色
-        EditTextPreference iconColour = (EditTextPreference) findPreference("iconColour");
-        assert iconColour != null;
-        iconColour.setEnabled(false);
-        iconColour.setSummary(config.getIconColour());
-        if (config.getIconColour().equals("off")) {
-            iconColour.setSummary("自适应");
-        }
-        iconColour.setDefaultValue(String.valueOf(config.getIconColour()));
-        iconColour.setDialogMessage("请输入16进制颜色代码，例如: #C0C0C0，目前：" + config.getLyricColor());
-        iconColour.setOnPreferenceChangeListener((preference, newValue) -> {
-            String value = newValue.toString().replaceAll(" ", "");
-            if (value.equals("") | value.equals("关闭") | value.equals("自适应")) {
-                config.setLyricColor("off");
-                iconColour.setSummary("自适应");
-            } else {
-                try {
-                    Color.parseColor(newValue.toString());
-                    config.setIconColour(newValue.toString());
-                    iconColour.setSummary(newValue.toString());
-                } catch (Exception e) {
-                    config.setIconColour("off");
-                    iconColour.setSummary("自适应");
-                    Toast.makeText(activity, "颜色代码不正确!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "颜色代码不正确!", Toast.LENGTH_LONG).show();
                 }
             }
             return true;
@@ -358,7 +330,7 @@ public class SettingsActivity extends PreferenceActivity {
                         editor.clear();
                         editor.apply();
                         new File(Utils.PATH + "Config.json").delete();
-                        Toast.makeText(activity, "重置成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "重置成功", Toast.LENGTH_LONG).show();
                         activity.finishAffinity();
                     })
                     .setNegativeButton("取消", null)
@@ -371,10 +343,10 @@ public class SettingsActivity extends PreferenceActivity {
         //版本介绍
         Preference verExplain = findPreference("ver_explain");
         assert verExplain != null;
-        verExplain.setSummary("当前版本: " + Utils.getLocalVersionCode(activity));
+        verExplain.setSummary("当前版本: " + Utils.getLocalVersion(activity));
         verExplain.setOnPreferenceClickListener((preference) -> {
             new AlertDialog.Builder(activity)
-                    .setTitle("当前版本[" + Utils.getLocalVersionCode(activity) + "]适用于（其余部分版本也支持）")
+                    .setTitle("当前版本[" + Utils.getLocalVersion(activity) + "]适用于 \n（部分其余版本也支持）")
                     .setMessage("酷狗音乐:v10.8.4 （需打开蓝牙歌词）\n" +
                             "酷我音乐:v9.4.6.2 （需打开蓝牙歌词）\n" +
                             "网易云音乐:v8.6.0 （完美适配）\n" +
@@ -387,6 +359,14 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
+        //检查更新
+        Preference checkUpdate = findPreference("CheckUpdate");
+        assert checkUpdate != null;
+        checkUpdate.setSummary("当前版本: " + Utils.getLocalVersion(activity));
+        checkUpdate.setOnPreferenceClickListener((preference) -> {
+            Utils.checkUpdate(activity);
+            return true;
+        });
 
         // 作者主页
         Preference author = findPreference("author");

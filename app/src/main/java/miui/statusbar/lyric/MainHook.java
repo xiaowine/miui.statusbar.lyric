@@ -1,7 +1,5 @@
 package miui.statusbar.lyric;
 
-import static miui.statusbar.lyric.Utils.log;
-
 import android.app.ActivityManager;
 import android.app.AndroidAppHelper;
 import android.app.Application;
@@ -29,6 +27,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -37,10 +39,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import static miui.statusbar.lyric.Utils.log;
 
 public class MainHook implements IXposedHookLoadPackage {
     private static final String KEY_LYRIC = "lyric";
@@ -203,7 +202,9 @@ public class MainHook implements IXposedHookLoadPackage {
                                     // 设置歌词文本
                                     lyricTextView.setText(string);
                                     // 歌词显示
-                                    if (showLyric) lyricTextView.setVisibility(View.VISIBLE);
+                                    if (showLyric) {
+                                        lyricTextView.setVisibility(View.VISIBLE);
+                                    }
 
                                     // 自适应/歌词宽度
                                     if (config.getLyricWidth() == -1) {
@@ -219,7 +220,9 @@ public class MainHook implements IXposedHookLoadPackage {
                                     }
                                 }
                                 // 隐藏时钟
-                                if (showLyric) clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                                if (showLyric) {
+                                    clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                                }
                                 return false;
                             }
                             // 清除图标
@@ -229,7 +232,10 @@ public class MainHook implements IXposedHookLoadPackage {
                             // 歌词隐藏
                             lyricTextView.setVisibility(View.GONE);
                             // 清除时钟点击事件
-                            if (config.getLyricSwitch()) clock.setOnClickListener(null);
+                            if (config.getLyricSwitch()) {
+                                clock.setOnClickListener(null);
+                            }
+
                             return true;
                         });
 
@@ -620,5 +626,6 @@ public class MainHook implements IXposedHookLoadPackage {
             }
         }
     }
+
 
 }
