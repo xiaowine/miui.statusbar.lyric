@@ -100,39 +100,16 @@
 
     <PreferenceCategory android:title="关于"/>
 
-    <Preference
 
-            android:key="ver_explain"
-            android:summary=""
-            android:title="使用说明"/>
-    
     <Preference
             android:key="CheckUpdate"
             android:summary=""
             android:title="检查更新"/>
 
     <Preference
-            android:key="author"
-            android:summary="577fkj &amp;&amp; xiaowine"
-            android:title="开发者"/>
+            android:key="about"
+            android:summary=""
+            android:title="关于模块"/>
 
-    <Preference
-            android:key="sourceCode"
-            android:summary="https://github.com/xiaowine/miui.statusbar.lyric"
-            android:title="项目地址">
-        <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://github.com/xiaowine/miui.statusbar.lyric"/>
-    </Preference>
-
-    <Preference
-            android:key="contact"
-            android:summary="https://t.me/MIUIStatusBatLyric"
-            android:title="联系方式（电报群）">
-        <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://t.me/MIUIStatusBatLyric"/>
-    </Preference>
-
-
+    <PreferenceCategory/>
 </PreferenceScreen>

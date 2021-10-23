@@ -21,3 +21,4 @@ __最后感谢 @潇风残月 大大的帮助，然后再求个图标__
 ### 联系方式
 
 [电报群](https://t.me/MIUIStatusBatLyric)
+[爱发电](https://afdian.net/@xiao_wine)

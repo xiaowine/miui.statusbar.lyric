@@ -1,4 +1,4 @@
-package miui.statusbar.lyric;
+package miui.statusbar.lyric.activity;
 
 
 import android.annotation.SuppressLint;
@@ -16,8 +16,10 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
 import android.widget.Toast;
-
 import com.byyang.choose.ChooseFileUtils;
+import miui.statusbar.lyric.Config;
+import miui.statusbar.lyric.R;
+import miui.statusbar.lyric.Utils;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -340,25 +342,6 @@ public class SettingsActivity extends PreferenceActivity {
         });
 
 
-        //版本介绍
-        Preference verExplain = findPreference("ver_explain");
-        assert verExplain != null;
-        verExplain.setSummary("当前版本: " + Utils.getLocalVersion(activity));
-        verExplain.setOnPreferenceClickListener((preference) -> {
-            new AlertDialog.Builder(activity)
-                    .setTitle("当前版本[" + Utils.getLocalVersion(activity) + "]适用于 \n（部分其余版本也支持）")
-                    .setMessage("酷狗音乐:v10.8.4 （需打开蓝牙歌词）\n" +
-                            "酷我音乐:v9.4.6.2 （需打开蓝牙歌词）\n" +
-                            "网易云音乐:v8.6.0 （完美适配）\n" +
-                            "Aplayer:v1.5.7.9 （完美适配）\n" +
-                            "QQ音乐:v10.17.0.11 （需打开蓝牙歌词和戴耳机）\n\n\n" +
-                            "每个版本需要hook内容不同,所以需要适配")
-                    .setPositiveButton("确定", null)
-                    .create()
-                    .show();
-            return true;
-        });
-
         //检查更新
         Preference checkUpdate = findPreference("CheckUpdate");
         assert checkUpdate != null;
@@ -369,31 +352,10 @@ public class SettingsActivity extends PreferenceActivity {
         });
 
         // 作者主页
-        Preference author = findPreference("author");
+        Preference author = findPreference("about");
         assert author != null;
         author.setOnPreferenceClickListener((preference) -> {
-            new AlertDialog.Builder(activity)
-                    .setTitle("作者主页")
-                    .setMessage("577fkj：Hook获取歌词主要开发者\n" +
-                            "xiaowine：摸鱼修复Bug和UI负责人\n" +
-                            "感谢酷安 @潇风残月 的大力支持\n")
-                    .setNegativeButton("577fkj", (dialog, which) -> {
-                        Uri uri = Uri.parse("https://github.com/577fkj");
-                        Intent intent = new Intent();
-                        intent.setAction("android.intent.action.VIEW");
-                        intent.setData(uri);
-                        startActivity(intent);
-                    })
-                    .setPositiveButton("xiaowine", (dialog, which) -> {
-                        Uri uri = Uri.parse("https://github.com/xiaowine");
-                        Intent intent = new Intent();
-                        intent.setAction("android.intent.action.VIEW");
-                        intent.setData(uri);
-                        startActivity(intent);
-                    })
-                    .create()
-                    .show();
-
+            startActivity(new Intent(activity, AboutActivity.class));
             return true;
         });
 

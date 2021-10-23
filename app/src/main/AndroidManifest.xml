@@ -18,11 +18,36 @@
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:requestLegacyExternalStorage="true"
+            android:resizeableActivity="true"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:resizeableActivity="true"
             android:theme="@style/AppTheme"
             tools:ignore="AllowBackup">
+
+        <activity android:name=".activity.AboutActivity">
+        </activity>
+
+        <activity
+                android:name=".activity.SettingsActivity"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="miui.statusbar.lyric.SettingsFragment"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS"/>
+            </intent-filter>
+        </activity>
+
+        <activity-alias
+                android:name=".launcher"
+                android:enabled="true"
+                android:targetActivity=".activity.SettingsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
 
         <meta-data
                 android:name="xposedmodule"
@@ -37,27 +62,7 @@
                 android:name="xposedscope"
                 android:resource="@array/need_module"/>
 
-        <activity
-                android:name=".SettingsActivity"
-                android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <action android:name="miui.statusbar.lyric.SettingsFragment"/>
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS"/>
-            </intent-filter>
-        </activity>
-        <activity-alias
-                android:name="miui.statusbar.lyric.launcher"
-                android:enabled="true"
-                android:targetActivity=".SettingsActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-
-        </activity-alias>
     </application>
 
 </manifest>
