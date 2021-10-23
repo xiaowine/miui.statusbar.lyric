@@ -219,7 +219,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                     }
                                 }
                                 // 隐藏时钟
-                                clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                                if (showLyric) clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
                                 return false;
                             }
                             // 清除图标

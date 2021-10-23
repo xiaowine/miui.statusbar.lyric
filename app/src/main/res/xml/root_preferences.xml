@@ -119,11 +119,11 @@
 
     <Preference
             android:key="sourceCode"
-            android:summary="https://github.com/xiaowine/MIUIStatusBarlyric_new"
+            android:summary="https://github.com/xiaowine/miui.statusbar.lyric"
             android:title="项目地址">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://github.com/xiaowine/MIUIStatusBarlyric_new"/>
+                android:data="https://github.com/xiaowine/miui.statusbar.lyric"/>
     </Preference>
 
     <Preference
