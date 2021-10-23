@@ -14,6 +14,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -219,7 +220,9 @@ public class MainHook implements IXposedHookLoadPackage {
                                     }
                                 }
                                 // 隐藏时钟
-                                if (showLyric) clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                                if (showLyric) {
+                                    clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                                }
                                 return false;
                             }
                             // 清除图标
@@ -229,7 +232,10 @@ public class MainHook implements IXposedHookLoadPackage {
                             // 歌词隐藏
                             lyricTextView.setVisibility(View.GONE);
                             // 清除时钟点击事件
-                            if (config.getLyricSwitch()) clock.setOnClickListener(null);
+                            if (config.getLyricSwitch()) {
+                                clock.setOnClickListener(null);
+                            }
+
                             return true;
                         });
 
@@ -620,5 +626,6 @@ public class MainHook implements IXposedHookLoadPackage {
             }
         }
     }
+
 
 }

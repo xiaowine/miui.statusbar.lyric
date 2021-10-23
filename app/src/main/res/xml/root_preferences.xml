@@ -21,10 +21,10 @@
             android:title="歌曲暂停关闭歌词"/>
 
     <SwitchPreference
-        android:defaultValue="false"
-        android:key="lyricSwitch"
-        android:summary=""
-        android:title="点击歌词切换时钟和歌词 (需重启SystemUI)"/>
+            android:defaultValue="false"
+            android:key="lyricSwitch"
+            android:summary=""
+            android:title="点击歌词切换时钟和歌词 (需重启SystemUI)"/>
 
 
     <EditTextPreference
@@ -44,12 +44,6 @@
             android:key="lyricColour"
             android:summary="自适应"
             android:title="歌词颜色"/>
-
-    <EditTextPreference
-            android:defaultValue="自适应"
-            android:key="iconColour"
-            android:summary="自适应"
-            android:title="图标颜色（开发中）"/>
 
     <SwitchPreference
             android:defaultValue="true"
@@ -111,6 +105,11 @@
             android:key="ver_explain"
             android:summary=""
             android:title="使用说明"/>
+    
+    <Preference
+            android:key="CheckUpdate"
+            android:summary=""
+            android:title="检查更新"/>
 
     <Preference
             android:key="author"
@@ -134,11 +133,6 @@
                 android:action="android.intent.action.VIEW"
                 android:data="https://t.me/MIUIStatusBatLyric"/>
     </Preference>
-
-    <Preference
-            android:key="CheckUpdate"
-            android:summary=""
-            android:title="检查更新（开发中）"/>
 
 
 </PreferenceScreen>

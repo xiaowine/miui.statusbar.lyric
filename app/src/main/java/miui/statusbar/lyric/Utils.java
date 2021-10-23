@@ -1,9 +1,7 @@
 package miui.statusbar.lyric;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -29,6 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import de.robv.android.xposed.XposedBridge;
 
@@ -37,12 +36,24 @@ import de.robv.android.xposed.XposedBridge;
 public class Utils {
     public static String PATH = Environment.getExternalStorageDirectory() + "/Android/media/miui.statusbar.lyric/";
 
-    public static String getLocalVersionCode(Context context) {
+    public static String getLocalVersion(Context context) {
         String localVersion = "";
         try {
             PackageManager packageManager = context.getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
             localVersion = packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return localVersion;
+    }
+
+    public static int getLocalVersionCode(Context context) {
+        int localVersion = 0;
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+            localVersion = packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -64,11 +75,12 @@ public class Utils {
     public static void checkPermission(Activity activity) {
         if (checkSelfPermission(activity) != 0) {
             if (shouldShowRequestPermissionRationale(activity)) {
-                Toast.makeText(activity, "请开通相关权限，否则无法正常使用本应用！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "请开通相关权限，否则无法正常使用本应用！", Toast.LENGTH_LONG).show();
             }
             String[] strArr = new String[1];
             strArr[0] = "android.permission.WRITE_EXTERNAL_STORAGE";
             activity.requestPermissions(strArr, 1);
+
         }
     }
 
@@ -98,7 +110,7 @@ public class Utils {
                 config.setDebug(false);
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(activity, "初始化失败，请重启软件", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "初始化失败，请重启软件", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -155,43 +167,51 @@ public class Utils {
         }
     }
 
-    private static void checkUpdate(Application application, Activity activity) {
-        Toast.makeText(application, "开始检查更新", Toast.LENGTH_SHORT).show();
+    public static void checkUpdate(Activity activity) {
         Handler handler = new Handler(Looper.getMainLooper(), message -> {
             String data = message.getData().getString("value");
             try {
                 JSONObject jsonObject = new JSONObject(data);
-                if (Utils.getLocalVersionCode(application).equals("")) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                    builder.setTitle("发现新版本[" + jsonObject.getString("tag_name") + "]")
-                            .setIcon(R.mipmap.ic_launcher)
-                            .setMessage(jsonObject.getString("body").replace("#", ""))
-                            .setPositiveButton("更新", (dialog, which) -> {
-                                try {
-                                    Uri uri = Uri.parse(jsonObject.getJSONArray("assets").getJSONObject(0).getString("browser_download_url"));
-                                    Intent intent = new Intent();
-                                    intent.setAction("android.intent.action.VIEW");
-                                    intent.setData(uri);
-                                    activity.startActivity(intent);
-                                } catch (JSONException e) {
-                                    Toast.makeText(application, "获取最新版下载地址失败: " + e, Toast.LENGTH_SHORT).show();
-                                }
+                if (!getLocalVersion(activity).equals("")) {
+//                    if (Integer.parseInt(jsonObject.getString("tag_name").split(" ")[1])
+                    if (Integer.parseInt(jsonObject.getString("tag_name").split("v")[1])
+                            > getLocalVersionCode(activity)) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                        builder.setTitle("发现新版本[" + jsonObject.getString("name") + "]")
+                                .setIcon(R.mipmap.ic_launcher)
+                                .setMessage(jsonObject.getString("body").replace("#", ""))
+                                .setPositiveButton("更新", (dialog, which) -> {
+                                    try {
+                                        Uri uri = Uri.parse(jsonObject.getJSONArray("assets").getJSONObject(0).getString("browser_download_url"));
+                                        Intent intent = new Intent();
+                                        intent.setAction("android.intent.action.VIEW");
+                                        intent.setData(uri);
+                                        activity.startActivity(intent);
+                                    } catch (JSONException e) {
+                                        Toast.makeText(activity, "获取最新版下载地址失败: " + e, Toast.LENGTH_LONG).show();
+                                    }
 
-                            }).setNegativeButton("取消", null).create().show();
+                                }).setNegativeButton("取消", null).create().show();
+                    } else {
+                        Toast.makeText(activity, "无新版可更新", Toast.LENGTH_LONG).show();
+                    }
                 } else {
-                    Toast.makeText(application, "已是最新版, 无需更新!", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
+                    Toast.makeText(activity, "检查失败，请稍后再试!", Toast.LENGTH_LONG).show();
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Looper.loop();
             return true;
         });
 
 
         new Thread(() -> {
+            Looper.prepare();
+            Toast.makeText(activity, "开始检查是否有更新", Toast.LENGTH_LONG).show();
             try {
-                HttpURLConnection connection = (HttpURLConnection) new URL("https://api.github.com/repos/577fkj/MIUIStatusBarLyric_new/releases/latest").openConnection();
+                HttpURLConnection connection = (HttpURLConnection) new URL("https://api.github.com/repos/xiaowine/miui.statusbar.lyric/releases/latest").openConnection();
                 connection.setRequestMethod("GET");
                 connection.setConnectTimeout(5000);
                 InputStream in = connection.getInputStream();
@@ -202,12 +222,11 @@ public class Utils {
                 message.setData(bundle);
                 handler.sendMessage(message);
             } catch (Exception e) {
-                Looper.prepare();
-                Toast.makeText(application, "检查更新失败: " + e, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "检查更新失败: " + e, Toast.LENGTH_LONG).show();
                 Log.d("checkUpdate: ", e + "");
                 e.printStackTrace();
-                Looper.loop();
             }
+            Looper.loop();
         }).start();
     }
 
