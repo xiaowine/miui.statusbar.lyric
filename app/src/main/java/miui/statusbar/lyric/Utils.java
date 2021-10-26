@@ -1,27 +1,44 @@
 package miui.statusbar.lyric;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.MiuiStatusBarManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.os.Process;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 import de.robv.android.xposed.XposedBridge;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class Utils {
+
     public static String PATH = Environment.getExternalStorageDirectory() + "/Android/media/miui.statusbar.lyric/";
 
     public static String getLocalVersion(Context context) {
@@ -60,21 +77,25 @@ public class Utils {
         }
     }
 
-    public static void checkPermission(Activity activity) {
-        if (checkSelfPermission(activity) != 0) {
-            if (shouldShowRequestPermissionRationale(activity)) {
-                Toast.makeText(activity, "请开通相关权限，否则无法正常使用本应用！", Toast.LENGTH_LONG).show();
-            }
+    public static void checkPermissions(Activity activity) {
+        if (checkSelfPermission(activity) == -1) {
             String[] strArr = new String[1];
             strArr[0] = "android.permission.WRITE_EXTERNAL_STORAGE";
             activity.requestPermissions(strArr, 1);
-
         }
+    }
+
+    private static int checkSelfPermission(Context context) {
+        return context.checkPermission("android.permission.WRITE_EXTERNAL_STORAGE", android.os.Process.myPid(), Process.myUid());
+    }
+
+    private static boolean shouldShowRequestPermissionRationale(Activity activity) {
+        return activity.shouldShowRequestPermissionRationale("android.permission.WRITE_EXTERNAL_STORAGE");
     }
 
     public static void init(Activity activity) {
         File file = new File(Utils.PATH);
-        File file2 = new File(Utils.PATH + "Config.json");
+        File file2 = new File(Utils.PATH + " new Config().json");
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -103,35 +124,36 @@ public class Utils {
         }
     }
 
-    public static void initIcon(Context context) {
-        if (!new File(new Config().getIconPath(), "kugou.webp").exists()) {
-            copyAssets(context, "icon/kugou.webp", new Config().getIconPath() + "kugou.webp");
+    public static void initIcon(Activity activity) {
+        Config config = new Config();
+        if (!new File(config.getIconPath(), "kugou.webp").exists()) {
+            copyAssets(activity, "icon/kugou.webp", config.getIconPath() + "kugou.webp");
         }
-        if (!new File(new Config().getIconPath(), "netease.webp").exists()) {
-            copyAssets(context, "icon/netease.webp", new Config().getIconPath() + "netease.webp");
+        if (!new File(config.getIconPath(), "netease.webp").exists()) {
+            copyAssets(activity, "icon/netease.webp", config.getIconPath() + "netease.webp");
         }
-        if (!new File(new Config().getIconPath(), "qqmusic.webp").exists()) {
-            copyAssets(context, "icon/qqmusic.webp", new Config().getIconPath() + "qqmusic.webp");
+        if (!new File(config.getIconPath(), "qqmusic.webp").exists()) {
+            copyAssets(activity, "icon/qqmusic.webp", config.getIconPath() + "qqmusic.webp");
         }
-        if (!new File(new Config().getIconPath(), "kuwo.webp").exists()) {
-            copyAssets(context, "icon/kuwo.webp", new Config().getIconPath() + "kuwo.webp");
+        if (!new File(config.getIconPath(), "kuwo.webp").exists()) {
+            copyAssets(activity, "icon/kuwo.webp", config.getIconPath() + "kuwo.webp");
         }
-        if (!new File(new Config().getIconPath(), "myplayer.webp").exists()) {
-            copyAssets(context, "icon/myplayer.webp", new Config().getIconPath() + "myplayer.webp");
+        if (!new File(config.getIconPath(), "myplayer.webp").exists()) {
+            copyAssets(activity, "icon/myplayer.webp", config.getIconPath() + "myplayer.webp");
         }
-        if (!new File(new Config().getIconPath(), ".nomedia").exists()) {
+        if (!new File(config.getIconPath(), ".nomedia").exists()) {
             try {
-                new File(new Config().getIconPath(), ".nomedia").createNewFile();
+                new File(config.getIconPath(), ".nomedia").createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static void copyAssets(Context context, String str, String str2) {
+    public static void copyAssets(Activity activity, String str, String str2) {
         try {
             File file = new File(str2);
-            InputStream open = context.getAssets().open(str);
+            InputStream open = activity.getAssets().open(str);
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             byte[] bArr = new byte[1024];
             while (true) {
@@ -146,12 +168,6 @@ public class Utils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public static void log(String text) {
-        if (new Config().getDebug()) {
-            XposedBridge.log("MIUI状态栏歌词： " + text);
         }
     }
 
@@ -218,14 +234,68 @@ public class Utils {
         }).start();
     }
 
-    private static int checkSelfPermission(Context context) {
-        return context.checkPermission("android.permission.WRITE_EXTERNAL_STORAGE", android.os.Process.myPid(), Process.myUid());
+
+    //    MainHook
+    public static void log(String text) {
+        if (new Config().getDebug()) {
+            XposedBridge.log("MIUI状态栏歌词： " + text);
+        }
     }
 
-    private static boolean shouldShowRequestPermissionRationale(Activity activity) {
-        return activity.shouldShowRequestPermissionRationale("android.permission.WRITE_EXTERNAL_STORAGE");
+    public static boolean isServiceRunning(Context context, String str) {
+        List<ActivityManager.RunningServiceInfo> runningServices = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningServices(200);
+        if (runningServices.size() <= 0) {
+            return false;
+        }
+        for (ActivityManager.RunningServiceInfo runningServiceInfo : runningServices) {
+            if (runningServiceInfo.service.getClassName().contains(str)) {
+                return true;
+            }
+        }
+        return false;
     }
 
+    public static void setStatusBar(Context application, Boolean isOpen) {
+
+        Config config = new Config();
+        int isCarrier = 1;
+        int notCarrier = 0;
+        if (isOpen) {
+            isCarrier = 0;
+            notCarrier = 1;
+        }
+        if (config.getHideNoticeIcon() && MiuiStatusBarManager.isShowNotificationIcon(application) != isOpen) {
+            MiuiStatusBarManager.setShowNotificationIcon(application, isOpen);
+        }
+        if (config.getHideNetSpeed() && MiuiStatusBarManager.isShowNetworkSpeed(application) != isOpen) {
+            MiuiStatusBarManager.setShowNetworkSpeed(application, isOpen);
+        }
+        if (config.getHideCUK() && Settings.System.getInt(application.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1) == isCarrier) {
+            Settings.System.putInt(application.getContentResolver(), "status_bar_show_carrier_under_keyguard", notCarrier);
+        }
+    }
+
+    static Drawable reverseColor(Drawable icon, Boolean black) {
+        ColorMatrix cm = new ColorMatrix();
+        if (black) {
+            cm.set(new float[]{
+                    -1f, 0f, 0f, 0f, 255f,
+                    0f, -1f, 0f, 0f, 255f,
+                    0f, 0f, -1f, 0f, 255f,
+                    0f, 0f, 0f, 1f, 0f
+            });
+        }
+        icon.setColorFilter(new ColorMatrixColorFilter(cm));
+        return icon;
+    }
+
+    static boolean isDark(int color) {
+        return ColorUtils.calculateLuminance(color) < 0.5;
+    }
+
+    public static void sendLyric(Context context, String lyric, String icon) {
+        context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Icon", icon));
+    }
 
 }
 

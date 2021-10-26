@@ -57,8 +57,8 @@
 
     <Preference
             android:key="donate"
-            android:summary="觉得好用的话，支持一下呗"
-            android:title="反馈BUG">
+            android:summary=""
+            android:title="BUG反馈或功能提议">
         <intent
                 android:action="android.intent.action.VIEW"
                 android:data="https://github.com/xiaowine/miui.statusbar.lyric/issues/new"/>

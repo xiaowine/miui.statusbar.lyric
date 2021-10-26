@@ -15,7 +15,10 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
+import android.provider.Settings;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.byyang.choose.ChooseFileUtils;
 import miui.statusbar.lyric.Config;
 import miui.statusbar.lyric.R;
@@ -27,19 +30,20 @@ import java.io.OutputStream;
 import java.util.Objects;
 
 
+
 @SuppressLint("ExportedPreferenceActivity")
 public class SettingsActivity extends PreferenceActivity {
     private Config config;
     private final Activity activity = this;
 
+    @SuppressLint("WrongConstant")
     @SuppressWarnings({"ResultOfMethodCallIgnored", "deprecation"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.root_preferences);
-        Utils.checkPermission(activity);
-        Utils.init(activity);
-        Utils.initIcon(activity);
+        Utils.checkPermissions(activity);
+
         config = new Config();
 
 
@@ -48,7 +52,7 @@ public class SettingsActivity extends PreferenceActivity {
         if (!count) {
             new AlertDialog.Builder(activity)
                     .setTitle("警告")
-                    .setMessage("本软件发布不久，可能会有许多\n" +
+                    .setMessage("本软件发布不久，可能会有许多BUG\n" +
                             "使用本模块造成的破坏，软件不负责\n" +
                             "继续代表同意")
                     .setNegativeButton("继续", (dialog, which) -> {
@@ -93,19 +97,37 @@ public class SettingsActivity extends PreferenceActivity {
         SwitchPreference lyricOff = (SwitchPreference) findPreference("lyricOff");
         assert lyricOff != null;
         lyricOff.setChecked(config.getLyricAutoOff());
-        lyricOff.setOnPreferenceChangeListener((preference, newValue) ->
-        {
+        lyricOff.setOnPreferenceChangeListener((preference, newValue) -> {
             config.setLyricAutoOff((Boolean) newValue);
             return true;
         });
 
-        // 歌词时间切换
-        SwitchPreference lyricSwitch = (SwitchPreference) findPreference("lyricSwitch");
-        assert lyricSwitch != null;
-        lyricSwitch.setChecked(config.getLyricSwitch());
-        lyricSwitch.setOnPreferenceChangeListener((preference, newValue) ->
-        {
-            config.setLyricSwitch((Boolean) newValue);
+        // 歌词最大自适应宽度
+        EditTextPreference lyricMaxWidth = (EditTextPreference) findPreference("lyricMaxWidth");
+        assert lyricMaxWidth != null;
+        lyricMaxWidth.setEnabled(String.valueOf(config.getLyricWidth()).equals("-1"));
+        lyricMaxWidth.setSummary((String.valueOf(config.getLyricMaxWidth())));
+        if (String.valueOf(config.getLyricMaxWidth()).equals("-1")) {
+            lyricMaxWidth.setSummary("关闭");
+        }
+        lyricMaxWidth.setDialogMessage("(-1~100，-1为关闭，仅在歌词宽度为自适应时生效)，当前:" + lyricMaxWidth.getSummary());
+        lyricMaxWidth.setOnPreferenceChangeListener((preference, newValue) -> {
+            lyricMaxWidth.setDialogMessage("(-1~100，-1为关闭，仅在歌词宽度为自适应时生效)，当前:自适应");
+            config.setLyricMaxWidth(-1);
+            lyricMaxWidth.setSummary("自适应");
+            config.setLyricMaxWidth(-1);
+            try {
+                String value = newValue.toString().replaceAll(" ", "").replaceAll("\n","");
+                if (value.equals("-1")) {
+                } else if (Integer.parseInt(value) <= 100 && Integer.parseInt(value) >= 0) {
+                    config.setLyricMaxWidth(Integer.parseInt(value));
+                    lyricMaxWidth.setSummary(value);
+                } else {
+                    Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
+                }
+            } catch (NumberFormatException e) {
+                Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
+            }
             return true;
         });
 
@@ -119,54 +141,28 @@ public class SettingsActivity extends PreferenceActivity {
         lyricWidth.setDefaultValue(String.valueOf(config.getLyricWidth()));
         lyricWidth.setDialogMessage("(-1~100，-1为自适应)，当前：" + lyricWidth.getSummary());
         lyricWidth.setOnPreferenceChangeListener((preference, newValue) -> {
-            String value = newValue.toString().replaceAll(" ", "");
+            String value = newValue.toString().replaceAll(" ", "").replaceAll("\n","");
+            lyricMaxWidth.setEnabled(true);
+            lyricWidth.setSummary("自适应");
+            lyricWidth.setDialogMessage("(-1~100，-1为自适应)，当前：自适应");
+            config.setLyricWidth(-1);
+
             try {
-                if (value.equals("-1") | value.equals("")) {
-                    config.setLyricWidth(-1);
-                    lyricWidth.setSummary("自适应");
+                if (value.equals("-1")) {
                 } else if (Integer.parseInt(value) <= 100 && Integer.parseInt(value) >= 0) {
                     config.setLyricWidth(Integer.parseInt(value));
                     lyricWidth.setSummary(value);
+                    lyricMaxWidth.setEnabled(false);
+                    lyricWidth.setDialogMessage("(-1~100，-1为自适应)，当前：" + value);
                 } else {
-                    config.setLyricWidth(-1);
                     Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
                 }
             } catch (NumberFormatException e) {
-                config.setLyricWidth(-1);
-                lyricWidth.setSummary("自适应");
                 Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
             }
             return true;
         });
 
-        // 歌词最大自适应宽度
-        EditTextPreference lyricMaxWidth = (EditTextPreference) findPreference("lyricMaxWidth");
-        assert lyricMaxWidth != null;
-        lyricMaxWidth.setSummary((String.valueOf(config.getLyricMaxWidth())));
-        if (String.valueOf(config.getLyricMaxWidth()).equals("-1")) {
-            lyricMaxWidth.setSummary("关闭");
-        }
-        lyricMaxWidth.setDialogMessage("(-1~100，-1为关闭，仅在歌词宽度为自适应时生效)，当前:" + lyricMaxWidth.getSummary());
-        lyricMaxWidth.setOnPreferenceChangeListener((preference, newValue) -> {
-            try {
-                String value = newValue.toString().replaceAll(" ", "");
-                if (value.equals("-1") | value.equals("")) {
-                    config.setLyricMaxWidth(-1);
-                    lyricMaxWidth.setSummary("自适应");
-                } else if (Integer.parseInt(value) <= 100 && Integer.parseInt(value) >= 0) {
-                    config.setLyricMaxWidth(Integer.parseInt(value));
-                    lyricMaxWidth.setSummary(value);
-                } else {
-                    config.setLyricMaxWidth(-1);
-                    Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
-                }
-            } catch (NumberFormatException e) {
-                config.setLyricMaxWidth(-1);
-                lyricMaxWidth.setSummary("自适应");
-                Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
-            }
-            return true;
-        });
 
         // 歌词颜色
         EditTextPreference lyricColour = (EditTextPreference) findPreference("lyricColour");
@@ -203,6 +199,15 @@ public class SettingsActivity extends PreferenceActivity {
         icon.setChecked(config.getIcon());
         icon.setOnPreferenceChangeListener((preference, newValue) -> {
             config.setIcon((Boolean) newValue);
+            return true;
+        });
+
+        // 歌词时间切换
+        SwitchPreference lyricSwitch = (SwitchPreference) findPreference("lyricSwitch");
+        assert lyricSwitch != null;
+        lyricSwitch.setChecked(config.getLyricSwitch());
+        lyricSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.setLyricSwitch((Boolean) newValue);
             return true;
         });
 
@@ -299,7 +304,6 @@ public class SettingsActivity extends PreferenceActivity {
             new AlertDialog.Builder(activity)
                     .setTitle("确定重启系统界面吗？")
                     .setMessage("若使用中突然发现不能使用，可尝试重启系统界面。")
-//                        .setPositiveButton("确定", (dialog, which) -> Utils.killProcess("systemui"))
                     .setPositiveButton("确定", (dialog, which) -> {
                         try {
                             Process p = Runtime.getRuntime().exec("su");
@@ -360,4 +364,42 @@ public class SettingsActivity extends PreferenceActivity {
         });
 
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == 0) {
+            Utils.init(activity);
+            Utils.initIcon(activity);
+        } else {
+            new AlertDialog.Builder(activity)
+                    .setIcon(R.drawable.ic_launcher_foreground)
+                    .setTitle("获取存储权限失败")
+                    .setMessage("请开通存储权限\n否则无法正常使用本应用\n若不信任本软件,请卸载")
+                    .setNegativeButton("重新申请", (dialog, which) -> Utils.checkPermissions(activity))
+                    .setPositiveButton("卸载本软件", (dialog, which) -> {
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+                        startActivity(intent);
+                    })
+                    .setNeutralButton("前往设置授予权限", (dialog, which) -> {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                .setData(Uri.fromParts("package", getPackageName(), null));
+                        startActivityForResult(intent, 13131);
+                    })
+                    .setCancelable(false)
+                    .create()
+                    .show();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 13131) {
+            Utils.checkPermissions(activity);
+        }
+    }
+
 }
