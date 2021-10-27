@@ -1,4 +1,4 @@
-package miui.statusbar.lyric;
+package miui.statusbar.lyric.hook;
 
 
 import android.app.AndroidAppHelper;
@@ -27,14 +27,15 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import miui.statusbar.lyric.AutoMarqueeTextView;
+import miui.statusbar.lyric.Config;
+import miui.statusbar.lyric.Utils;
 
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import miui.statusbar.lyric.hook.netease;
 
 
 public class MainHook implements IXposedHookLoadPackage {
@@ -213,7 +214,6 @@ public class MainHook implements IXposedHookLoadPackage {
 
                             return true;
                         });
-
                         new Timer().schedule(
                                 new TimerTask() {
                                     boolean enable = false;
@@ -328,6 +328,14 @@ public class MainHook implements IXposedHookLoadPackage {
 
                                 }, 0, 10);
 
+                        Handler handler = new Handler(message -> {
+                            return false;
+                        });
+                        new Thread(() -> {
+                            Message message = new Message();
+                            message.what = 101;
+                            handler.sendMessage(message);
+                        }).start();
                     }
                 });
                 break;

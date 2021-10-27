@@ -2,7 +2,6 @@ package miui.statusbar.lyric.hook;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -37,7 +36,6 @@ public class netease {
                             getMusicName_Method = "B";
 
                             getMusicLyric_Class = "com.netease.cloudmusic.module.player.w.h";
-                            getMusicLyric_Method = "F";
                         } else {
                             enableBTLyric_Class = "com.netease.cloudmusic.module.player.t.e";
                             enableBTLyric_Method = "o";
@@ -46,8 +44,8 @@ public class netease {
                             getMusicName_Method = "B";
 
                             getMusicLyric_Class = "com.netease.cloudmusic.module.player.t.e";
-                            getMusicLyric_Method = "F";
                         }
+                        getMusicLyric_Method = "F";
                         try {
                             XposedHelpers.findAndHookMethod(enableBTLyric_Class, lpparam.classLoader, enableBTLyric_Method, new XC_MethodHook() {
                                 @Override
