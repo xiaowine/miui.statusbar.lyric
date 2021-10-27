@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -79,9 +80,9 @@ public class Utils {
 
     public static void checkPermissions(Activity activity) {
         if (checkSelfPermission(activity) == -1) {
-            String[] strArr = new String[1];
-            strArr[0] = "android.permission.WRITE_EXTERNAL_STORAGE";
-            activity.requestPermissions(strArr, 1);
+            activity.requestPermissions(new String[]{
+                "android.permission.WRITE_EXTERNAL_STORAGE"
+            }, 1);
         }
     }
 
@@ -95,7 +96,7 @@ public class Utils {
 
     public static void init(Activity activity) {
         File file = new File(Utils.PATH);
-        File file2 = new File(Utils.PATH + " new Config().json");
+        File file2 = new File(Utils.PATH + "Config.json");
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -296,6 +297,40 @@ public class Utils {
     public static void sendLyric(Context context, String lyric, String icon) {
         context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Icon", icon));
     }
+
+    // 获取线程名称
+    public static String getCurrentProcessName(Context context) {
+        int pid = android.os.Process.myPid();
+        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (mActivityManager != null) {
+            for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager.getRunningAppProcesses()) {
+                if (appProcess.pid == pid) {
+                    return appProcess.processName;
+                }
+            }
+        }
+        return "";
+    }
+
+    // 弹出toast
+    public static void showToastOnLooper(final Context context, final String message) {
+        try {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(() -> Toast.makeText(context, message, Toast.LENGTH_LONG).show());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int dp2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    public static boolean useList(String[] arr,String containValue){
+        return Arrays.asList(arr).contains(containValue);
+    }
+
 
 }
 
