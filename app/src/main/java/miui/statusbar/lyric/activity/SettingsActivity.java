@@ -30,7 +30,6 @@ import java.io.OutputStream;
 import java.util.Objects;
 
 
-
 @SuppressLint("ExportedPreferenceActivity")
 public class SettingsActivity extends PreferenceActivity {
     private Config config;
@@ -43,7 +42,6 @@ public class SettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.root_preferences);
         Utils.checkPermissions(activity);
-
         config = new Config();
 
 
@@ -70,7 +68,6 @@ public class SettingsActivity extends PreferenceActivity {
         // 隐藏桌面图标
         SwitchPreference hideIcons = (SwitchPreference) findPreference("hideLauncherIcon");
         assert hideIcons != null;
-        hideIcons.setChecked(config.getHideLauncherIcon());
         hideIcons.setOnPreferenceChangeListener((preference, newValue) -> {
             int mode;
             PackageManager packageManager = Objects.requireNonNull(activity).getPackageManager();
@@ -80,7 +77,6 @@ public class SettingsActivity extends PreferenceActivity {
                 mode = PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
             }
             packageManager.setComponentEnabledSetting(new ComponentName(activity, "miui.statusbar.lyric.launcher"), mode, PackageManager.DONT_KILL_APP);
-            config.setHideLauncherIcon((Boolean) newValue);
             return true;
         });
 
@@ -117,7 +113,7 @@ public class SettingsActivity extends PreferenceActivity {
             lyricMaxWidth.setSummary("自适应");
             config.setLyricMaxWidth(-1);
             try {
-                String value = newValue.toString().replaceAll(" ", "").replaceAll("\n","");
+                String value = newValue.toString().replaceAll(" ", "").replaceAll("\n", "");
                 if (value.equals("-1")) {
                 } else if (Integer.parseInt(value) <= 100 && Integer.parseInt(value) >= 0) {
                     config.setLyricMaxWidth(Integer.parseInt(value));
@@ -141,7 +137,7 @@ public class SettingsActivity extends PreferenceActivity {
         lyricWidth.setDefaultValue(String.valueOf(config.getLyricWidth()));
         lyricWidth.setDialogMessage("(-1~100，-1为自适应)，当前：" + lyricWidth.getSummary());
         lyricWidth.setOnPreferenceChangeListener((preference, newValue) -> {
-            String value = newValue.toString().replaceAll(" ", "").replaceAll("\n","");
+            String value = newValue.toString().replaceAll(" ", "").replaceAll("\n", "");
             lyricMaxWidth.setEnabled(true);
             lyricWidth.setSummary("自适应");
             lyricWidth.setDialogMessage("(-1~100，-1为自适应)，当前：自适应");
@@ -211,6 +207,16 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
+
+        // 防烧屏
+        SwitchPreference antiburn = (SwitchPreference) findPreference("antiburn");
+        assert antiburn != null;
+        antiburn.setChecked(config.getAntiBurn());
+        antiburn.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.setAntiBurn((Boolean) newValue);
+            return true;
+        });
+
         // 图标路径
         Preference iconPath = findPreference("iconPath");
         assert iconPath != null;
@@ -218,7 +224,7 @@ public class SettingsActivity extends PreferenceActivity {
         if (config.getIconPath().equals(Utils.PATH)) {
             iconPath.setSummary("默认路径");
         }
-        iconPath.setOnPreferenceClickListener(((preference) -> {
+        iconPath.setOnPreferenceClickListener(((preBuference) -> {
             new AlertDialog.Builder(activity)
                     .setTitle("图标路径")
                     .setNegativeButton("恢复默认路径", (dialog, which) -> {
@@ -336,6 +342,9 @@ public class SettingsActivity extends PreferenceActivity {
                         editor.clear();
                         editor.apply();
                         new File(Utils.PATH + "Config.json").delete();
+                        PackageManager packageManager = Objects.requireNonNull(activity).getPackageManager();
+                        packageManager.setComponentEnabledSetting(new ComponentName(activity, "miui.statusbar.lyric.launcher"), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+
                         Toast.makeText(activity, "重置成功", Toast.LENGTH_LONG).show();
                         activity.finishAffinity();
                     })
