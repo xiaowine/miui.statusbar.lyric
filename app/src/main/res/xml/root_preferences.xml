@@ -54,6 +54,13 @@
             android:title="点击歌词切换时钟和歌词 (需重启系统界面)"/>
 
 
+    <SwitchPreference
+            android:defaultValue="false"
+            android:key="antiburn"
+            android:summary=""
+            android:title="防烧屏（待开发）"/>
+
+
     <Preference
             android:key="iconPath"
             android:summary=""

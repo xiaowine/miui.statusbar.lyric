@@ -81,8 +81,11 @@ public class Utils {
     public static void checkPermissions(Activity activity) {
         if (checkSelfPermission(activity) == -1) {
             activity.requestPermissions(new String[]{
-                "android.permission.WRITE_EXTERNAL_STORAGE"
+                    "android.permission.WRITE_EXTERNAL_STORAGE"
             }, 1);
+        } else {
+            init(activity);
+            initIcon(activity);
         }
     }
 
@@ -104,7 +107,6 @@ public class Utils {
             try {
                 Config config = new Config();
                 file2.createNewFile();
-                config.setHideLauncherIcon(false);
                 config.setLyricService(true);
                 config.setLyricAutoOff(true);
                 config.setLyricSwitch(false);
@@ -276,7 +278,7 @@ public class Utils {
         }
     }
 
-    static Drawable reverseColor(Drawable icon, Boolean black) {
+    public static Drawable reverseColor(Drawable icon, Boolean black) {
         ColorMatrix cm = new ColorMatrix();
         if (black) {
             cm.set(new float[]{
@@ -290,7 +292,7 @@ public class Utils {
         return icon;
     }
 
-    static boolean isDark(int color) {
+    public static boolean isDark(int color) {
         return ColorUtils.calculateLuminance(color) < 0.5;
     }
 
@@ -327,7 +329,7 @@ public class Utils {
         return (int) (dpValue * scale + 0.5f);
     }
 
-    public static boolean useList(String[] arr,String containValue){
+    public static boolean useList(String[] arr, String containValue) {
         return Arrays.asList(arr).contains(containValue);
     }
 

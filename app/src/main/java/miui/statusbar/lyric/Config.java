@@ -47,21 +47,6 @@ public class Config {
         }
     }
 
-    public Boolean getHideLauncherIcon() {
-        try {
-            return (Boolean) this.config.get("HideLauncherIcon");
-        } catch (JSONException e) {
-            return false;
-        }
-    }
-
-    public void setHideLauncherIcon(Boolean bool) {
-        try {
-            this.config.put("HideLauncherIcon", bool);
-            setConfig(this.config.toString());
-        } catch (JSONException ignored) {
-        }
-    }
 
     public Boolean getLyricService() {
         try {
@@ -270,4 +255,21 @@ public class Config {
         } catch (JSONException ignored) {
         }
     }
+
+    public boolean getAntiBurn() {
+        try {
+            return (boolean) this.config.get("antiburn");
+        } catch (JSONException e) {
+            return false;
+        }
+    }
+
+    public void setAntiBurn(Boolean bool) {
+        try {
+            this.config.put("antiburn", bool);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
+
 }
