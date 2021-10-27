@@ -14,6 +14,20 @@ __支持MIUI12以后的MIUI__
 
 __最后感谢 @潇风残月 大大的帮助，然后再求个图标__
 
+### API
+
+```
+public static void sendLyric(Context context, String lyric, String icon) {
+    context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Icon", icon).putExtra("Lyric_Type", "app"));
+}
+```
+
+| 参数      | 解释                      |
+| -------- | ------------------------ |
+| context  | Context                  |
+| lyric    | 歌词文本                   |
+| icon     | 没有前缀的base64图片(32x32) |
+
 ### 下载
 
 [Releases](https://github.com/577fkj/MIUIStatusBarLyric_new/releases)

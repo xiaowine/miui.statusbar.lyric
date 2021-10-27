@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
@@ -40,7 +42,7 @@ import miui.statusbar.lyric.hook.netease;
 public class MainHook implements IXposedHookLoadPackage {
     private static final String KEY_LYRIC = "lyric";
     private static String lyric = "";
-    private static String iconPath = "";
+    private static String[] icon = new String[]{"hook", ""};
     private Context context = null;
     private boolean showLyric = true;
 
@@ -268,10 +270,15 @@ public class MainHook implements IXposedHookLoadPackage {
                                                     lyricTextView.setTextColor(color);
                                                     iconReverseColorStatus = true;
                                                 }
-                                                if (!iconPath.equals("")) {
+                                                if (!icon[1].equals("")) {
                                                     if (iconReverseColorStatus) {
-                                                        if (new File(iconPath).exists()) {
-                                                            Drawable createFromPath = Drawable.createFromPath(iconPath);
+                                                        Drawable createFromPath = null;
+                                                        if (icon[0].equals("hook")) {
+                                                            createFromPath = Drawable.createFromPath(icon[1]);
+                                                        } else if (icon[0].equals("app")) {
+                                                            createFromPath = new BitmapDrawable(Utils.stringToBitmap(icon[1]));
+                                                        }
+                                                        if (createFromPath != null) {
                                                             createFromPath.setBounds(0, 0, (int) clock.getTextSize(), (int) clock.getTextSize());
                                                             if (iconReverseColor) {
                                                                 createFromPath = Utils.reverseColor(createFromPath, Utils.isDark(clock.getTextColors().getDefaultColor()));
@@ -280,6 +287,11 @@ public class MainHook implements IXposedHookLoadPackage {
                                                             obtainMessage2.obj = createFromPath;
                                                             iconUpdate.sendMessage(obtainMessage2);
                                                         }
+                                                    } else {
+                                                        Drawable createFromPath = Drawable.createFromPath(null);
+                                                        Message obtainMessage2 = iconUpdate.obtainMessage();
+                                                        obtainMessage2.obj = createFromPath;
+                                                        iconUpdate.sendMessage(obtainMessage2);
                                                     }
                                                 } else {
                                                     Drawable createFromPath = Drawable.createFromPath(null);
@@ -322,9 +334,10 @@ public class MainHook implements IXposedHookLoadPackage {
                                             }
                                         }
 
-                                        if (lyricSpeed < 10) lyricSpeed++;
+                                        if (lyricSpeed < 10) {
+                                            lyricSpeed++;
+                                        }
                                     }
-
 
                                 }, 0, 10);
 
@@ -452,6 +465,7 @@ public class MainHook implements IXposedHookLoadPackage {
                         Utils.sendLyric(context, param.args[0].toString(), "myplayer");
                     }
                 });
+                break;
         }
     }
 
@@ -460,11 +474,21 @@ public class MainHook implements IXposedHookLoadPackage {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("Lyric_Server")) {
-                lyric = intent.getStringExtra("Lyric_Data");
-                if (new Config().getIcon()) {
-                    iconPath = new Config().getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
-                } else {
-                    iconPath = "";
+                switch (intent.getStringExtra("Lyric_Type")) {
+                    case "hook":
+                        lyric = intent.getStringExtra("Lyric_Data");
+                        icon[0] = "hook";
+                        if (new Config().getIcon()) {
+                            icon[1] = new Config().getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
+                        } else {
+                            icon[1] = "";
+                        }
+                        break;
+                    case "app":
+                        lyric = intent.getStringExtra("Lyric_Data");
+                        icon[0] = "app";
+                        icon[1] = intent.getStringExtra("Lyric_Icon");
+                        break;
                 }
             }
         }
