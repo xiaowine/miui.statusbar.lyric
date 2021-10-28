@@ -23,6 +23,7 @@ public class Config {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static String getConfig() {
         String str = "";
         try {
@@ -52,7 +53,7 @@ public class Config {
         try {
             return (Boolean) this.config.get("LyricService");
         } catch (JSONException e) {
-            return true;
+            return false;
         }
     }
 
@@ -127,6 +128,7 @@ public class Config {
         } catch (JSONException ignored) {
         }
     }
+
     public Boolean getHideNoticeIcon() {
         try {
             return (Boolean) this.config.get("hideNoticeIcon");
@@ -208,6 +210,22 @@ public class Config {
         }
     }
 
+    public Boolean getisUsedCount() {
+        try {
+            return (Boolean) this.config.get("isusedcount");
+        } catch (JSONException e) {
+            return true;
+        }
+    }
+
+    public void setisUsedCount(Boolean bool) {
+        try {
+            this.config.put("isusedcount", bool);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
+
     public boolean getIcon() {
         try {
             return (Boolean) this.config.get("Icon");
@@ -267,6 +285,22 @@ public class Config {
     public void setAntiBurn(Boolean bool) {
         try {
             this.config.put("antiburn", bool);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
+
+    public int getUsedCount() {
+        try {
+            return (int) this.config.get("usedcount");
+        } catch (JSONException e) {
+            return 0;
+        }
+    }
+
+    public void setUsedCount(int i) {
+        try {
+            this.config.put("usedcount", i);
             setConfig(this.config.toString());
         } catch (JSONException ignored) {
         }

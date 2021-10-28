@@ -1,11 +1,17 @@
 <!--suppress DeprecatedClassUsageInspection -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+            android:key="ver_explain"
+            android:summary=""
+            android:title="使用说明"/>
+
     <SwitchPreference
             android:defaultValue="false"
             android:key="hideLauncherIcon"
             android:summary=""
             android:title="隐藏桌面图标"/>
+
+
     <PreferenceCategory android:title="基础设置"/>
 
     <SwitchPreference
@@ -95,6 +101,12 @@
             android:key="debug"
             android:summary=""
             android:title="Debug模式"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="isusedcount"
+        android:summary="统计仅保存在本地"
+        android:title="使用统计"/>
 
     <PreferenceScreen
             android:key="restartUI"

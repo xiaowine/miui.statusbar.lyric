@@ -36,7 +36,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -110,7 +109,8 @@ public class Utils {
             try {
                 Config config = new Config();
                 file2.createNewFile();
-                config.setLyricService(true);
+                config.setUsedCount(0);
+                config.setLyricService(false);
                 config.setLyricAutoOff(true);
                 config.setLyricSwitch(false);
                 config.setLyricWidth(-1);
@@ -123,6 +123,7 @@ public class Utils {
                 config.setHideNetSpeed(true);
                 config.setHideCUK(false);
                 config.setDebug(false);
+                config.setisUsedCount(true);
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(activity, "初始化失败，请重启软件", Toast.LENGTH_LONG).show();
@@ -301,7 +302,11 @@ public class Utils {
 
     public static void sendLyric(Context context, String lyric, String icon) {
         context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Icon", icon).putExtra("Lyric_Type", "hook"));
-    }
+        Config config = new Config();
+        if (config.getisUsedCount()){
+            config.setUsedCount(config.getUsedCount() + 1);
+        }
+        }
 
     // 获取线程名称
     public static String getCurrentProcessName(Context context) {

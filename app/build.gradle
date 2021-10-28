@@ -11,7 +11,7 @@ android {
         minSdkVersion 28
         targetSdkVersion 29
         versionCode 29
-        versionName "2.9.17"
+        versionName "2.11.18"
         aaptOptions.cruncherEnabled = false
         aaptOptions.useNewCruncher = false
     }

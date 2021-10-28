@@ -64,6 +64,13 @@ public class SettingsActivity extends PreferenceActivity {
                     .show();
         }
 
+        if (config.getisUsedCount()) {
+            setTitle("已获取歌词数句数：" + config.getUsedCount());
+        }
+        //版本介绍
+        Preference verExplain = findPreference("ver_explain");
+        assert verExplain != null;
+        verExplain.setSummary("当前版本[" + Utils.getLocalVersion(activity) + "]适用于 " + getString(R.string.ver_explain));
 
         // 隐藏桌面图标
         SwitchPreference hideIcons = (SwitchPreference) findPreference("hideLauncherIcon");
@@ -79,6 +86,7 @@ public class SettingsActivity extends PreferenceActivity {
             packageManager.setComponentEnabledSetting(new ComponentName(activity, "miui.statusbar.lyric.launcher"), mode, PackageManager.DONT_KILL_APP);
             return true;
         });
+
 
         // 歌词总开关
         SwitchPreference lyricService = (SwitchPreference) findPreference("lyricService");
@@ -302,6 +310,15 @@ public class SettingsActivity extends PreferenceActivity {
             config.setDebug((Boolean) newValue);
             return true;
         });
+        // Debug模式
+        SwitchPreference isUsedCount = (SwitchPreference) findPreference("isusedcount");
+        assert isUsedCount != null;
+        isUsedCount.setChecked(config.getDebug());
+        isUsedCount.setOnPreferenceChangeListener((preference, newValue) -> {
+            Toast.makeText(activity,newValue.toString(),Toast.LENGTH_LONG).show();
+            config.setisUsedCount((Boolean) newValue);
+            return true;
+        });
 
         // 重启SystemUI
         Preference reSystemUI = findPreference("restartUI");
@@ -364,10 +381,10 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
-        // 作者主页
-        Preference author = findPreference("about");
-        assert author != null;
-        author.setOnPreferenceClickListener((preference) -> {
+        // 关于activity
+        Preference about = findPreference("about");
+        assert about != null;
+        about.setOnPreferenceClickListener((preference) -> {
             startActivity(new Intent(activity, AboutActivity.class));
             return true;
         });

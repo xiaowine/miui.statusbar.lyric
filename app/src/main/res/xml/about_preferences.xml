@@ -1,12 +1,6 @@
 <!--suppress DeprecatedClassUsageInspection -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
-
-            android:key="ver_explain"
-            android:summary=""
-            android:title="使用说明"/>
-
 
     <PreferenceCategory android:title="开发者"/>
 

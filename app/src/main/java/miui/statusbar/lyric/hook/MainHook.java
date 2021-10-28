@@ -26,14 +26,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import miui.statusbar.lyric.AutoMarqueeTextView;
 import miui.statusbar.lyric.Config;
 import miui.statusbar.lyric.Utils;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Timer;
@@ -43,9 +41,10 @@ import java.util.TimerTask;
 public class MainHook implements IXposedHookLoadPackage {
     private static final String KEY_LYRIC = "lyric";
     private static String lyric = "";
-    private static String[] icon = new String[]{"hook", ""};
+    private static final String[] icon = new String[]{"hook", ""};
     private Context context = null;
     private boolean showLyric = true;
+    int displacements = 50;
 
 
     @Override
@@ -341,14 +340,35 @@ public class MainHook implements IXposedHookLoadPackage {
 
                                 }, 0, 10);
 
-                        Handler handler = new Handler(message -> {
-                            return false;
-                        });
-                        new Thread(() -> {
-                            Message message = new Message();
-                            message.what = 101;
-                            handler.sendMessage(message);
-                        }).start();
+
+//                        LinearLayout.LayoutParams finalLayoutParams = layoutParams;
+//                        Handler handler = new Handler(message -> {
+//                            try {
+//                                Thread.sleep(60);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                            if (new Config().getAntiBurn()) {
+//                                finalLayoutParams.setMargins(10 + displacements, 0, 0, 0);
+//                                if (displacements == 50) {
+//                                    displacements = -50;
+//                                } else {
+//                                    displacements = 50;
+//                                }
+//                            } else {
+//                                finalLayoutParams.setMargins(10, 0, 0, 0);
+//                            }
+//
+//                            return false;
+//                        });
+//                        new Timer().schedule(new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                Message message = new Message();
+//                                message.what = 101;
+//                                handler.sendMessage(message);
+//                            }
+//                        }, 0, 60);
                     }
                 });
                 break;
