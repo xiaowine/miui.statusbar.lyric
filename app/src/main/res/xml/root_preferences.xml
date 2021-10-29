@@ -64,7 +64,7 @@
             android:defaultValue="false"
             android:key="antiburn"
             android:summary=""
-            android:title="防烧屏（待开发）"/>
+            android:title="防烧屏"/>
 
 
     <Preference

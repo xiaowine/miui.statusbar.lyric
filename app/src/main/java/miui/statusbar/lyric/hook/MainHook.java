@@ -39,12 +39,12 @@ import java.util.TimerTask;
 
 
 public class MainHook implements IXposedHookLoadPackage {
-    private static final String KEY_LYRIC = "lyric";
-    private static String lyric = "";
-    private static final String[] icon = new String[]{"hook", ""};
-    private Context context = null;
-    private boolean showLyric = true;
-    int displacements = 50;
+    static final String KEY_LYRIC = "lyric";
+    static String lIcon = "";
+    static String lyric = "";
+    static final String[] icon = new String[]{"hook", ""};
+    Context context = null;
+    boolean showLyric = true;
 
 
     @Override
@@ -340,35 +340,35 @@ public class MainHook implements IXposedHookLoadPackage {
 
                                 }, 0, 10);
 
+                        LinearLayout.LayoutParams finalLayoutParams = layoutParams;
+                        new Thread(() -> {
+                            int i = 1;
+                            boolean order = true;
+                            while (true) {
+                                try {
+                                    Thread.sleep(10000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                if (new Config().getAntiBurn()) {
+                                    if (order) {
+                                        i += 1;
+                                    } else {
+                                        i -= 1;
+                                    }
+                                    Utils.log(i + "");
+                                    finalLayoutParams.setMargins(10 + i, 0, 0, 0);
+                                    if (i == 0) {
+                                        order = true;
+                                    } else if (i == 10) {
+                                        order = false;
+                                    }
+                                } else {
+                                    finalLayoutParams.setMargins(10, 0, 0, 0);
+                                }
 
-//                        LinearLayout.LayoutParams finalLayoutParams = layoutParams;
-//                        Handler handler = new Handler(message -> {
-//                            try {
-//                                Thread.sleep(60);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                            if (new Config().getAntiBurn()) {
-//                                finalLayoutParams.setMargins(10 + displacements, 0, 0, 0);
-//                                if (displacements == 50) {
-//                                    displacements = -50;
-//                                } else {
-//                                    displacements = 50;
-//                                }
-//                            } else {
-//                                finalLayoutParams.setMargins(10, 0, 0, 0);
-//                            }
-//
-//                            return false;
-//                        });
-//                        new Timer().schedule(new TimerTask() {
-//                            @Override
-//                            public void run() {
-//                                Message message = new Message();
-//                                message.what = 101;
-//                                handler.sendMessage(message);
-//                            }
-//                        }, 0, 60);
+                            }
+                        }).start();
                     }
                 });
                 break;
@@ -506,10 +506,15 @@ public class MainHook implements IXposedHookLoadPackage {
                     case "hook":
                         lyric = intent.getStringExtra("Lyric_Data");
                         icon[0] = "hook";
-                        if (new Config().getIcon()) {
-                            icon[1] = new Config().getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
-                        } else {
-                            icon[1] = "";
+                        try {
+                            if (new Config().getIcon()) {
+                                icon[1] = new Config().getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
+                                lIcon = intent.getStringExtra("Lyric_Icon");
+                            } else {
+                                icon[1] = "";
+                            }
+                        } catch (RuntimeException e) {
+                            icon[1] = lIcon;
                         }
                         break;
                     case "app":

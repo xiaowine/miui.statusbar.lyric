@@ -11,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -64,9 +66,6 @@ public class SettingsActivity extends PreferenceActivity {
                     .show();
         }
 
-        if (config.getisUsedCount()) {
-            setTitle("已获取歌词数句数：" + config.getUsedCount());
-        }
         //版本介绍
         Preference verExplain = findPreference("ver_explain");
         assert verExplain != null;
@@ -310,12 +309,12 @@ public class SettingsActivity extends PreferenceActivity {
             config.setDebug((Boolean) newValue);
             return true;
         });
-        // Debug模式
+        // 使用统计
         SwitchPreference isUsedCount = (SwitchPreference) findPreference("isusedcount");
         assert isUsedCount != null;
-        isUsedCount.setChecked(config.getDebug());
+        isUsedCount.setChecked(config.getisUsedCount());
         isUsedCount.setOnPreferenceChangeListener((preference, newValue) -> {
-            Toast.makeText(activity,newValue.toString(),Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, newValue.toString(), Toast.LENGTH_LONG).show();
             config.setisUsedCount((Boolean) newValue);
             return true;
         });
@@ -388,6 +387,23 @@ public class SettingsActivity extends PreferenceActivity {
             startActivity(new Intent(activity, AboutActivity.class));
             return true;
         });
+
+        Handler titleUpdate = new Handler(Looper.getMainLooper(), message -> {
+            setTitle("已获取歌词数句数：" + new Config().getUsedCount());
+            return false;
+        });
+        new Thread(() -> {
+            while (true) {
+                if (new Config().getisUsedCount()) {
+                    titleUpdate.sendEmptyMessage(0);
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
     }
 
