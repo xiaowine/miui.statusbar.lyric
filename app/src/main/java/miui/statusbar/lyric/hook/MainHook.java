@@ -119,8 +119,12 @@ public class MainHook implements IXposedHookLoadPackage {
 
                         // 设置跑马灯效果
                         lyricTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-                        // 设置跑马灯重复次数，-1为无限重复
-                        lyricTextView.setMarqueeRepeatLimit(-1);
+                        if (new Config().getLShowOnce()) {
+                            // 设置跑马灯为1次
+                            lyricTextView.setMarqueeRepeatLimit(1);
+                        } else {// 设置跑马灯重复次数，-1为无限重复
+                            lyricTextView.setMarqueeRepeatLimit(-1);
+                        }
                         // 单行显示
                         lyricTextView.setSingleLine(true);
                         lyricTextView.setMaxLines(1);
@@ -174,15 +178,8 @@ public class MainHook implements IXposedHookLoadPackage {
                             String string = message.getData().getString(KEY_LYRIC);
                             if (!string.equals("")) {
                                 if (!string.equals(lyricTextView.getText().toString())) {
-                                    // 设置状态栏
-                                    Utils.setStatusBar(application, false);
                                     // 设置歌词文本
                                     lyricTextView.setText(string);
-                                    // 歌词显示
-                                    if (showLyric) {
-                                        lyricTextView.setVisibility(View.VISIBLE);
-                                    }
-
                                     // 自适应/歌词宽度
                                     if (config.getLyricWidth() == -1) {
                                         TextPaint paint1 = lyricTextView.getPaint(); // 获取字体
@@ -195,6 +192,13 @@ public class MainHook implements IXposedHookLoadPackage {
                                     } else {
                                         lyricTextView.setWidth((dw * config.getLyricWidth()) / 100);
                                     }
+                                    // 歌词显示
+                                    if (showLyric) {
+                                        lyricTextView.setVisibility(View.VISIBLE);
+                                    }
+                                    // 设置状态栏
+                                    Utils.setStatusBar(application, false);
+
                                 }
                                 // 隐藏时钟
                                 if (showLyric) {
@@ -204,10 +208,11 @@ public class MainHook implements IXposedHookLoadPackage {
                             }
                             // 清除图标
                             iconView.setCompoundDrawables(null, null, null, null);
-                            // 显示时钟
-                            clock.setLayoutParams(new LinearLayout.LayoutParams(-2, -2));
                             // 歌词隐藏
                             lyricTextView.setVisibility(View.GONE);
+
+                            // 显示时钟
+                            clock.setLayoutParams(new LinearLayout.LayoutParams(-2, -2));
                             // 清除时钟点击事件
                             if (config.getLyricSwitch()) {
                                 clock.setOnClickListener(null);
@@ -272,6 +277,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                                 if (!icon[1].equals("")) {
                                                     if (iconReverseColorStatus) {
                                                         Drawable createFromPath = null;
+                                                        Utils.log(icon[0]);
                                                         if (icon[0].equals("hook")) {
                                                             createFromPath = Drawable.createFromPath(icon[1]);
                                                         } else if (icon[0].equals("app")) {
@@ -356,7 +362,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                     } else {
                                         i -= 1;
                                     }
-                                    Utils.log(i + "");
+                                    Utils.log("当钱位移：" + i);
                                     finalLayoutParams.setMargins(10 + i, 0, 0, 0);
                                     if (i == 0) {
                                         order = true;
@@ -371,10 +377,12 @@ public class MainHook implements IXposedHookLoadPackage {
                         }).start();
                     }
                 });
+                Utils.log("hook系统界面结束");
                 break;
             case "com.netease.cloudmusic":
                 Utils.log("正在hook网易云音乐");
                 new netease.Hook(lpparam);
+                Utils.log("hook网易云音乐结束");
                 break;
             case "com.kugou.android":
                 Utils.log("正在hook酷狗音乐");
@@ -403,6 +411,7 @@ public class MainHook implements IXposedHookLoadPackage {
                         Utils.sendLyric(context, "" + ((HashMap) param.args[0]).values().toArray()[0], "kugou");
                     }
                 });
+                Utils.log("hook酷狗音乐结束");
                 break;
             case "cn.kuwo.player":
                 Utils.log("正在hook酷我音乐");
@@ -439,6 +448,7 @@ public class MainHook implements IXposedHookLoadPackage {
                         super.afterHookedMethod(param);
                     }
                 });
+                Utils.log("hook酷我音乐结束");
                 break;
             case "com.tencent.qqmusic":
                 Utils.log("正在hookQQ音乐");
@@ -464,6 +474,7 @@ public class MainHook implements IXposedHookLoadPackage {
                         Utils.sendLyric(context, str, "qqmusic");
                     }
                 });
+                Utils.log("hookQQ音乐结束");
                 break;
             case "remix.myplayer":
                 Utils.log("正在Hook myplayer");
@@ -493,6 +504,7 @@ public class MainHook implements IXposedHookLoadPackage {
                         Utils.sendLyric(context, param.args[0].toString(), "myplayer");
                     }
                 });
+                Utils.log("hook myplayer结束");
                 break;
         }
     }

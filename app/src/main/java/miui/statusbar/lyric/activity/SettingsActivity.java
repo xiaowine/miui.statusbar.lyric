@@ -204,6 +204,14 @@ public class SettingsActivity extends PreferenceActivity {
             config.setIcon((Boolean) newValue);
             return true;
         });
+        // 歌词图标
+        SwitchPreference lshowonce = (SwitchPreference) findPreference("lshowonce");
+        assert lshowonce != null;
+        lshowonce.setChecked(config.getLShowOnce());
+        lshowonce.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.setLShowOnce((Boolean) newValue);
+            return true;
+        });
 
         // 歌词时间切换
         SwitchPreference lyricSwitch = (SwitchPreference) findPreference("lyricSwitch");

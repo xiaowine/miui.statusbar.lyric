@@ -51,6 +51,12 @@
             android:summary=""
             android:title="歌词图标"/>
 
+    <SwitchPreference
+            android:defaultValue="false"
+            android:key="lshowonce"
+            android:summary="歌词太长，仅显示一次不循环"
+            android:title="歌词不循环显示"/>
+
     <PreferenceCategory android:title="高级设置"/>
 
     <SwitchPreference
@@ -103,10 +109,10 @@
             android:title="Debug模式"/>
 
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="isusedcount"
-        android:summary="统计仅保存在本地"
-        android:title="使用统计"/>
+            android:defaultValue="true"
+            android:key="isusedcount"
+            android:summary="统计仅保存在本地"
+            android:title="使用统计"/>
 
     <PreferenceScreen
             android:key="restartUI"

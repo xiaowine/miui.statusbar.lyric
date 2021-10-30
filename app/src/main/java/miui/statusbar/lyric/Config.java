@@ -242,6 +242,22 @@ public class Config {
         }
     }
 
+    public boolean getLShowOnce() {
+        try {
+            return (Boolean) this.config.get("LShowOnce");
+        } catch (JSONException e) {
+            return false;
+        }
+    }
+
+    public void setLShowOnce(Boolean bool) {
+        try {
+            this.config.put("LShowOnce", bool);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
+
     public Boolean getIconAutoColor() {
         try {
             return (Boolean) this.config.get("IconAutoColor");

@@ -117,6 +117,7 @@ public class Utils {
                 config.setLyricMaxWidth(-1);
                 config.setLyricColor("off");
                 config.setIcon(true);
+                config.setLShowOnce(false);
                 config.setIconPath(PATH);
                 config.setIconAutoColor(true);
                 config.setHideNoticeIcon(false);
@@ -303,10 +304,10 @@ public class Utils {
     public static void sendLyric(Context context, String lyric, String icon) {
         context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Icon", icon).putExtra("Lyric_Type", "hook"));
         Config config = new Config();
-        if (config.getisUsedCount()){
+        if (config.getisUsedCount()) {
             config.setUsedCount(config.getUsedCount() + 1);
         }
-        }
+    }
 
     // 获取线程名称
     public static String getCurrentProcessName(Context context) {
