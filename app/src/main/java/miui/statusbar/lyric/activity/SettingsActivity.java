@@ -70,6 +70,11 @@ public class SettingsActivity extends PreferenceActivity {
         Preference verExplain = findPreference("ver_explain");
         assert verExplain != null;
         verExplain.setSummary("当前版本[" + Utils.getLocalVersion(activity) + "]适用于 " + getString(R.string.ver_explain));
+//        verExplain.setOnPreferenceClickListener((preference) -> {
+//            Utils.setIAlarm("settings put secure icon_blacklist alarm_clock");
+//            Toast.makeText(activity, "233", Toast.LENGTH_LONG).show();
+//            return false;
+//        });
 
         // 隐藏桌面图标
         SwitchPreference hIcons = (SwitchPreference) findPreference("hLauncherIcon");
@@ -308,7 +313,7 @@ public class SettingsActivity extends PreferenceActivity {
             config.sethCUK((Boolean) newValue);
             return true;
         });
-        
+
         // 隐藏运营商名称
         SwitchPreference hAlarm = (SwitchPreference) findPreference("hAlarm");
         assert hAlarm != null;
@@ -326,14 +331,16 @@ public class SettingsActivity extends PreferenceActivity {
             config.setDebug((Boolean) newValue);
             return true;
         });
-        
+
         // 使用统计
         SwitchPreference isUsedCount = (SwitchPreference) findPreference("isusedcount");
         assert isUsedCount != null;
         isUsedCount.setChecked(config.getisUsedCount());
         isUsedCount.setOnPreferenceChangeListener((preference, newValue) -> {
-            Toast.makeText(activity, newValue.toString(), Toast.LENGTH_LONG).show();
             config.setisUsedCount((Boolean) newValue);
+            if (!(Boolean) newValue) {
+                setTitle(getString(R.string.app_name));
+            }
             return true;
         });
 

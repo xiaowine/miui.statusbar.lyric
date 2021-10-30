@@ -92,7 +92,7 @@ public class MainHook implements IXposedHookLoadPackage {
                         int dw = displayMetrics.widthPixels;
 
                         // 获取系统版本
-                        String miuiVer = Utils.shell("getprop ro.miui.ui.version.name");
+                        String miuiVer = Utils.getMiuiVer();
                         Utils.log("MIUI Ver: " + miuiVer);
 
                         // 反射获取时钟
@@ -231,7 +231,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                     boolean lyricServer = false;
                                     boolean lyricOff = false;
                                     Boolean iconReverseColor = false;
-                                    boolean iconReverseColorStatus = false;
+
 
                                     @Override
                                     public void run() {
@@ -243,7 +243,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                                 if (config.getLyricAutoOff())
                                                     lyricOff = audioManager.isMusicActive();
                                                 iconReverseColor = config.getIconAutoColor();
-                                                iconReverseColorStatus = true;
+
                                             } else {
                                                 if (enable || (lyricTextView.getVisibility() != View.GONE)) {
                                                     Utils.log("播放器关闭 清除歌词");
@@ -272,32 +272,26 @@ public class MainHook implements IXposedHookLoadPackage {
                                                 } else if (!(clock.getTextColors() == null || color == clock.getTextColors())) {
                                                     color = clock.getTextColors();
                                                     lyricTextView.setTextColor(color);
-                                                    iconReverseColorStatus = true;
+
                                                 }
-                                                if (!icon[1].equals("")) {
-                                                    if (iconReverseColorStatus) {
-                                                        Drawable createFromPath = null;
-                                                        Utils.log(icon[0]);
-                                                        if (icon[0].equals("hook")) {
-                                                            createFromPath = Drawable.createFromPath(icon[1]);
-                                                        } else if (icon[0].equals("app")) {
-                                                            createFromPath = new BitmapDrawable(Utils.stringToBitmap(icon[1]));
+                                                if (!icon[1].equals("") && new Config().getLyricService()) {
+                                                    Drawable createFromPath = null;
+                                                    Utils.log(icon[0]);
+                                                    if (icon[0].equals("hook")) {
+                                                        createFromPath = Drawable.createFromPath(icon[1]);
+                                                    } else if (icon[0].equals("app")) {
+                                                        createFromPath = new BitmapDrawable(Utils.stringToBitmap(icon[1]));
+                                                    }
+                                                    if (createFromPath != null) {
+                                                        createFromPath.setBounds(0, 0, (int) clock.getTextSize(), (int) clock.getTextSize());
+                                                        if (iconReverseColor) {
+                                                            createFromPath = Utils.reverseColor(createFromPath, Utils.isDark(clock.getTextColors().getDefaultColor()));
                                                         }
-                                                        if (createFromPath != null) {
-                                                            createFromPath.setBounds(0, 0, (int) clock.getTextSize(), (int) clock.getTextSize());
-                                                            if (iconReverseColor) {
-                                                                createFromPath = Utils.reverseColor(createFromPath, Utils.isDark(clock.getTextColors().getDefaultColor()));
-                                                            }
-                                                            Message obtainMessage2 = iconUpdate.obtainMessage();
-                                                            obtainMessage2.obj = createFromPath;
-                                                            iconUpdate.sendMessage(obtainMessage2);
-                                                        }
-                                                    } else {
-                                                        Drawable createFromPath = Drawable.createFromPath(null);
                                                         Message obtainMessage2 = iconUpdate.obtainMessage();
                                                         obtainMessage2.obj = createFromPath;
                                                         iconUpdate.sendMessage(obtainMessage2);
                                                     }
+
                                                 } else {
                                                     Drawable createFromPath = Drawable.createFromPath(null);
                                                     Message obtainMessage2 = iconUpdate.obtainMessage();
