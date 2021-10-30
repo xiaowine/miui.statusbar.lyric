@@ -38,8 +38,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-
-@SuppressWarnings("ResultOfMethodCallIgnored")
+@SuppressWarnings("unused")
 public class Utils {
 
     public static String PATH = Environment.getExternalStorageDirectory() + "/Android/media/miui.statusbar.lyric/";
@@ -67,11 +66,11 @@ public class Utils {
         }
         return localVersion;
     }
-
-    public static String getMIUIVer() {
+    
+    public static String shell(String s) {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader
-                    (Runtime.getRuntime().exec("getprop ro.miui.ui.version.name").getInputStream()), 1024);
+                    (Runtime.getRuntime().exec(s).getInputStream()), 1024);
             String ver = bufferedReader.readLine();
             bufferedReader.close();
             return ver;
@@ -80,6 +79,7 @@ public class Utils {
         }
     }
 
+    @SuppressWarnings("unused")
     public static void checkPermissions(Activity activity) {
         if (checkSelfPermission(activity) == -1) {
             activity.requestPermissions(new String[]{
@@ -95,10 +95,12 @@ public class Utils {
         return context.checkPermission("android.permission.WRITE_EXTERNAL_STORAGE", android.os.Process.myPid(), Process.myUid());
     }
 
+    @SuppressWarnings("unused")
     private static boolean shouldShowRequestPermissionRationale(Activity activity) {
         return activity.shouldShowRequestPermissionRationale("android.permission.WRITE_EXTERNAL_STORAGE");
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void init(Activity activity) {
         File file = new File(Utils.PATH);
         File file2 = new File(Utils.PATH + "Config.json");
@@ -120,9 +122,9 @@ public class Utils {
                 config.setLShowOnce(false);
                 config.setIconPath(PATH);
                 config.setIconAutoColor(true);
-                config.setHideNoticeIcon(false);
-                config.setHideNetSpeed(true);
-                config.setHideCUK(false);
+                config.sethNoticeIcon(false);
+                config.sethNetSpeed(true);
+                config.sethCUK(false);
                 config.setDebug(false);
                 config.setisUsedCount(true);
             } catch (IOException e) {
@@ -132,6 +134,7 @@ public class Utils {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void initIcon(Activity activity) {
         Config config = new Config();
         if (!new File(config.getIconPath(), "kugou.webp").exists()) {
@@ -179,6 +182,7 @@ public class Utils {
         }
     }
 
+    @SuppressWarnings("unused")
     public static void checkUpdate(Activity activity) {
         Handler handler = new Handler(Looper.getMainLooper(), message -> {
             String data = message.getData().getString("value");
@@ -205,7 +209,7 @@ public class Utils {
 
                                 }).setNegativeButton("取消", null).create().show();
                     } else {
-                        Toast.makeText(activity, "无新版可更新", Toast.LENGTH_LONG).show();
+                        showToastOnLooper(activity, "无新版可更新");
                     }
                 } else {
                     Toast.makeText(activity, "检查失败，请稍后再试!", Toast.LENGTH_LONG).show();
@@ -214,14 +218,11 @@ public class Utils {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Looper.loop();
             return true;
         });
 
-
         new Thread(() -> {
-            Looper.prepare();
-            Toast.makeText(activity, "开始检查是否有更新", Toast.LENGTH_LONG).show();
+            showToastOnLooper(activity, "开始检查是否有更新");
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL("https://api.github.com/repos/xiaowine/miui.statusbar.lyric/releases/latest").openConnection();
                 connection.setRequestMethod("GET");
@@ -234,7 +235,7 @@ public class Utils {
                 message.setData(bundle);
                 handler.sendMessage(message);
             } catch (Exception e) {
-                Toast.makeText(activity, "检查更新失败: " + e, Toast.LENGTH_LONG).show();
+                showToastOnLooper(activity, "开始检查是否有更新");
                 Log.d("checkUpdate: ", e + "");
                 e.printStackTrace();
             }
@@ -244,12 +245,14 @@ public class Utils {
 
 
     //    MainHook
+    @SuppressWarnings("unused")
     public static void log(String text) {
         if (new Config().getDebug()) {
             XposedBridge.log("MIUI状态栏歌词： " + text);
         }
     }
 
+    @SuppressWarnings("unused")
     public static boolean isServiceRunning(Context context, String str) {
         List<ActivityManager.RunningServiceInfo> runningServices = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningServices(200);
         if (runningServices.size() <= 0) {
@@ -263,6 +266,7 @@ public class Utils {
         return false;
     }
 
+    @SuppressWarnings("unused")
     public static void setStatusBar(Context application, Boolean isOpen) {
 
         Config config = new Config();
@@ -272,17 +276,23 @@ public class Utils {
             isCarrier = 0;
             notCarrier = 1;
         }
-        if (config.getHideNoticeIcon() && MiuiStatusBarManager.isShowNotificationIcon(application) != isOpen) {
+        if (config.getHAlarm() && !isOpen) {
+            shell("adb shell settings put secure icon_blacklist alarm_clock");
+        } else {
+            shell("settings put secure icon_blacklist alarm_clock");
+        }
+        if (config.getHNoticeIco() && MiuiStatusBarManager.isShowNotificationIcon(application) != isOpen) {
             MiuiStatusBarManager.setShowNotificationIcon(application, isOpen);
         }
-        if (config.getHideNetSpeed() && MiuiStatusBarManager.isShowNetworkSpeed(application) != isOpen) {
+        if (config.getHNetSpeed() && MiuiStatusBarManager.isShowNetworkSpeed(application) != isOpen) {
             MiuiStatusBarManager.setShowNetworkSpeed(application, isOpen);
         }
-        if (config.getHideCUK() && Settings.System.getInt(application.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1) == isCarrier) {
+        if (config.getHCUK() && Settings.System.getInt(application.getContentResolver(), "status_bar_show_carrier_under_keyguard", 1) == isCarrier) {
             Settings.System.putInt(application.getContentResolver(), "status_bar_show_carrier_under_keyguard", notCarrier);
         }
     }
 
+    @SuppressWarnings("unused")
     public static Drawable reverseColor(Drawable icon, Boolean black) {
         ColorMatrix cm = new ColorMatrix();
         if (black) {
@@ -297,10 +307,12 @@ public class Utils {
         return icon;
     }
 
+    @SuppressWarnings("unused")
     public static boolean isDark(int color) {
         return ColorUtils.calculateLuminance(color) < 0.5;
     }
 
+    @SuppressWarnings("unused")
     public static void sendLyric(Context context, String lyric, String icon) {
         context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Icon", icon).putExtra("Lyric_Type", "hook"));
         Config config = new Config();
@@ -324,6 +336,7 @@ public class Utils {
     }
 
     // 弹出toast
+    @SuppressWarnings("unused")
     public static void showToastOnLooper(final Context context, final String message) {
         try {
             Handler handler = new Handler(Looper.getMainLooper());
@@ -333,6 +346,7 @@ public class Utils {
         }
     }
 
+    @SuppressWarnings("unused")
     public static Bitmap stringToBitmap(String string) {
         Bitmap bitmap = null;
         try {

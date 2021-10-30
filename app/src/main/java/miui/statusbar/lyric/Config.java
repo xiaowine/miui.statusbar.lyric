@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import static miui.statusbar.lyric.Utils.PATH;
 
+@SuppressWarnings("unused")
 public class Config {
     JSONObject config;
 
@@ -113,6 +114,23 @@ public class Config {
         }
     }
 
+    public void sethNoticeIcon(Boolean bool) {
+        try {
+            this.config.put("hNoticeIcon", bool);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
+
+    public String getLyricColor() {
+        try {
+            return (String) this.config.get("LyricColor");
+        } catch (JSONException e) {
+            return "off";
+        }
+    }
+
+
     public Boolean getLyricSwitch() {
         try {
             return (Boolean) this.config.get("LyricSwitch");
@@ -129,29 +147,30 @@ public class Config {
         }
     }
 
-    public Boolean getHideNoticeIcon() {
+    public Boolean getHNoticeIco() {
         try {
-            return (Boolean) this.config.get("hideNoticeIcon");
+            return (Boolean) this.config.get("hNoticeIcon");
         } catch (JSONException e) {
             return false;
         }
     }
 
-    public void setHideNoticeIcon(Boolean bool) {
+    public void setHAlarm(Boolean bool) {
         try {
-            this.config.put("hideNoticeIcon", bool);
+            this.config.put("hAlarm", bool);
             setConfig(this.config.toString());
         } catch (JSONException ignored) {
         }
     }
 
-    public String getLyricColor() {
+    public Boolean getHAlarm() {
         try {
-            return (String) this.config.get("LyricColor");
+            return (Boolean) this.config.get("hAlarm");
         } catch (JSONException e) {
-            return "off";
+            return true;
         }
     }
+
 
     public void setLyricColor(String str) {
         try {
@@ -161,34 +180,33 @@ public class Config {
         }
     }
 
-
-    public Boolean getHideNetSpeed() {
+    public Boolean getHNetSpeed() {
         try {
-            return (Boolean) this.config.get("HideNetSpeed");
+            return (Boolean) this.config.get("hNetSpeed");
         } catch (JSONException e) {
             return true;
         }
     }
 
-    public void setHideNetSpeed(Boolean bool) {
+    public void sethNetSpeed(Boolean bool) {
         try {
-            this.config.put("HideNetSpeed", bool);
+            this.config.put("hNetSpeed", bool);
             setConfig(this.config.toString());
         } catch (JSONException ignored) {
         }
     }
 
-    public Boolean getHideCUK() {
+    public Boolean getHCUK() {
         try {
-            return (Boolean) this.config.get("HideCUK");
+            return (Boolean) this.config.get("hCUK");
         } catch (JSONException e) {
             return false;
         }
     }
 
-    public void setHideCUK(Boolean bool) {
+    public void sethCUK(Boolean bool) {
         try {
-            this.config.put("HideCUK", bool);
+            this.config.put("hCUK", bool);
             setConfig(this.config.toString());
         } catch (JSONException ignored) {
         }

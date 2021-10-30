@@ -72,9 +72,9 @@ public class SettingsActivity extends PreferenceActivity {
         verExplain.setSummary("当前版本[" + Utils.getLocalVersion(activity) + "]适用于 " + getString(R.string.ver_explain));
 
         // 隐藏桌面图标
-        SwitchPreference hideIcons = (SwitchPreference) findPreference("hideLauncherIcon");
-        assert hideIcons != null;
-        hideIcons.setOnPreferenceChangeListener((preference, newValue) -> {
+        SwitchPreference hIcons = (SwitchPreference) findPreference("hLauncherIcon");
+        assert hIcons != null;
+        hIcons.setOnPreferenceChangeListener((preference, newValue) -> {
             int mode;
             PackageManager packageManager = Objects.requireNonNull(activity).getPackageManager();
             if ((Boolean) newValue) {
@@ -283,29 +283,38 @@ public class SettingsActivity extends PreferenceActivity {
 
 
         // 隐藏通知图标
-        SwitchPreference hideNoticeIcon = (SwitchPreference) findPreference("hideNoticeIcon");
-        assert hideNoticeIcon != null;
-        hideNoticeIcon.setChecked(config.getHideNoticeIcon());
-        hideNoticeIcon.setOnPreferenceChangeListener((preference, newValue) -> {
-            config.setHideNoticeIcon((Boolean) newValue);
+        SwitchPreference hNoticeIcon = (SwitchPreference) findPreference("hNoticeIcon");
+        assert hNoticeIcon != null;
+        hNoticeIcon.setChecked(config.getHNoticeIco());
+        hNoticeIcon.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.sethNoticeIcon((Boolean) newValue);
             return true;
         });
 
         // 隐藏实时网速
-        SwitchPreference hideNetWork = (SwitchPreference) findPreference("hideNetWork");
-        assert hideNetWork != null;
-        hideNetWork.setChecked(config.getHideNetSpeed());
-        hideNetWork.setOnPreferenceChangeListener((preference, newValue) -> {
-            config.setHideNetSpeed((Boolean) newValue);
+        SwitchPreference hNetWork = (SwitchPreference) findPreference("hNetWork");
+        assert hNetWork != null;
+        hNetWork.setChecked(config.getHNetSpeed());
+        hNetWork.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.sethNetSpeed((Boolean) newValue);
             return true;
         });
 
         // 隐藏运营商名称
-        SwitchPreference hideCUK = (SwitchPreference) findPreference("hideCUK");
-        assert hideCUK != null;
-        hideCUK.setChecked(config.getHideCUK());
-        hideCUK.setOnPreferenceChangeListener((preference, newValue) -> {
-            config.setHideCUK((Boolean) newValue);
+        SwitchPreference hCUK = (SwitchPreference) findPreference("hCUK");
+        assert hCUK != null;
+        hCUK.setChecked(config.getHCUK());
+        hCUK.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.sethCUK((Boolean) newValue);
+            return true;
+        });
+        
+        // 隐藏运营商名称
+        SwitchPreference hAlarm = (SwitchPreference) findPreference("hAlarm");
+        assert hAlarm != null;
+        hAlarm.setChecked(config.getHAlarm());
+        hAlarm.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.setHAlarm((Boolean) newValue);
             return true;
         });
 
@@ -317,6 +326,7 @@ public class SettingsActivity extends PreferenceActivity {
             config.setDebug((Boolean) newValue);
             return true;
         });
+        
         // 使用统计
         SwitchPreference isUsedCount = (SwitchPreference) findPreference("isusedcount");
         assert isUsedCount != null;

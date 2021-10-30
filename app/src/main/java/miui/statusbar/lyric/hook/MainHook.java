@@ -92,7 +92,7 @@ public class MainHook implements IXposedHookLoadPackage {
                         int dw = displayMetrics.widthPixels;
 
                         // 获取系统版本
-                        String miuiVer = Utils.getMIUIVer();
+                        String miuiVer = Utils.shell("getprop ro.miui.ui.version.name");
                         Utils.log("MIUI Ver: " + miuiVer);
 
                         // 反射获取时钟

@@ -7,7 +7,7 @@
 
     <SwitchPreference
             android:defaultValue="false"
-            android:key="hideLauncherIcon"
+            android:key="hLauncherIcon"
             android:summary=""
             android:title="隐藏桌面图标"/>
 
@@ -86,21 +86,29 @@
 
     <SwitchPreference
             android:defaultValue="false"
-            android:key="hideNoticeIcon"
+            android:key="hNoticeIcon"
             android:summary="自动隐藏通知图标"
             android:title="隐藏通知图标"/>
 
     <SwitchPreference
             android:defaultValue="true"
-            android:key="hideNetWork"
+            android:key="hNetWork"
             android:summary="自动隐藏实时网速"
             android:title="隐藏实时网速"/>
 
     <SwitchPreference
             android:defaultValue="false"
-            android:key="hideCUK"
+            android:key="hCUK"
             android:summary="自动隐藏锁屏运营商名称"
             android:title="隐藏锁屏运营商名称"/>
+
+    <SwitchPreference
+            android:defaultValue="true"
+            android:key="hAlarm"
+            android:summary="自动隐藏闹钟图标"
+            android:title="隐藏闹钟图标"/>
+
+    <PreferenceCategory android:title="辅助功能"/>
 
     <SwitchPreference
             android:defaultValue="false"
