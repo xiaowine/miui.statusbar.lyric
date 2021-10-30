@@ -29,11 +29,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -66,16 +68,30 @@ public class Utils {
         }
         return localVersion;
     }
-    
-    public static String shell(String s) {
+
+    public static String getMiuiVer() {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader
-                    (Runtime.getRuntime().exec(s).getInputStream()), 1024);
+                    (Runtime.getRuntime().exec("getprop ro.miui.ui.version.name").getInputStream()), 1024);
             String ver = bufferedReader.readLine();
             bufferedReader.close();
             return ver;
         } catch (Exception e) {
             return "";
+        }
+    }
+
+    public static void setIAlarm(String s) {
+        try {
+            java.lang.Process p = Runtime.getRuntime().exec("su");
+            OutputStream outputStream = p.getOutputStream();
+            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+            dataOutputStream.writeBytes(s);
+            dataOutputStream.flush();
+            dataOutputStream.close();
+            outputStream.close();
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
     }
 
@@ -125,6 +141,7 @@ public class Utils {
                 config.sethNoticeIcon(false);
                 config.sethNetSpeed(true);
                 config.sethCUK(false);
+                config.setHAlarm(true);
                 config.setDebug(false);
                 config.setisUsedCount(true);
             } catch (IOException e) {
@@ -182,7 +199,6 @@ public class Utils {
         }
     }
 
-    @SuppressWarnings("unused")
     public static void checkUpdate(Activity activity) {
         Handler handler = new Handler(Looper.getMainLooper(), message -> {
             String data = message.getData().getString("value");
@@ -209,7 +225,7 @@ public class Utils {
 
                                 }).setNegativeButton("取消", null).create().show();
                     } else {
-                        showToastOnLooper(activity, "无新版可更新");
+                        Toast.makeText(activity, "无新版可更新", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Toast.makeText(activity, "检查失败，请稍后再试!", Toast.LENGTH_LONG).show();
@@ -218,11 +234,14 @@ public class Utils {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Looper.loop();
             return true;
         });
 
+
         new Thread(() -> {
-            showToastOnLooper(activity, "开始检查是否有更新");
+            Looper.prepare();
+            Toast.makeText(activity, "开始检查是否有更新", Toast.LENGTH_LONG).show();
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL("https://api.github.com/repos/xiaowine/miui.statusbar.lyric/releases/latest").openConnection();
                 connection.setRequestMethod("GET");
@@ -235,13 +254,15 @@ public class Utils {
                 message.setData(bundle);
                 handler.sendMessage(message);
             } catch (Exception e) {
-                showToastOnLooper(activity, "开始检查是否有更新");
+                Toast.makeText(activity, "检查更新失败: " + e, Toast.LENGTH_LONG).show();
                 Log.d("checkUpdate: ", e + "");
                 e.printStackTrace();
             }
             Looper.loop();
         }).start();
     }
+
+
 
 
     //    MainHook
@@ -268,7 +289,6 @@ public class Utils {
 
     @SuppressWarnings("unused")
     public static void setStatusBar(Context application, Boolean isOpen) {
-
         Config config = new Config();
         int isCarrier = 1;
         int notCarrier = 0;
@@ -276,10 +296,11 @@ public class Utils {
             isCarrier = 0;
             notCarrier = 1;
         }
+        log(String.valueOf(config.getHAlarm() && !isOpen));
         if (config.getHAlarm() && !isOpen) {
-            shell("adb shell settings put secure icon_blacklist alarm_clock");
+            setIAlarm("settings put secure icon_blacklist alarm_clock");
         } else {
-            shell("settings put secure icon_blacklist alarm_clock");
+            setIAlarm("settings delete secure icon_blacklist");
         }
         if (config.getHNoticeIco() && MiuiStatusBarManager.isShowNotificationIcon(application) != isOpen) {
             MiuiStatusBarManager.setShowNotificationIcon(application, isOpen);

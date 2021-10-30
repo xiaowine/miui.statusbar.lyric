@@ -52,7 +52,7 @@ public class SettingsActivity extends PreferenceActivity {
         if (!count) {
             new AlertDialog.Builder(activity)
                     .setTitle("警告")
-                    .setMessage("本软件发布不久，可能会有许多BUG\n" +
+                    .setMessage("本模块布不久，可能会有许多BUG\n" +
                             "使用本模块造成的破坏，软件不负责\n" +
                             "继续代表同意")
                     .setNegativeButton("继续", (dialog, which) -> {
@@ -70,6 +70,11 @@ public class SettingsActivity extends PreferenceActivity {
         Preference verExplain = findPreference("ver_explain");
         assert verExplain != null;
         verExplain.setSummary("当前版本[" + Utils.getLocalVersion(activity) + "]适用于 " + getString(R.string.ver_explain));
+//        verExplain.setOnPreferenceClickListener((preference) -> {
+//            Utils.setIAlarm("settings put secure icon_blacklist alarm_clock");
+//            Toast.makeText(activity, "233", Toast.LENGTH_LONG).show();
+//            return false;
+//        });
 
         // 隐藏桌面图标
         SwitchPreference hIcons = (SwitchPreference) findPreference("hLauncherIcon");
@@ -308,7 +313,7 @@ public class SettingsActivity extends PreferenceActivity {
             config.sethCUK((Boolean) newValue);
             return true;
         });
-        
+
         // 隐藏运营商名称
         SwitchPreference hAlarm = (SwitchPreference) findPreference("hAlarm");
         assert hAlarm != null;
@@ -326,14 +331,16 @@ public class SettingsActivity extends PreferenceActivity {
             config.setDebug((Boolean) newValue);
             return true;
         });
-        
+
         // 使用统计
         SwitchPreference isUsedCount = (SwitchPreference) findPreference("isusedcount");
         assert isUsedCount != null;
         isUsedCount.setChecked(config.getisUsedCount());
         isUsedCount.setOnPreferenceChangeListener((preference, newValue) -> {
-            Toast.makeText(activity, newValue.toString(), Toast.LENGTH_LONG).show();
             config.setisUsedCount((Boolean) newValue);
+            if (!(Boolean) newValue) {
+                setTitle(getString(R.string.app_name));
+            }
             return true;
         });
 
@@ -435,9 +442,9 @@ public class SettingsActivity extends PreferenceActivity {
             new AlertDialog.Builder(activity)
                     .setIcon(R.drawable.ic_launcher_foreground)
                     .setTitle("获取存储权限失败")
-                    .setMessage("请开通存储权限\n否则无法正常使用本应用\n若不信任本软件,请卸载")
+                    .setMessage("请开通存储权限\n否则无法正常使用本模块\n若不信任本模块,请卸载")
                     .setNegativeButton("重新申请", (dialog, which) -> Utils.checkPermissions(activity))
-                    .setPositiveButton("卸载本软件", (dialog, which) -> {
+                    .setPositiveButton("卸载本模块", (dialog, which) -> {
                         Uri uri = Uri.fromParts("package", getPackageName(), null);
                         Intent intent = new Intent(Intent.ACTION_DELETE, uri);
                         startActivity(intent);

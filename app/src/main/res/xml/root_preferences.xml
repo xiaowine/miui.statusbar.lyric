@@ -57,7 +57,7 @@
             android:summary="歌词太长，仅显示一次不循环"
             android:title="歌词不循环显示"/>
 
-    <PreferenceCategory android:title="高级设置"/>
+    <PreferenceCategory android:title="高级设置\t\t停止音乐后改动选项"/>
 
     <SwitchPreference
             android:defaultValue="false"
@@ -105,7 +105,7 @@
     <SwitchPreference
             android:defaultValue="true"
             android:key="hAlarm"
-            android:summary="自动隐藏闹钟图标"
+            android:summary="自动隐藏闹钟图标（需ROOT）"
             android:title="隐藏闹钟图标"/>
 
     <PreferenceCategory android:title="辅助功能"/>
