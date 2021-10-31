@@ -228,117 +228,123 @@ public class MainHook implements IXposedHookLoadPackage {
                                     int count = 0;
                                     int lyricSpeed = 0;
                                     String oldLyric = "";
-                                    boolean lyricServer = false;
                                     boolean lyricOff = false;
                                     Boolean iconReverseColor = false;
 
 
                                     @Override
                                     public void run() {
-                                        if (count == 100) {
-                                            if (Utils.isServiceRunning(application, "com.kugou") | Utils.isServiceRunning(application, "com.netease.cloudmusic") | Utils.isServiceRunning(application, "com.tencent.qqmusic.service") | Utils.isServiceRunning(application, "cn.kuwo") | Utils.isServiceRunning(application, "com.maxmpz.audioplayer") | Utils.isServiceRunning(application, "remix.myplayer")) {
-                                                enable = true;
-                                                config = new Config();
-                                                lyricServer = config.getLyricService();
-                                                if (config.getLyricAutoOff())
-                                                    lyricOff = audioManager.isMusicActive();
-                                                iconReverseColor = config.getIconAutoColor();
+                                        if (new Config().getLyricService()) {
+                                            if (count == 100) {
+                                                if (Utils.isServiceRunning(application, "com.kugou") | Utils.isServiceRunning(application, "com.netease.cloudmusic") | Utils.isServiceRunning(application, "com.tencent.qqmusic.service")
+                                                        | Utils.isServiceRunning(application, "cn.kuwo") | Utils.isServiceRunning(application, "com.maxmpz.audioplayer") | Utils.isServiceRunning(application, "remix.myplayer") | Utils.isServiceRunning(application, "com.salt.music")) {
+                                                    enable = true;
+                                                    config = new Config();
+                                                    if (config.getLyricAutoOff())
+                                                        lyricOff = audioManager.isMusicActive();
+                                                    iconReverseColor = config.getIconAutoColor();
 
-                                            } else {
-                                                if (enable || (lyricTextView.getVisibility() != View.GONE)) {
-                                                    Utils.log("播放器关闭 清除歌词");
-                                                    lyric = "";
-                                                    enable = false;
-
-                                                    // 关闭歌词
-                                                    Message obtainMessage = LyricUpdate.obtainMessage();
-                                                    Bundle bundle = new Bundle();
-                                                    bundle.putString(KEY_LYRIC, "");
-                                                    obtainMessage.setData(bundle);
-                                                    LyricUpdate.sendMessage(obtainMessage);
-
-                                                    // 恢复状态栏
-                                                    Utils.setStatusBar(application, true);
+                                                } else {
+                                                    setOff();
                                                 }
-                                            }
 
-                                            if (enable && !lyric.equals("")) {
-                                                // 设置颜色
-                                                if (!config.getLyricColor().equals("off")) {
-                                                    if (color != ColorStateList.valueOf(Color.parseColor(config.getLyricColor()))) {
-                                                        color = ColorStateList.valueOf(Color.parseColor(config.getLyricColor()));
-                                                        lyricTextView.setTextColor(color);
-                                                    }
-                                                } else if (!(clock.getTextColors() == null || color == clock.getTextColors())) {
-                                                    color = clock.getTextColors();
-                                                    lyricTextView.setTextColor(color);
-
-                                                }
-                                                if (!icon[1].equals("") && new Config().getLyricService()) {
-                                                    Drawable createFromPath = null;
-                                                    Utils.log(icon[0]);
-                                                    if (icon[0].equals("hook")) {
-                                                        createFromPath = Drawable.createFromPath(icon[1]);
-                                                    } else if (icon[0].equals("app")) {
-                                                        createFromPath = new BitmapDrawable(Utils.stringToBitmap(icon[1]));
-                                                    }
-                                                    if (createFromPath != null) {
-                                                        createFromPath.setBounds(0, 0, (int) clock.getTextSize(), (int) clock.getTextSize());
-                                                        if (iconReverseColor) {
-                                                            createFromPath = Utils.reverseColor(createFromPath, Utils.isDark(clock.getTextColors().getDefaultColor()));
+                                                if (enable && !lyric.equals("")) {
+                                                    // 设置颜色
+                                                    if (!config.getLyricColor().equals("off")) {
+                                                        if (color != ColorStateList.valueOf(Color.parseColor(config.getLyricColor()))) {
+                                                            color = ColorStateList.valueOf(Color.parseColor(config.getLyricColor()));
+                                                            lyricTextView.setTextColor(color);
                                                         }
+                                                    } else if (!(clock.getTextColors() == null || color == clock.getTextColors())) {
+                                                        color = clock.getTextColors();
+                                                        lyricTextView.setTextColor(color);
+
+                                                    }
+                                                    if (!icon[1].equals("")) {
+                                                        Drawable createFromPath = null;
+                                                        if (icon[0].equals("hook")) {
+                                                            createFromPath = Drawable.createFromPath(icon[1]);
+                                                        } else if (icon[0].equals("app")) {
+                                                            createFromPath = new BitmapDrawable(Utils.stringToBitmap(icon[1]));
+                                                        }
+                                                        if (createFromPath != null) {
+                                                            createFromPath.setBounds(0, 0, (int) clock.getTextSize(), (int) clock.getTextSize());
+                                                            if (iconReverseColor) {
+                                                                createFromPath = Utils.reverseColor(createFromPath, Utils.isDark(clock.getTextColors().getDefaultColor()));
+                                                            }
+                                                            Message obtainMessage2 = iconUpdate.obtainMessage();
+                                                            obtainMessage2.obj = createFromPath;
+                                                            iconUpdate.sendMessage(obtainMessage2);
+                                                        }
+
+                                                    } else {
+                                                        Drawable createFromPath = Drawable.createFromPath(null);
                                                         Message obtainMessage2 = iconUpdate.obtainMessage();
                                                         obtainMessage2.obj = createFromPath;
                                                         iconUpdate.sendMessage(obtainMessage2);
                                                     }
+                                                }
+                                                count = 0;
+                                            }
+                                            count++;
 
-                                                } else {
-                                                    Drawable createFromPath = Drawable.createFromPath(null);
-                                                    Message obtainMessage2 = iconUpdate.obtainMessage();
-                                                    obtainMessage2.obj = createFromPath;
-                                                    iconUpdate.sendMessage(obtainMessage2);
+                                            if (enable && lyricSpeed == 10) {
+                                                lyricSpeed = 0;
+                                                if (!lyric.equals("") && lyricOff) {
+                                                    if (!oldLyric.equals(lyric)) {
+                                                        Message message = LyricUpdate.obtainMessage();
+                                                        Bundle bundle = new Bundle();
+                                                        bundle.putString(KEY_LYRIC, lyric);
+                                                        message.setData(bundle);
+                                                        LyricUpdate.sendMessage(message);
+                                                        oldLyric = lyric;
+                                                    }
+                                                } else if (enable) {
+                                                    if (lyricTextView.getVisibility() != View.GONE) {
+                                                        Utils.log("开关关闭或播放器暂停 清除歌词");
+                                                        Message message = LyricUpdate.obtainMessage();
+                                                        Bundle bundle = new Bundle();
+                                                        bundle.putString(KEY_LYRIC, "");
+                                                        message.setData(bundle);
+                                                        LyricUpdate.sendMessage(message);
+                                                        lyric = "";
+                                                        oldLyric = lyric;
+                                                        enable = false;
+
+
+                                                        // 恢复状态栏
+                                                        Utils.setStatusBar(context, true);
+                                                    }
                                                 }
                                             }
-                                            count = 0;
-                                        }
-                                        count++;
 
-                                        if (enable && lyricSpeed == 10) {
-                                            lyricSpeed = 0;
-                                            if (!lyric.equals("") && lyricServer && lyricOff) {
-                                                if (!oldLyric.equals(lyric)) {
-                                                    Message message = LyricUpdate.obtainMessage();
-                                                    Bundle bundle = new Bundle();
-                                                    bundle.putString(KEY_LYRIC, lyric);
-                                                    message.setData(bundle);
-                                                    LyricUpdate.sendMessage(message);
-                                                    oldLyric = lyric;
-                                                }
-                                            } else if (enable) {
-                                                if (lyricTextView.getVisibility() != View.GONE) {
-                                                    Utils.log("开关关闭或播放器暂停 清除歌词");
-                                                    Message message = LyricUpdate.obtainMessage();
-                                                    Bundle bundle = new Bundle();
-                                                    bundle.putString(KEY_LYRIC, "");
-                                                    message.setData(bundle);
-                                                    LyricUpdate.sendMessage(message);
-                                                    lyric = "";
-                                                    oldLyric = lyric;
-                                                    enable = false;
-
-
-                                                    // 恢复状态栏
-                                                    Utils.setStatusBar(context, true);
-                                                }
+                                            if (lyricSpeed < 10) {
+                                                lyricSpeed++;
                                             }
-                                        }
-
-                                        if (lyricSpeed < 10) {
-                                            lyricSpeed++;
+                                        } else {
+                                            setOff();
                                         }
                                     }
 
-                                }, 0, 10);
+                                    private void setOff() {
+                                        if (enable || (lyricTextView.getVisibility() != View.GONE)) {
+                                            Utils.log("播放器关闭 清除歌词");
+                                            lyric = "";
+                                            enable = false;
+
+                                            // 关闭歌词
+                                            Message obtainMessage = LyricUpdate.obtainMessage();
+                                            Bundle bundle = new Bundle();
+                                            bundle.putString(KEY_LYRIC, "");
+                                            obtainMessage.setData(bundle);
+                                            LyricUpdate.sendMessage(obtainMessage);
+
+                                            // 恢复状态栏
+                                            Utils.setStatusBar(application, true);
+                                        }
+                                    }
+
+                                }, 0, 100);
 
                         LinearLayout.LayoutParams finalLayoutParams = layoutParams;
                         new Thread(() -> {
@@ -346,11 +352,11 @@ public class MainHook implements IXposedHookLoadPackage {
                             boolean order = true;
                             while (true) {
                                 try {
-                                    Thread.sleep(10000);
+                                    Thread.sleep(60000);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                if (new Config().getAntiBurn()) {
+                                if (!lyric.equals("")&& new Config().getAntiBurn()) {
                                     if (order) {
                                         i += 1;
                                     } else {

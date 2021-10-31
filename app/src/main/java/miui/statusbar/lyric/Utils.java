@@ -263,8 +263,6 @@ public class Utils {
     }
 
 
-
-
     //    MainHook
     @SuppressWarnings("unused")
     public static void log(String text) {
@@ -296,7 +294,6 @@ public class Utils {
             isCarrier = 0;
             notCarrier = 1;
         }
-        log(String.valueOf(config.getHAlarm() && !isOpen));
         if (config.getHAlarm() && !isOpen) {
             setIAlarm("settings put secure icon_blacklist alarm_clock");
         } else {
@@ -336,9 +333,8 @@ public class Utils {
     @SuppressWarnings("unused")
     public static void sendLyric(Context context, String lyric, String icon) {
         context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Icon", icon).putExtra("Lyric_Type", "hook"));
-        Config config = new Config();
-        if (config.getisUsedCount()) {
-            config.setUsedCount(config.getUsedCount() + 1);
+        if (new Config().getisUsedCount()) {
+            new Config().setUsedCount(new Config().getUsedCount() + 1);
         }
     }
 
