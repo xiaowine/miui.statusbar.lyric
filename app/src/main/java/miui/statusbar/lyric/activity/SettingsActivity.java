@@ -48,8 +48,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 
         SharedPreferences preferences = activity.getSharedPreferences("protocol", 0);
-        boolean count = preferences.getBoolean("protocol", false);
-        if (!count) {
+        if (!preferences.getBoolean("protocol", false)) {
             new AlertDialog.Builder(activity)
                     .setTitle("警告")
                     .setMessage("本模块布不久，可能会有许多BUG\n" +
@@ -231,6 +230,7 @@ public class SettingsActivity extends PreferenceActivity {
         // 防烧屏
         SwitchPreference antiburn = (SwitchPreference) findPreference("antiburn");
         assert antiburn != null;
+        antiburn.setEnabled(false);
         antiburn.setChecked(config.getAntiBurn());
         antiburn.setOnPreferenceChangeListener((preference, newValue) -> {
             config.setAntiBurn((Boolean) newValue);

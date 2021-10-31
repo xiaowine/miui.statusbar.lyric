@@ -236,7 +236,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                     @Override
                                     public void run() {
                                         if (count == 100) {
-                                            if (Utils.isServiceRunning(application, "com.kugou") | Utils.isServiceRunning(application, "com.netease.cloudmusic") | Utils.isServiceRunning(application, "com.tencent.qqmusic.service") | Utils.isServiceRunning(application, "cn.kuwo") | Utils.isServiceRunning(application, "com.maxmpz.audioplayer") | Utils.isServiceRunning(application, "remix.myplayer") | Utils.isServiceRunning(application, "com.salt.music")) {
+                                            if (Utils.isServiceRunning(application, "com.kugou") | Utils.isServiceRunning(application, "com.netease.cloudmusic") | Utils.isServiceRunning(application, "com.tencent.qqmusic.service") | Utils.isServiceRunning(application, "cn.kuwo") | Utils.isServiceRunning(application, "com.maxmpz.audioplayer") | Utils.isServiceRunning(application, "remix.myplayer")) {
                                                 enable = true;
                                                 config = new Config();
                                                 lyricServer = config.getLyricService();
@@ -276,11 +276,10 @@ public class MainHook implements IXposedHookLoadPackage {
                                                 }
                                                 if (!icon[1].equals("") && new Config().getLyricService()) {
                                                     Drawable createFromPath = null;
+                                                    Utils.log(icon[0]);
                                                     if (icon[0].equals("hook")) {
                                                         createFromPath = Drawable.createFromPath(icon[1]);
                                                     } else if (icon[0].equals("app")) {
-//                                                        createFromPath = new BitmapDrawable(
-//                                                                Utils.stringToBitmap("iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADFElEQVR4Xu2ZTUgUYRjHV3etzOiQFQgaFBiRRZYdWqQPSutSl8BbUrCnjp26KF0Cj3kIkToE27Ir6tpmJxNc1FgpNyqsDZaMgiJpx91tK22/fHqedaZm3plBLZx3BuYPf95l3q//b2be3Zl9HQ5bJhYAONEuznayuVYUdions8d5aU155A3xczV6F7qOk2nuaq1smpIaYLkZ3bO0tDRXLBbneVrM0EOZ5Bk1JVUWCoVe7AjY0TROp9N3MVqZLgCIiyWTyWxHgK/UCcsslkUsuVicO0snE3MlJiYmauRZFcKDLipjsVh9Pp9PiQA0hupsGGnKIAKkQ6HQfnlWhaSDk5OTexEgKXVmBzTacgC/398gz6oQA2DKK+D1eg/IsypkA6yTbQB2wP/1wmIexqNz0DsQh9hsSlXP2jQAi7/ycMv3FmpOPwDHIX/J3kezqnasTQHwYyEHlzsi4GoK/AlvKYBuPPMVTX2K8JYB+P4zB3VnQ6rwlgEYefIZnEeUt46lAGjhljWqw1sG4EbPK1VwG8AGWINtABtAY1DW7z9lYHD0IzyPCaWHNXmdJQAoSPnhAOw4GYRzV8dg7OkXyBcKpTo9ABf+uA08/qAai7VhAPJwO08Nwb3QO4TQB6g+MQjPZhKqsVhzASBvw4B0JfQA3JdGSk+p7FisuQGQj18ZhY7bL1XHtxzrL60ZdhwtcwWgR+iL18YVxzYe7YNOhKIXHHYcLXMFKG8MQG3L3zew+vPDcB/brjY82RCA6BsBrne/0PTNOzOl99/oawGyueVvprXYEID1tA3ADmi0/xXAun/uRiKRfWa9Aj6f76A8q0IgbhoEg8HaXC4nUKeCSTY4MBskk8n5rq6uPZQxHA6rAUiwvH2zKR6P9yME9QMC4SVp7mw2C9FodAizVYLeFhNJrHQ2Nzc3TE9PP0wkEslUKvUN6dNUGmlpTkEQklNTU8Nut5tuH9q31gcgiQ0q0btbW1vPeDyeC+3t7VxMc7egKAtlWjG8JGrY1ta2AT9WobdydhVlWXV4uWix4L1XwdO6C9aWSfQbRVDbCO3GNWoAAAAASUVORK5CYII=")）;
                                                         createFromPath = new BitmapDrawable(Utils.stringToBitmap(icon[1]));
                                                     }
                                                     if (createFromPath != null) {

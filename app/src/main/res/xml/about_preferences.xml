@@ -25,16 +25,25 @@
     </Preference>
 
 
-    <PreferenceCategory android:title="感谢名单"/>
+    <PreferenceCategory android:title="感谢名单（不分先后）"/>
 
     <Preference
-            android:key="author"
+            android:key=""
             android:summary="感谢提供的库以及对代码的极限精简"
             android:title="潇风残月"
             android:icon="@drawable/header_yang">
         <intent
                 android:action="android.intent.action.VIEW"
                 android:data="https://www.coolapk.com/u/666190"/>
+    </Preference>
+    <Preference
+            android:key=""
+            android:summary="感谢提供的图标"
+            android:title="柒猫Sebun_Neko"
+            android:icon="@drawable/header_neko">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.coolapk.com/u/2129443"/>
     </Preference>
 
 
