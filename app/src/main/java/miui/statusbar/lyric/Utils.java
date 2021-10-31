@@ -263,6 +263,8 @@ public class Utils {
     }
 
 
+
+
     //    MainHook
     @SuppressWarnings("unused")
     public static void log(String text) {
@@ -294,6 +296,7 @@ public class Utils {
             isCarrier = 0;
             notCarrier = 1;
         }
+        log(String.valueOf(config.getHAlarm() && !isOpen));
         if (config.getHAlarm() && !isOpen) {
             setIAlarm("settings put secure icon_blacklist alarm_clock");
         } else {
