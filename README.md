@@ -70,7 +70,7 @@ fun stopLyric(context: Context) {
 
 Java
 
-```
+```java
 public void stopLyric(Context context) {
     context.sendBroadcast(new Intent()
             .setAction("Lyric_Server")
