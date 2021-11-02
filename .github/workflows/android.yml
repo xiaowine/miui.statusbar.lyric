@@ -57,4 +57,4 @@ jobs:
           name: upload-apk
 
           path: | 
-                 miui.statusbar.lyric/app/build/outputs/apk/release/*.apk
+                 ./app/build/outputs/apk/release/*.apk
