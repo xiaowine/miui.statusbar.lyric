@@ -273,6 +273,7 @@ public class Utils {
         }
     }
 
+    // 判断服务是否运行
     @SuppressWarnings("unused")
     public static boolean isServiceRunning(Context context, String str) {
         List<ActivityManager.RunningServiceInfo> runningServices = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningServices(200);
@@ -341,18 +342,15 @@ public class Utils {
         }
     }
 
-    // 获取线程名称
-    public static String getCurrentProcessName(Context context) {
-        int pid = android.os.Process.myPid();
-        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        if (mActivityManager != null) {
-            for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager.getRunningAppProcesses()) {
-                if (appProcess.pid == pid) {
-                    return appProcess.processName;
-                }
+    // 判断服务是否运行 列表
+    @SuppressWarnings("unused")
+    public static boolean isServiceRunningList(Context context, String[] str) {
+        for (String mstr : str) {
+            if (isServiceRunning(context, mstr)) {
+                return true;
             }
         }
-        return "";
+        return false;
     }
 
     // 弹出toast
@@ -376,6 +374,13 @@ public class Utils {
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+    public static String[] stringsListAdd(String[] strArr, String newStr) {
+        String[] newStrArr = new String[strArr.length + 1];
+        System.arraycopy(strArr, 0, newStrArr, 0, strArr.length);
+        newStrArr[strArr.length] = newStr;
+        return newStrArr;
     }
 
 

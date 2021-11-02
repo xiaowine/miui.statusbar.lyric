@@ -16,9 +16,37 @@ __最后感谢 @潇风残月 大大的帮助，然后再求个图标__
 
 ### API
 
+#### 初始化状态栏歌词
+
 ```
-public static void sendLyric(Context context, String lyric, String icon) {
-    context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Icon", icon).putExtra("Lyric_Type", "app"));
+public void initLyric(Context context, String icon, String packName) {
+    context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Icon", icon).putExtra("Lyric_PackName", packName).putExtra("Lyric_Type", "app_init"));
+}
+```
+
+| 参数      | 解释                      |
+| -------- | ------------------------ |
+| context  | Context                  |
+| icon     | 无前缀的base64图片(推荐32x32)|
+| packName | 软件包名                   |
+
+#### 开始播放
+
+```
+public void startLyric(Context context) {
+    context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Type", "app_start"));
+}
+```
+
+| 参数      | 解释                      |
+| -------- | ------------------------ |
+| context  | Context                  |
+
+#### 发送歌词
+
+```
+public void sendLyric(Context context, String lyric) {
+    context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Type", "app"));
 }
 ```
 
@@ -26,7 +54,44 @@ public static void sendLyric(Context context, String lyric, String icon) {
 | -------- | ------------------------ |
 | context  | Context                  |
 | lyric    | 歌词文本                   |
-| icon     | 没有前缀的base64图片(32x32) |
+
+#### 停止播放
+
+```
+public void stopLyric(Context context) {
+    context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Type", "app_stop"));
+}
+```
+
+| 参数      | 解释                      |
+| -------- | ------------------------ |
+| context  | Context                  |
+
+#### systemUI重启
+
+SystemUI重启后包名和图标会丢失，需要重新初始化。
+
+```
+public void initSystemReStart(Context context, String icon, String packName) {
+    public static class LyricReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("Lyric_Server_ReStart")) {
+                initLyric(context, icon, packName);
+            }
+        }
+    }
+    IntentFilter filter = new IntentFilter();
+    filter.addAction("Lyric_Server_ReStart");
+    context.registerReceiver(new LyricReceiver(), filter);
+}
+```
+
+| 参数      | 解释                      |
+| -------- | ------------------------ |
+| context  | Context                  |
+| icon     | 无前缀的base64图片(推荐32x32)|
+| packName | 软件包名                   |
 
 ### 下载
 

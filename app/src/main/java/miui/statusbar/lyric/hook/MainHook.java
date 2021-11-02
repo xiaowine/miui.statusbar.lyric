@@ -43,8 +43,18 @@ public class MainHook implements IXposedHookLoadPackage {
     static String lIcon = "";
     static String lyric = "";
     static final String[] icon = new String[]{"hook", ""};
+    static String[] musicServer = new String[]{
+            "com.kugou",
+            "com.netease.cloudmusic",
+            "com.tencent.qqmusic.service",
+            "cn.kuwo",
+            "com.maxmpz.audioplayer",
+            "remix.myplayer",
+            "com.salt.music"
+    };
     Context context = null;
     boolean showLyric = true;
+    static boolean musicOffStatus = false;
 
 
     @Override
@@ -54,11 +64,14 @@ public class MainHook implements IXposedHookLoadPackage {
             @Override
             protected void afterHookedMethod(MethodHookParam param) {
                 context = (Context) param.args[0];
-                // 注册广播
                 if (lpparam.packageName.equals("com.android.systemui")) {
+                    // 注册广播
                     IntentFilter filter = new IntentFilter();
                     filter.addAction("Lyric_Server");
                     context.registerReceiver(new LyricReceiver(), filter);
+
+                    // 发送systemUI重启广播
+                    context.sendBroadcast(new Intent().setAction("Lyric_Server_ReStart"));
                 }
             }
         });
@@ -236,12 +249,16 @@ public class MainHook implements IXposedHookLoadPackage {
                                     public void run() {
                                         if (new Config().getLyricService()) {
                                             if (count == 100) {
-                                                if (Utils.isServiceRunning(application, "com.kugou") | Utils.isServiceRunning(application, "com.netease.cloudmusic") | Utils.isServiceRunning(application, "com.tencent.qqmusic.service")
-                                                        | Utils.isServiceRunning(application, "cn.kuwo") | Utils.isServiceRunning(application, "com.maxmpz.audioplayer") | Utils.isServiceRunning(application, "remix.myplayer") | Utils.isServiceRunning(application, "com.salt.music")) {
+                                                if (Utils.isServiceRunningList(application, musicServer)){
                                                     enable = true;
                                                     config = new Config();
-                                                    if (config.getLyricAutoOff())
-                                                        lyricOff = audioManager.isMusicActive();
+                                                    if (config.getLyricAutoOff()) {
+                                                        if (icon[0].equals("hook")) {
+                                                            lyricOff = audioManager.isMusicActive();
+                                                        } else {
+                                                            lyricOff = musicOffStatus;
+                                                        }
+                                                    }
                                                     iconReverseColor = config.getIconAutoColor();
 
                                                 } else {
@@ -531,9 +548,15 @@ public class MainHook implements IXposedHookLoadPackage {
                         break;
                     case "app":
                         lyric = intent.getStringExtra("Lyric_Data");
+                        break;
+                    case "app_init":
                         icon[0] = "app";
                         icon[1] = intent.getStringExtra("Lyric_Icon");
-                        break;
+                        musicServer = Utils.stringsListAdd(musicServer, intent.getStringExtra("Lyric_PackName"));
+                    case "app_start":
+                        musicOffStatus = true;
+                    case "app_stop":
+                        musicOffStatus = false;
                 }
             }
         }
