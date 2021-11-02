@@ -340,4 +340,20 @@ public class Config {
         }
     }
 
+    public String getAnim() {
+        try {
+            return (String) this.config.get("Anim");
+        } catch (JSONException e) {
+            return "off";
+        }
+    }
+
+    public void setAnim(String i) {
+        try {
+            this.config.put("Anim", i);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
+
 }

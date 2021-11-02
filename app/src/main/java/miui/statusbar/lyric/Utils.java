@@ -23,6 +23,10 @@ import android.os.Process;
 import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
 import de.robv.android.xposed.XposedBridge;
 import org.json.JSONException;
@@ -39,6 +43,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Random;
 
 @SuppressWarnings("unused")
 public class Utils {
@@ -139,11 +144,12 @@ public class Utils {
                 config.setIconPath(PATH);
                 config.setIconAutoColor(true);
                 config.sethNoticeIcon(false);
-                config.sethNetSpeed(true);
+                config.sethNetSpeed(false);
                 config.sethCUK(false);
-                config.setHAlarm(true);
+                config.setHAlarm(false);
                 config.setDebug(false);
                 config.setisUsedCount(true);
+                config.setAnim("off");
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(activity, "初始化失败，请重启软件", Toast.LENGTH_LONG).show();
@@ -276,12 +282,30 @@ public class Utils {
     // 判断服务是否运行
     @SuppressWarnings("unused")
     public static boolean isServiceRunning(Context context, String str) {
+        if (isAppRunning(context, str)) {
+            return true;
+        }
         List<ActivityManager.RunningServiceInfo> runningServices = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningServices(200);
         if (runningServices.size() <= 0) {
             return false;
         }
         for (ActivityManager.RunningServiceInfo runningServiceInfo : runningServices) {
             if (runningServiceInfo.service.getClassName().contains(str)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 判断程序是否运行
+    @SuppressWarnings("unused")
+    public static boolean isAppRunning(Context context, String str) {
+        List<ActivityManager.RunningTaskInfo> runningServices = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningTasks(200);
+        if (runningServices.size() <= 0) {
+            return false;
+        }
+        for (ActivityManager.RunningTaskInfo runningServiceInfo : runningServices) {
+            if (runningServiceInfo.baseActivity.getClassName().contains(str)) {
                 return true;
             }
         }
@@ -337,6 +361,9 @@ public class Utils {
     @SuppressWarnings("unused")
     public static void sendLyric(Context context, String lyric, String icon) {
         context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Icon", icon).putExtra("Lyric_Type", "hook"));
+    }
+
+    public static void addLyricCount() {
         if (new Config().getisUsedCount()) {
             new Config().setUsedCount(new Config().getUsedCount() + 1);
         }
@@ -345,8 +372,8 @@ public class Utils {
     // 判断服务是否运行 列表
     @SuppressWarnings("unused")
     public static boolean isServiceRunningList(Context context, String[] str) {
-        for (String mstr : str) {
-            if (isServiceRunning(context, mstr)) {
+        for (String mStr : str) {
+            if (isServiceRunning(context, mStr)) {
                 return true;
             }
         }
@@ -382,6 +409,83 @@ public class Utils {
         newStrArr[strArr.length] = newStr;
         return newStrArr;
     }
+
+    public static Animation inAnim(String str) {
+        AnimationSet animationSet = new AnimationSet(true);
+        TranslateAnimation translateAnimation;
+        switch (str) {
+            case "top":
+                translateAnimation = new TranslateAnimation(0, 0, 100, 0);
+                break;
+            case "lower":
+                translateAnimation = new TranslateAnimation(0, 0, -100, 0);
+                break;
+            case "left":
+                translateAnimation = new TranslateAnimation(100, 0, 0, 0);
+                break;
+            case "right":
+                translateAnimation = new TranslateAnimation(-100, 0, 0, 0);
+                break;
+            case "random":
+                return inAnim(new String[]{
+                        "off", "top", "lower",
+                        "left", "right", "random"
+                }[
+                        (int) (Math.random() * 4)
+                 ]);
+            default:
+                return null;
+        }
+        // 设置动画300ms
+        translateAnimation.setDuration(300);
+
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
+        // 设置动画300ms
+        alphaAnimation.setDuration(300);
+
+        animationSet.addAnimation(translateAnimation);
+        animationSet.addAnimation(alphaAnimation);
+        return animationSet;
+    }
+
+    public static Animation outAnim(String str) {
+        AnimationSet animationSet = new AnimationSet(true);
+        TranslateAnimation translateAnimation = null;
+        switch (str) {
+            case "top":
+                translateAnimation = new TranslateAnimation(0, 0, 0, -100);
+                break;
+            case "lower":
+                translateAnimation = new TranslateAnimation(0, 0, 0, 100);
+                break;
+            case "left":
+                translateAnimation = new TranslateAnimation(0, -100, 0, 0);
+                break;
+            case "right":
+                translateAnimation = new TranslateAnimation(0, 100, 0, 0);
+                break;
+            case "random":
+                return outAnim(new String[]{
+                        "off", "top", "lower",
+                        "left", "right", "random"
+                }[
+                        (int) (Math.random() * 4)
+                  ]);
+            default:
+                return null;
+        }
+        // 设置动画300ms
+        translateAnimation.setDuration(300);
+
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);
+        // 设置动画300ms
+        alphaAnimation.setDuration(300);
+
+        animationSet.addAnimation(translateAnimation);
+        animationSet.addAnimation(alphaAnimation);
+        return animationSet;
+    }
+
 
 
 }

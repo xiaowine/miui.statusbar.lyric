@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
@@ -29,6 +30,8 @@ import miui.statusbar.lyric.Utils;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.OutputStream;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Objects;
 
 
@@ -346,7 +349,7 @@ public class SettingsActivity extends PreferenceActivity {
         // 重启SystemUI
         Preference reSystemUI = findPreference("restartUI");
         assert reSystemUI != null;
-        reSystemUI.setOnPreferenceClickListener(((preference) -> {
+        reSystemUI.setOnPreferenceClickListener((preference) -> {
             new AlertDialog.Builder(activity)
                     .setTitle("确定重启系统界面吗？")
                     .setMessage("若使用中突然发现不能使用，可尝试重启系统界面。")
@@ -367,7 +370,7 @@ public class SettingsActivity extends PreferenceActivity {
                     .create()
                     .show();
             return true;
-        }));
+        });
 
         // 重置插件
         Preference reset = findPreference("reset");
@@ -409,6 +412,32 @@ public class SettingsActivity extends PreferenceActivity {
         assert about != null;
         about.setOnPreferenceClickListener((preference) -> {
             startActivity(new Intent(activity, AboutActivity.class));
+            return true;
+        });
+
+        // 歌词动效
+        ListPreference anim = (ListPreference) findPreference("lyricAnim");
+        anim.setEntryValues(new String[]{
+                "off", "top", "lower",
+                "left", "right", "random"
+        });
+        anim.setEntries(new String[]{
+                "关闭", "上滑", "下滑",
+                "左滑", "右滑", "随机"
+        });
+
+        Dictionary<String, String> dict = new Hashtable<>();
+        dict.put("off", "关闭");
+        dict.put("top", "上滑");
+        dict.put("lower", "下滑");
+        dict.put("left", "左滑");
+        dict.put("right", "右滑");
+        dict.put("random", "随机");
+
+        anim.setSummary(dict.get(new Config().getAnim()));
+        anim.setOnPreferenceChangeListener((preference, newValue) -> {
+            new Config().setAnim(newValue.toString());
+            anim.setSummary(dict.get(new Config().getAnim()));
             return true;
         });
 

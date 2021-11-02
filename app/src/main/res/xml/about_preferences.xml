@@ -73,7 +73,7 @@
             android:title="项目地址">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:data="请遵循开源协议"/>
+                android:data="https://github.com/xiaowine/miui.statusbar.lyric"/>
     </Preference>
 
     <Preference
@@ -83,6 +83,11 @@
         <intent
                 android:action="android.intent.action.VIEW"
                 android:data="https://t.me/MIUIStatusBatLyric"/>
+    </Preference>
+
+    <Preference
+        android:key="test"
+        android:title="开发测试">
     </Preference>
 
 

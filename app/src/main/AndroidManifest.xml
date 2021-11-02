@@ -22,8 +22,9 @@
             android:theme="@style/AppTheme"
             tools:ignore="AllowBackup">
 
-        <activity android:name=".activity.AboutActivity">
-        </activity>
+        <activity android:name=".activity.AboutActivity" />
+
+        <activity android:name=".activity.TestActivity" />
 
         <activity
                 android:name=".activity.SettingsActivity"

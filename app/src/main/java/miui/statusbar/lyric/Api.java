@@ -1,3 +1,5 @@
+package miui.statusbar.lyric;
+
 import android.content.Context;
 import android.content.Intent;
 

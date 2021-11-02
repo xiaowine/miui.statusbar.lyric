@@ -26,6 +26,10 @@
             android:summary=""
             android:title="歌曲暂停关闭歌词"/>
 
+    <ListPreference
+        android:key="lyricAnim"
+        android:summary="关闭"
+        android:title="歌词动效" />
 
     <EditTextPreference
             android:defaultValue="-1"
