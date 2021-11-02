@@ -321,11 +321,13 @@ public class Utils {
             isCarrier = 0;
             notCarrier = 1;
         }
-        log(String.valueOf(config.getHAlarm() && !isOpen));
+
         if (config.getHAlarm() && !isOpen) {
             setIAlarm("settings put secure icon_blacklist alarm_clock");
         } else {
-            setIAlarm("settings delete secure icon_blacklist");
+            if (config.getHAlarm()) {
+                setIAlarm("settings delete secure icon_blacklist");
+            }
         }
         if (config.getHNoticeIco() && MiuiStatusBarManager.isShowNotificationIcon(application) != isOpen) {
             MiuiStatusBarManager.setShowNotificationIcon(application, isOpen);

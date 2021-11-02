@@ -1,6 +1,8 @@
 package miui.statusbar.lyric.activity;
 
 
+import static miui.statusbar.lyric.Utils.setIAlarm;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -316,11 +318,14 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
-        // 隐藏运营商名称
+        // 隐藏闹钟图标
         SwitchPreference hAlarm = (SwitchPreference) findPreference("hAlarm");
         assert hAlarm != null;
         hAlarm.setChecked(config.getHAlarm());
         hAlarm.setOnPreferenceChangeListener((preference, newValue) -> {
+            if (!(Boolean) newValue) {
+                setIAlarm("settings delete secure icon_blacklist");
+            }
             config.setHAlarm((Boolean) newValue);
             return true;
         });
