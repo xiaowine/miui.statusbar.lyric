@@ -37,7 +37,13 @@ Java
 
 ```java
 public void sendLyric(Context context, String lyric, String icon, String packName) {
-    context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Type", "app").putExtra("Lyric_PackName", packName).putExtra("Lyric_Icon", icon));
+    context.sendBroadcast(new Intent()
+            .setAction("Lyric_Server")
+            .putExtra("Lyric_Data", lyric)
+            .putExtra("Lyric_Type", "app")
+            .putExtra("Lyric_PackName", packName)
+            .putExtra("Lyric_Icon", icon)
+    );
 }
 ```
 
@@ -62,9 +68,14 @@ fun stopLyric(context: Context) {
 }
 ```
 
+Java
+
 ```
 public void stopLyric(Context context) {
-    context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Type", "app_stop"));
+    context.sendBroadcast(new Intent()
+            .setAction("Lyric_Server")
+            .putExtra("Lyric_Type", "app_stop")
+    );
 }
 ```
 
