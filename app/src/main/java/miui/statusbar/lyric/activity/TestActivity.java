@@ -28,7 +28,7 @@ public class TestActivity extends PreferenceActivity {
         Preference preference = findPreference("testlyric");
         preference.setOnPreferenceClickListener((preference1) -> {
             Api api = new Api();
-            api.sendLyric(activity, new Random() + lyric, icon, "miui.statusbar.lyric");
+            api.sendLyric(activity, ((int) (Math.random() * 10)) + lyric, icon, "miui.statusbar.lyric");
             return true;
         });
 

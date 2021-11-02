@@ -57,6 +57,9 @@ public class MainHook implements IXposedHookLoadPackage {
     Context context = null;
     boolean showLyric = true;
     static boolean musicOffStatus = false;
+    static boolean enable = false;
+    static boolean iconReverseColor = false;
+    static Config config = new Config();
 
 
     @Override
@@ -136,7 +139,7 @@ public class MainHook implements IXposedHookLoadPackage {
 
                         // 设置跑马灯效果
                         lyricTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-                        if (new Config().getLShowOnce()) {
+                        if (config.getLShowOnce()) {
                             // 设置跑马灯为1次
                             lyricTextView.setMarqueeRepeatLimit(1);
                         } else {// 设置跑马灯重复次数，-1为无限重复
@@ -169,8 +172,8 @@ public class MainHook implements IXposedHookLoadPackage {
                         clockLayout.addView(lyricLayout, 1);
 
                         // 歌词点击事件
-                        if (new Config().getLyricSwitch()) {
-                            lyricTextView.setOnClickListener((view) -> {
+                        if (config.getLyricSwitch()) {
+                            lyricLayout.setOnClickListener((view) -> {
                                 // 显示时钟
                                 clock.setLayoutParams(new LinearLayout.LayoutParams(-2, -2));
                                 // 歌词显示
@@ -181,6 +184,8 @@ public class MainHook implements IXposedHookLoadPackage {
                                     lyricLayout.setVisibility(View.VISIBLE);
                                     // 设置歌词文本
                                     lyricTextView.setText(lyricTextView.getText());
+                                    // 隐藏时钟
+                                    clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
                                     showLyric = true;
                                 });
                             });
@@ -193,7 +198,6 @@ public class MainHook implements IXposedHookLoadPackage {
 
                         // 歌词更新 Handler
                         Handler LyricUpdate = new Handler(Looper.getMainLooper(), message -> {
-                            Config config = new Config();
                             String string = message.getData().getString(KEY_LYRIC);
                             if (!string.equals("")) {
                                 if (!string.equals(lyricTextView.getText().toString())) {
@@ -249,24 +253,22 @@ public class MainHook implements IXposedHookLoadPackage {
                         });
                         new Timer().schedule(
                                 new TimerTask() {
-                                    boolean enable = false;
-                                    Config config = new Config();
-                                    ColorStateList color = null;
                                     int count = 0;
                                     int lyricSpeed = 0;
                                     String oldLyric = "";
                                     boolean lyricOff = false;
-                                    Boolean iconReverseColor = false;
 
 
                                     @Override
                                     public void run() {
                                         try {
-                                            if (new Config().getLyricService()) {
+                                            if (count == 50) {
+                                                config = new Config();
+                                            }
+                                            if (config.getLyricService()) {
                                                 if (count == 100) {
                                                     if (Utils.isServiceRunningList(application, musicServer)) {
                                                         enable = true;
-                                                        config = new Config();
                                                         if (config.getLyricAutoOff()) {
                                                             if (icon[0].equals("hook")) {
                                                                 lyricOff = audioManager.isMusicActive();
@@ -278,43 +280,6 @@ public class MainHook implements IXposedHookLoadPackage {
 
                                                     } else {
                                                         setOff();
-                                                    }
-
-                                                    if (enable && !lyric.equals("")) {
-                                                        // 设置颜色
-                                                        if (!config.getLyricColor().equals("off")) {
-                                                            if (color != ColorStateList.valueOf(Color.parseColor(config.getLyricColor()))) {
-                                                                color = ColorStateList.valueOf(Color.parseColor(config.getLyricColor()));
-                                                                lyricTextView.setTextColor(color);
-                                                            }
-                                                        } else if (!(clock.getTextColors() == null || color == clock.getTextColors())) {
-                                                            color = clock.getTextColors();
-                                                            lyricTextView.setTextColor(color);
-
-                                                        }
-                                                        if (!icon[1].equals("")) {
-                                                            Drawable createFromPath = null;
-                                                            if (icon[0].equals("hook")) {
-                                                                createFromPath = Drawable.createFromPath(icon[1]);
-                                                            } else if (icon[0].equals("app")) {
-                                                                createFromPath = new BitmapDrawable(Utils.stringToBitmap(icon[1]));
-                                                            }
-                                                            if (createFromPath != null) {
-                                                                createFromPath.setBounds(0, 0, (int) clock.getTextSize(), (int) clock.getTextSize());
-                                                                if (iconReverseColor) {
-                                                                    createFromPath = Utils.reverseColor(createFromPath, Utils.isDark(clock.getTextColors().getDefaultColor()));
-                                                                }
-                                                                Message obtainMessage2 = iconUpdate.obtainMessage();
-                                                                obtainMessage2.obj = createFromPath;
-                                                                iconUpdate.sendMessage(obtainMessage2);
-                                                            }
-
-                                                        } else {
-                                                            Drawable createFromPath = Drawable.createFromPath(null);
-                                                            Message obtainMessage2 = iconUpdate.obtainMessage();
-                                                            obtainMessage2.obj = createFromPath;
-                                                            iconUpdate.sendMessage(obtainMessage2);
-                                                        }
                                                     }
                                                     count = 0;
                                                 }
@@ -373,6 +338,52 @@ public class MainHook implements IXposedHookLoadPackage {
 
                                 }, 0, 10);
 
+                        // 反色
+                        new Timer().schedule(
+                                new TimerTask() {
+                                    ColorStateList color = null;
+
+                                    @Override
+                                    public void run() {
+                                        if (enable && !lyric.equals("")) {
+                                            // 设置颜色
+                                            if (!config.getLyricColor().equals("off")) {
+                                                if (color != ColorStateList.valueOf(Color.parseColor(config.getLyricColor()))) {
+                                                    color = ColorStateList.valueOf(Color.parseColor(config.getLyricColor()));
+                                                    lyricTextView.setTextColor(color);
+                                                }
+                                            } else if (!(clock.getTextColors() == null || color == clock.getTextColors())) {
+                                                color = clock.getTextColors();
+                                                lyricTextView.setTextColor(color);
+
+                                            }
+                                            if (!icon[1].equals("")) {
+                                                Drawable createFromPath = null;
+                                                if (icon[0].equals("hook")) {
+                                                    createFromPath = Drawable.createFromPath(icon[1]);
+                                                } else if (icon[0].equals("app")) {
+                                                    createFromPath = new BitmapDrawable(Utils.stringToBitmap(icon[1]));
+                                                }
+                                                if (createFromPath != null) {
+                                                    createFromPath.setBounds(0, 0, (int) clock.getTextSize(), (int) clock.getTextSize());
+                                                    if (iconReverseColor) {
+                                                        createFromPath = Utils.reverseColor(createFromPath, Utils.isDark(clock.getTextColors().getDefaultColor()));
+                                                    }
+                                                    Message obtainMessage2 = iconUpdate.obtainMessage();
+                                                    obtainMessage2.obj = createFromPath;
+                                                    iconUpdate.sendMessage(obtainMessage2);
+                                                }
+
+                                            } else {
+                                                Drawable createFromPath = Drawable.createFromPath(null);
+                                                Message obtainMessage2 = iconUpdate.obtainMessage();
+                                                obtainMessage2.obj = createFromPath;
+                                                iconUpdate.sendMessage(obtainMessage2);
+                                            }
+                                        }
+                                    }
+                                }, 0, 10);
+
                         LinearLayout.LayoutParams finalLayoutParams = layoutParams;
                         new Thread(() -> {
                             int i = 1;
@@ -383,7 +394,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                if (!lyric.equals("")&& new Config().getAntiBurn()) {
+                                if (!lyric.equals("")&& config.getAntiBurn()) {
                                     if (order) {
                                         i += 1;
                                     } else {
@@ -548,8 +559,8 @@ public class MainHook implements IXposedHookLoadPackage {
                             lyric = intent.getStringExtra("Lyric_Data");
                             icon[0] = "hook";
                             try {
-                                if (new Config().getIcon()) {
-                                    icon[1] = new Config().getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
+                                if (config.getIcon()) {
+                                    icon[1] = config.getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
                                     lIcon = intent.getStringExtra("Lyric_Icon");
                                 } else {
                                     icon[1] = "";
