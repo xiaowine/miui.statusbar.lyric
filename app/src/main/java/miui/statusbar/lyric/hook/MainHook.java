@@ -76,9 +76,6 @@ public class MainHook implements IXposedHookLoadPackage {
                     IntentFilter filter = new IntentFilter();
                     filter.addAction("Lyric_Server");
                     context.registerReceiver(new LyricReceiver(), filter);
-
-                    // 发送systemUI重启广播
-                    context.sendBroadcast(new Intent().setAction("Lyric_Server_ReStart"));
                 }
             }
         });
