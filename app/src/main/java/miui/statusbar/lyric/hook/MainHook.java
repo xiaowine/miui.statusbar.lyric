@@ -113,16 +113,28 @@ public class MainHook implements IXposedHookLoadPackage {
 
                         // 获取系统版本
                         String miuiVer = Utils.getMiuiVer();
-                        Utils.log("MIUI Ver: " + miuiVer);
+                        boolean isEuMiui = Utils.getIsEuMiui();
+                        Utils.log("MIUI Ver: " + miuiVer + " IsEuMiui: " + isEuMiui);
 
                         // 反射获取时钟
-                        if (miuiVer.equals("V12")) {
+                        try {
+                            if (!config.getHook().equals("")) {
+                                Utils.log("自定义Hook点: " + config.getHook());
+                                clockField = XposedHelpers.findField(param.thisObject.getClass(), config.getHook());
+                            } else if (miuiVer.equals("V12")) {
+                                clockField = XposedHelpers.findField(param.thisObject.getClass(), "mStatusClock");
+                            } else if (miuiVer.equals("V125") && !isEuMiui) {
+                                clockField = XposedHelpers.findField(param.thisObject.getClass(), "mClockView");
+                            } else if (miuiVer.equals("V125") && isEuMiui) {
+                                clockField = XposedHelpers.findField(param.thisObject.getClass(), "mStatusClock");
+                            } else {
+                                Utils.log("Unknown version");
+                                clockField = XposedHelpers.findField(param.thisObject.getClass(), "mClockView");
+                            }
+                        } catch (Exception e) {
+                            Utils.log("Hook 失败 " + e);
+                            // 适配mix2s/eu
                             clockField = XposedHelpers.findField(param.thisObject.getClass(), "mStatusClock");
-                        } else if (miuiVer.equals("V125")) {
-                            clockField = XposedHelpers.findField(param.thisObject.getClass(), "mClockView");
-                        } else {
-                            Utils.log("Unknown version");
-                            clockField = XposedHelpers.findField(param.thisObject.getClass(), "mClockView");
                         }
                         TextView clock = (TextView) clockField.get(param.thisObject);
 
@@ -133,9 +145,9 @@ public class MainHook implements IXposedHookLoadPackage {
                         lyricTextView.setHeight(clock.getHeight());
                         lyricTextView.setTypeface(clock.getTypeface());
                         lyricTextView.setTextSize(0, clock.getTextSize());
-                        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) lyricTextView.getLayoutParams();
-                        layoutParams.setMargins(10, 0, 0, 0);
-                        lyricTextView.setLayoutParams(layoutParams);
+                        LinearLayout.LayoutParams lyricParams = (LinearLayout.LayoutParams) lyricTextView.getLayoutParams();
+                        lyricParams.setMargins(10, 0, 0, 0);
+                        lyricTextView.setLayoutParams(lyricParams);
 
                         // 设置跑马灯效果
                         lyricTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
@@ -156,9 +168,9 @@ public class MainHook implements IXposedHookLoadPackage {
                         // 创建图标
                         TextView iconView = new TextView(application);
                         iconView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                        layoutParams = (LinearLayout.LayoutParams) iconView.getLayoutParams();
-                        layoutParams.setMargins(0, 2, 0, 0);
-                        iconView.setLayoutParams(layoutParams);
+                        LinearLayout.LayoutParams iconParams = (LinearLayout.LayoutParams) iconView.getLayoutParams();
+                        iconParams.setMargins(0, 2, 0, 0);
+                        iconView.setLayoutParams(iconParams);
 
                         // 创建布局
                         LinearLayout lyricLayout = new LinearLayout(application);
@@ -251,6 +263,7 @@ public class MainHook implements IXposedHookLoadPackage {
 
                             return true;
                         });
+
                         new Timer().schedule(
                                 new TimerTask() {
                                     int count = 0;
@@ -270,16 +283,16 @@ public class MainHook implements IXposedHookLoadPackage {
                                                     if (Utils.isServiceRunningList(application, musicServer)) {
                                                         enable = true;
                                                         if (config.getLyricAutoOff()) {
-                                                            if (icon[0].equals("hook")) {
-                                                                lyricOff = audioManager.isMusicActive();
-                                                            } else {
+                                                            if (icon[0].equals("app")) {
                                                                 lyricOff = musicOffStatus;
+                                                            } else {
+                                                                lyricOff = audioManager.isMusicActive();
                                                             }
                                                         }
                                                         iconReverseColor = config.getIconAutoColor();
 
                                                     } else {
-                                                        setOff();
+                                                        setOff("播放器关闭");
                                                     }
                                                     count = 0;
                                                 }
@@ -298,10 +311,10 @@ public class MainHook implements IXposedHookLoadPackage {
                                                                 oldLyric = lyric;
                                                             }
                                                         } else {
-                                                            setOff();
+                                                            setOff("歌词为空");
                                                         }
                                                     } else {
-                                                        setOff();
+                                                        setOff("暂停播放");
                                                     }
                                                 }
 
@@ -309,17 +322,18 @@ public class MainHook implements IXposedHookLoadPackage {
                                                     lyricSpeed++;
                                                 }
                                             } else {
-                                                setOff();
+                                                setOff("开关关闭");
                                             }
                                         } catch (Exception e) {
                                             Utils.log("出现错误! " + e);
+                                            e.printStackTrace();
                                             count = 0;
                                         }
                                     }
 
-                                    private void setOff() {
+                                    private void setOff(String info) {
                                         if (enable || (lyricLayout.getVisibility() != View.GONE)) {
-                                            Utils.log("播放器关闭 清除歌词");
+                                            Utils.log(info);
                                             lyric = "";
                                             oldLyric = "";
                                             enable = false;
@@ -338,7 +352,7 @@ public class MainHook implements IXposedHookLoadPackage {
 
                                 }, 0, 10);
 
-                        // 反色
+                        // 反色/图标
                         new Timer().schedule(
                                 new TimerTask() {
                                     ColorStateList color = null;
@@ -384,35 +398,34 @@ public class MainHook implements IXposedHookLoadPackage {
                                     }
                                 }, 0, 10);
 
-                        LinearLayout.LayoutParams finalLayoutParams = layoutParams;
-                        new Thread(() -> {
-                            int i = 1;
-                            boolean order = true;
-                            while (true) {
-                                try {
-                                    Thread.sleep(60000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                if (!lyric.equals("")&& config.getAntiBurn()) {
-                                    if (order) {
-                                        i += 1;
-                                    } else {
-                                        i -= 1;
-                                    }
-                                    Utils.log("当钱位移：" + i);
-                                    finalLayoutParams.setMargins(10 + i, 0, 0, 0);
-                                    if (i == 0) {
-                                        order = true;
-                                    } else if (i == 10) {
-                                        order = false;
-                                    }
-                                } else {
-                                    finalLayoutParams.setMargins(10, 0, 0, 0);
-                                }
+                        // 防烧屏
+                        new Timer().schedule(
+                                new TimerTask() {
+                                    int i = 1;
+                                    boolean order = true;
 
-                            }
-                        }).start();
+                                    @Override
+                                    public void run() {
+                                        if (!lyric.equals("") && config.getAntiBurn()) {
+                                            if (order) {
+                                                i += 1;
+                                            } else {
+                                                i -= 1;
+                                            }
+                                            Utils.log("当钱位移：" + i);
+                                            lyricParams.setMargins(10 + i, 0, 0, 0);
+                                            iconParams.setMargins(i, 2, 0, 0);
+                                            if (i == 0) {
+                                                order = true;
+                                            } else if (i == 10) {
+                                                order = false;
+                                            }
+                                        } else {
+                                            lyricParams.setMargins(10, 0, 0, 0);
+                                            iconParams.setMargins(0, 2, 0, 0);
+                                        }
+                                    }
+                                }, 0, 60000);
                     }
                 });
                 Utils.log("hook系统界面结束");
@@ -573,17 +586,25 @@ public class MainHook implements IXposedHookLoadPackage {
                             Utils.addLyricCount();
                             lyric = intent.getStringExtra("Lyric_Data");
                             icon[0] = "app";
-                            icon[1] = intent.getStringExtra("Lyric_Icon");
+                            String  icon_data = intent.getStringExtra("Lyric_Icon");
+                            if (icon_data != null) {
+                                icon[1] = icon_data;
+                            } else {
+                                icon[1] = "";
+                            }
                             boolean isPackName = true;
                             String packName = intent.getStringExtra("Lyric_PackName");
-                            for (String mStr : musicServer) {
-                                if (mStr.equals(packName)) {
-                                    isPackName = false;
-                                    break;
+                            // 修复packName为null导致报错!
+                            if (packName != null) {
+                                for (String mStr : musicServer) {
+                                    if (mStr.equals(packName)) {
+                                        isPackName = false;
+                                        break;
+                                    }
                                 }
-                            }
-                            if (isPackName) {
-                                musicServer = Utils.stringsListAdd(musicServer, packName);
+                                if (isPackName) {
+                                    musicServer = Utils.stringsListAdd(musicServer, packName);
+                                }
                             }
                             musicOffStatus = true;
                             break;
@@ -594,6 +615,7 @@ public class MainHook implements IXposedHookLoadPackage {
                 }
             } catch (Exception e) {
                 Utils.log("广播接收错误 " + e);
+                e.printStackTrace();
             }
         }
     }

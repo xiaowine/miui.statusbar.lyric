@@ -21,6 +21,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
+import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -238,6 +239,37 @@ public class SettingsActivity extends PreferenceActivity {
         antiburn.setChecked(config.getAntiBurn());
         antiburn.setOnPreferenceChangeListener((preference, newValue) -> {
             config.setAntiBurn((Boolean) newValue);
+            return true;
+        });
+
+        // 自定义Hook
+        Preference hook = findPreference("lyricHook");
+        assert hook != null;
+        hook.setSummary(config.getHook());
+        if (config.getHook().equals("")) {
+            hook.setSummary("默认Hook点");
+        }
+        hook.setOnPreferenceClickListener((preBuference) -> {
+            EditText editText = new EditText(activity);
+            editText.setText(config.getHook());
+            new AlertDialog.Builder(activity)
+                    .setTitle("自定义Hook点")
+                    .setView(editText)
+                    .setNegativeButton("恢复默认", (dialog, which) -> {
+                        hook.setSummary("默认Hook点");
+                        config.setHook("");
+                        Utils.showToastOnLooper(activity, "已恢复默认Hook点,请重启SystemUI");
+                    })
+                    .setPositiveButton("确定", (dialog, which) -> {
+                        config.setHook(editText.getText().toString());
+                        hook.setSummary(editText.getText().toString());
+                        if (config.getHook().equals("")) {
+                            hook.setSummary("默认Hook点");
+                        }
+                        Utils.showToastOnLooper(activity, "已设置Hook点为: " + config.getHook() + " 请重启SystemUI");
+                    })
+                    .create()
+                    .show();
             return true;
         });
 

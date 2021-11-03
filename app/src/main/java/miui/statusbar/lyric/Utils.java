@@ -86,6 +86,18 @@ public class Utils {
         }
     }
 
+    public static Boolean getIsEuMiui() {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader
+                    (Runtime.getRuntime().exec("getprop ro.product.mod_device").getInputStream()), 1024);
+            String ver = bufferedReader.readLine();
+            bufferedReader.close();
+            return !ver.replace("\n", "").equals("");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static void setIAlarm(String s) {
         try {
             java.lang.Process p = Runtime.getRuntime().exec("su");
@@ -150,6 +162,7 @@ public class Utils {
                 config.setDebug(false);
                 config.setisUsedCount(true);
                 config.setAnim("off");
+                config.setHook("");
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(activity, "初始化失败，请重启软件", Toast.LENGTH_LONG).show();
@@ -282,15 +295,13 @@ public class Utils {
     // 判断服务是否运行
     @SuppressWarnings("unused")
     public static boolean isServiceRunning(Context context, String str) {
-        if (isAppRunning(context, str)) {
-            return true;
-        }
         List<ActivityManager.RunningServiceInfo> runningServices = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningServices(200);
         if (runningServices.size() <= 0) {
             return false;
         }
         for (ActivityManager.RunningServiceInfo runningServiceInfo : runningServices) {
             if (runningServiceInfo.service.getClassName().contains(str)) {
+                Utils.log("服务运行: " + str);
                 return true;
             }
         }
@@ -300,12 +311,16 @@ public class Utils {
     // 判断程序是否运行
     @SuppressWarnings("unused")
     public static boolean isAppRunning(Context context, String str) {
+        if (isServiceRunning(context, str)) {
+            return true;
+        }
         List<ActivityManager.RunningTaskInfo> runningServices = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningTasks(200);
         if (runningServices.size() <= 0) {
             return false;
         }
         for (ActivityManager.RunningTaskInfo runningServiceInfo : runningServices) {
             if (runningServiceInfo.baseActivity.getClassName().contains(str)) {
+                Utils.log("程序运行: " + str);
                 return true;
             }
         }
@@ -322,13 +337,13 @@ public class Utils {
             notCarrier = 1;
         }
 
-        if (config.getHAlarm() && !isOpen) {
-            setIAlarm("settings put secure icon_blacklist alarm_clock");
-        } else {
-            if (config.getHAlarm()) {
-                setIAlarm("settings delete secure icon_blacklist");
-            }
-        }
+//        if (config.getHAlarm() && !isOpen) {
+//            setIAlarm("settings put secure icon_blacklist alarm_clock");
+//        } else {
+//            if (config.getHAlarm()) {
+//                setIAlarm("settings delete secure icon_blacklist");
+//            }
+//        }
         if (config.getHNoticeIco() && MiuiStatusBarManager.isShowNotificationIcon(application) != isOpen) {
             MiuiStatusBarManager.setShowNotificationIcon(application, isOpen);
         }
@@ -375,8 +390,10 @@ public class Utils {
     @SuppressWarnings("unused")
     public static boolean isServiceRunningList(Context context, String[] str) {
         for (String mStr : str) {
-            if (isServiceRunning(context, mStr)) {
-                return true;
+            if (mStr != null) {
+                if (isAppRunning(context, mStr)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -488,7 +505,22 @@ public class Utils {
         return animationSet;
     }
 
+    // 打印堆栈
+    public static void dumpStack() {
+        log("Dump Stack: ---------------start----------------");
+        Throwable ex = new Throwable();
+        StackTraceElement[] stackElements = ex.getStackTrace();
+        if (stackElements != null) {
+            for (int i = 0; i < stackElements.length; i++) {
 
+                log("Dump Stack" + i + ": " + stackElements[i].getClassName()
+                        + "----"+stackElements[i].getFileName()
+                        + "----" + stackElements[i].getLineNumber()
+                        + "----" +stackElements[i].getMethodName());
+            }
+        }
+        log("Dump Stack: ---------------over----------------");
+    }
 
 }
 

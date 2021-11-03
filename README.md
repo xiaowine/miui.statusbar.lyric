@@ -12,6 +12,10 @@
 - Aplayer:v1.5.7.9 (完美适配)
 - QQ音乐:v10.17.0.11 (需打开蓝牙歌词和戴耳机)
 
+#### 感谢名单
+- @潇风残月 (感谢提供的库以及对代码的极限精简)
+- @柒猫Sebun_Neko (感谢提供的图标)
+
 最后感谢 @潇风残月 大大的帮助，然后再求个图标
 
 ### API
@@ -54,7 +58,7 @@ public void sendLyric(Context context, String lyric, String icon, String packNam
 | icon     | 无前缀的 base64 编码（推荐32x32） |
 | packName | 你的软件包名 |
 
-#### 停止播放
+#### 暂停/停止播放 (不提供会导致无法正常取消显示歌词)
 
 Kotlin
 

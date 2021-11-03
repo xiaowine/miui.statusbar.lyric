@@ -348,9 +348,25 @@ public class Config {
         }
     }
 
-    public void setAnim(String i) {
+    public void setAnim(String str) {
         try {
-            this.config.put("Anim", i);
+            this.config.put("Anim", str);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
+
+    public String getHook() {
+        try {
+            return (String) this.config.get("Hook");
+        } catch (JSONException e) {
+            return "";
+        }
+    }
+
+    public void setHook(String str) {
+        try {
+            this.config.put("Hook", str);
             setConfig(this.config.toString());
         } catch (JSONException ignored) {
         }
