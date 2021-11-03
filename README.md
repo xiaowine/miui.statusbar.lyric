@@ -6,19 +6,32 @@
 
 #### 支持的音乐软件版本
 
-- 酷狗音乐:v10.8.4 (需打开蓝牙歌词)
-- 酷我音乐:v9.4.6.2 (需打开蓝牙歌词)
-- 网易云音乐:v8.6.0 (完美适配)
-- Aplayer:v1.5.7.9 (完美适配)
-- QQ音乐:v10.17.0.11 (需打开蓝牙歌词和戴耳机)
+只记录最高版本，其余版本自测
+- 网易云音乐:v8.6.02 （完美适配）
+- 酷狗音乐:v10.9.0 （需打开蓝牙歌词）
+- 酷我音乐:v10.0.1.0 （需打开蓝牙歌词）
+- QQ音乐:v10.17.0.11 （需打开蓝牙歌词并连接）
+- Aplayer:v1.5.7.9 （完美适配）
+- 椒盐音乐：暂未正式发布
 
 #### 感谢名单
 - @潇风残月 (感谢提供的库以及对代码的极限精简)
 - @柒猫Sebun_Neko (感谢提供的图标)
 
-### API
 
-#### 发送歌词示例
+### 下载
+
+[Releases](https://github.com/577fkj/MIUIStatusBarLyric_new/releases)
+
+### 联系方式
+
+[电报群](https://t.me/MIUIStatusBatLyric)  
+[爱发电](https://afdian.net/@xiao_wine)
+
+
+
+## 音乐主动适配
+### API 发送歌词示例
 
 Kotlin
 
@@ -81,11 +94,4 @@ public void stopLyric(Context context) {
 }
 ```
 
-### 下载
 
-[Releases](https://github.com/577fkj/MIUIStatusBarLyric_new/releases)
-
-### 联系方式
-
-[电报群](https://t.me/MIUIStatusBatLyric)
-[爱发电](https://afdian.net/@xiao_wine)
