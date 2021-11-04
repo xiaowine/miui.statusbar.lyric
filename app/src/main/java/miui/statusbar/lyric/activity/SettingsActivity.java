@@ -100,6 +100,11 @@ public class SettingsActivity extends PreferenceActivity {
         // 歌词总开关
         SwitchPreference lyricService = (SwitchPreference) findPreference("lyricService");
         assert lyricService != null;
+        if (Utils.isEnable()) {
+            lyricService.setTitle("总开关 (模块已激活)");
+        } else {
+            lyricService.setTitle("总开关 (模块未激活)");
+        }
         lyricService.setChecked(config.getLyricService());
         lyricService.setOnPreferenceChangeListener((preference, newValue) -> {
             config.setLyricService((Boolean) newValue);

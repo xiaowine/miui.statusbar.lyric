@@ -33,7 +33,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="miui.statusbar.lyric.SettingsFragment"/>
-
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS"/>
             </intent-filter>
@@ -61,6 +61,20 @@
         <meta-data
                 android:name="xposedscope"
                 android:resource="@array/need_module"/>
+
+        <service
+            android:name=".QuickTitleService"
+            android:label="状态栏歌词"
+            android:icon="@drawable/title_icon"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="true"/>
+        </service>
 
 
     </application>

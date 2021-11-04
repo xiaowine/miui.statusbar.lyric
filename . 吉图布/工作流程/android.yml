@@ -1,0 +1,45 @@
+name: 自动编译
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+  schedule:
+    - cron: '* * 1,11 ? * ?  '
+    # cron表达式，Actions时区是UTC时间，所以上午9点要往前推8个小时
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+        cache: gradle
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build with Gradle
+      run: ./gradlew assembleRelease
+    - name:  change name
+      run: mv  ./app/build/outputs/apk/release/app-release-unsigned.apk ./app/build/outputs/apk/release/app-release.apk
+   
+    - name: Sign Android release
+      uses: r0adkll/sign-android-release@v1
+      with:
+        releaseDirectory: ./app/build/outputs/apk/release
+        signingKeyBase64: ${{ secrets.SIGNING_KEY }} 
+        alias: xiao_wine
+        keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+        keyPassword: ${{ secrets.KEY_STORE_PASSWORD }}
+
+    - uses: actions/upload-artifact@v2
+      with:
+         name: Signed app bundle
+         path: ./app/build/outputs/apk/release
