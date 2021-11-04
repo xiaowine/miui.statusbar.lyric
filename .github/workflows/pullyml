@@ -1,4 +1,4 @@
-name: 自动编译
+name: Pull自动编译
 
 on:
   push:
