@@ -27,18 +27,13 @@ jobs:
     - name: Sign Android release
       uses: r0adkll/sign-android-release@v1
       with:
-        # The directory to find your release to sign
         releaseDirectory: ./app/build/outputs/apk/release
-        # The key used to sign your release in base64 encoded format
         signingKeyBase64: ${{ secrets.SIGNING_KEY }} 
-        # The key alias
         alias: xiao_wine
-        # The password to the keystore
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-        # The password for the key
         keyPassword: ${{ secrets.KEY_STORE_PASSWORD }}
 
- # Example use of `signedReleaseFile` output -- not needed
+
     - uses: actions/upload-artifact@v2
       with:
         name: Signed app bundle
