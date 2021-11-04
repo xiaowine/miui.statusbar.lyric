@@ -18,6 +18,12 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
         cache: gradle
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build with Gradle
+      run: ./gradlew assembleRelease
+
     - name: Sign Android release
       uses: r0adkll/sign-android-release@v1
       with:
