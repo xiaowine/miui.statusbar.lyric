@@ -37,3 +37,8 @@ jobs:
         keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
         # The password for the key
         keyPassword: ${{ secrets.KEY_STORE_PASSWORD }}
+
+ # Example use of `signedReleaseFile` output -- not needed
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Signed app bundle
