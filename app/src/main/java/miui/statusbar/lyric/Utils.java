@@ -40,6 +40,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -520,6 +522,18 @@ public class Utils {
             }
         }
         log("Dump Stack: ---------------over----------------");
+    }
+
+    // 报错转内容
+    public static String dumpException(Exception e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        return sw.toString();
+    }
+
+    public static boolean isEnable() {
+        return false;
     }
 
 }

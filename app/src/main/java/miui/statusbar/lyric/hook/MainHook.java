@@ -114,24 +114,18 @@ public class MainHook implements IXposedHookLoadPackage {
                         Utils.log("MIUI Ver: " + miuiVer + " IsEuMiui: " + isEuMiui);
 
                         // 反射获取时钟
-                        try {
-                            if (!config.getHook().equals("")) {
-                                Utils.log("自定义Hook点: " + config.getHook());
-                                clockField = XposedHelpers.findField(param.thisObject.getClass(), config.getHook());
-                            } else if (miuiVer.equals("V12")) {
-                                clockField = XposedHelpers.findField(param.thisObject.getClass(), "mStatusClock");
-                            } else if (miuiVer.equals("V125") && !isEuMiui) {
-                                clockField = XposedHelpers.findField(param.thisObject.getClass(), "mClockView");
-                            } else if (miuiVer.equals("V125") && isEuMiui) {
-                                clockField = XposedHelpers.findField(param.thisObject.getClass(), "mStatusClock");
-                            } else {
-                                Utils.log("Unknown version");
-                                clockField = XposedHelpers.findField(param.thisObject.getClass(), "mClockView");
-                            }
-                        } catch (Exception e) {
-                            Utils.log("Hook 失败 " + e);
-                            // 适配mix2s/eu
+                        if (!config.getHook().equals("")) {
+                            Utils.log("自定义Hook点: " + config.getHook());
+                            clockField = XposedHelpers.findField(param.thisObject.getClass(), config.getHook());
+                        } else if (miuiVer.equals("V12")) {
                             clockField = XposedHelpers.findField(param.thisObject.getClass(), "mStatusClock");
+                        } else if (miuiVer.equals("V125") && !isEuMiui) {
+                            clockField = XposedHelpers.findField(param.thisObject.getClass(), "mClockView");
+                        } else if (miuiVer.equals("V125") && isEuMiui) {
+                            clockField = XposedHelpers.findField(param.thisObject.getClass(), "mStatusClock");
+                        } else {
+                            Utils.log("Unknown version");
+                            clockField = XposedHelpers.findField(param.thisObject.getClass(), "mClockView");
                         }
                         TextView clock = (TextView) clockField.get(param.thisObject);
 
@@ -554,6 +548,21 @@ public class MainHook implements IXposedHookLoadPackage {
                 });
                 Utils.log("hook myplayer结束");
                 break;
+            case "miui.statusbar.lyric":
+                Utils.log("正在hook自身");
+                XposedHelpers.findAndHookMethod("miui.statusbar.lyric.Utils", lpparam.classLoader, "isEnable", new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        super.beforeHookedMethod(param);
+                    }
+
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        super.afterHookedMethod(param);
+                        param.setResult(true);
+                    }
+                });
+                Utils.log("Hook自身结束");
         }
     }
 
@@ -578,6 +587,7 @@ public class MainHook implements IXposedHookLoadPackage {
                             } catch (RuntimeException e) {
                                 icon[1] = lIcon;
                             }
+                            Utils.log("收到广播hook: lyric:" + lyric + " icon:" + icon[1]);
                             break;
                         case "app":
                             Utils.addLyricCount();
@@ -604,15 +614,16 @@ public class MainHook implements IXposedHookLoadPackage {
                                 }
                             }
                             musicOffStatus = true;
+                            Utils.log("收到广播app: lyric:" + lyric + " icon:" + icon[1]);
                             break;
                         case "app_stop":
                             musicOffStatus = false;
+                            Utils.log("收到广播app_stop");
                             break;
                     }
                 }
             } catch (Exception e) {
-                Utils.log("广播接收错误 " + e);
-                e.printStackTrace();
+                Utils.log("广播接收错误 " + e + "\n" + Utils.dumpException(e));
             }
         }
     }
