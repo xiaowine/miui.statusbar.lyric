@@ -21,7 +21,9 @@
 
 ### 下载
 
-[Releases](https://github.com/577fkj/MIUIStatusBarLyric_new/releases)
+[Releases](https://github.com/577fkj/MIUIStatusBarLyric_new/releases)  
+[酷安](https://www.coolapk.com/apk/miui.statusbar.lyric)  
+[测试版](https://github.com/xiaowine/miui.statusbar.lyric/actions)  
 
 ### 联系方式
 
