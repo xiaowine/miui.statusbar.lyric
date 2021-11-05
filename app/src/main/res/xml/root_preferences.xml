@@ -55,6 +55,12 @@
             android:summary=""
             android:title="歌词图标"/>
 
+    <EditTextPreference
+        android:defaultValue="2"
+        android:key="lyricPosition"
+        android:summary="2"
+        android:title="图标上下位置"/>
+
     <SwitchPreference
             android:defaultValue="false"
             android:key="lshowonce"

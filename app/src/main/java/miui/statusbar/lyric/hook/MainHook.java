@@ -261,6 +261,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                     int lyricSpeed = 0;
                                     String oldLyric = "";
                                     boolean lyricOff = false;
+                                    int oldPos = 0;
 
 
                                     @Override
@@ -277,6 +278,10 @@ public class MainHook implements IXposedHookLoadPackage {
                                                     } else {
                                                         icon[1] = "";
                                                     }
+                                                }
+                                                if (config.getLyricPosition() != oldPos) {
+                                                    oldPos = config.getLyricPosition();
+                                                    iconParams.setMargins(0, oldPos, 0, 0);
                                                 }
                                             }
                                             if (config.getLyricService()) {
@@ -560,7 +565,7 @@ public class MainHook implements IXposedHookLoadPackage {
                 break;
             case "miui.statusbar.lyric":
                 Utils.log("正在hook自身");
-                XposedHelpers.findAndHookMethod("miui.statusbar.lyric.Utils", lpparam.classLoader, "isEnable", new XC_MethodHook() {
+                XposedHelpers.findAndHookMethod("miui.statusbar.lyric.activity.SettingsActivity", lpparam.classLoader, "hasEnable", new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         super.beforeHookedMethod(param);
@@ -573,6 +578,7 @@ public class MainHook implements IXposedHookLoadPackage {
                     }
                 });
                 Utils.log("Hook自身结束");
+                break;
         }
     }
 

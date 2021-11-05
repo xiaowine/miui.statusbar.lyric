@@ -53,14 +53,15 @@ public class SettingsActivity extends PreferenceActivity {
         Utils.context = activity;
         Utils.log("debug开启");
 
-        SharedPreferences preferences = activity.getSharedPreferences("Tips", 0);
-        if (!preferences.getBoolean("Tips", false)) {
+        String tips = "Tips1";
+        SharedPreferences preferences = activity.getSharedPreferences(tips, 0);
+        if (!preferences.getBoolean(tips, false)) {
             new AlertDialog.Builder(activity)
                     .setTitle("提示")
-                    .setMessage("请认真阅读此一次性警告！\n\n很抱歉花费您的时间。\n\n请检查软件版本是否正确！\n\n模块不生效请打开debug并重启SystemUI并附上日志，前往 Github/电报 进行反馈。\n\n模块内的生效检测仅供参考，Xposed有时不一定能Hook到自身，望周知！")
+                    .setMessage("请认真阅读此一次性警告！\n\n很抱歉花费您的时间。\n\n请检查软件版本是否正确！\n\n如果出现不生效请重新优化软件\n\n模块不生效请打开debug并重启SystemUI并附上日志，前往 Github/电报 进行反馈。\n\n模块内的生效检测仅供参考，Xposed有时不一定能Hook到自身，望周知！")
                     .setNegativeButton("我已知晓", (dialog, which) -> {
                         SharedPreferences.Editor a = preferences.edit();
-                        a.putBoolean("Tips", true);
+                        a.putBoolean(tips, true);
                         a.apply();
                     })
                     .setPositiveButton("退出", (dialog, which) -> activity.finish())
@@ -98,10 +99,10 @@ public class SettingsActivity extends PreferenceActivity {
         // 歌词总开关
         SwitchPreference lyricService = (SwitchPreference) findPreference("lyricService");
         assert lyricService != null;
-        if (Utils.isEnable()) {
-            lyricService.setTitle("总开关 (模块已激活)");
+        if (hasEnable()) {
+            lyricService.setTitle("总开关 (模块已激活[仅供参考])");
         } else {
-            lyricService.setTitle("总开关 (模块未激活)");
+            lyricService.setTitle("总开关 (模块未激活[仅供参考])");
         }
         lyricService.setChecked(config.getLyricService());
         lyricService.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -135,6 +136,8 @@ public class SettingsActivity extends PreferenceActivity {
             try {
                 String value = newValue.toString().replaceAll(" ", "").replaceAll("\n", "");
                 if (value.equals("-1")) {
+                    config.setLyricMaxWidth(Integer.parseInt(value));
+                    lyricMaxWidth.setSummary(value);
                 } else if (Integer.parseInt(value) <= 100 && Integer.parseInt(value) >= 0) {
                     config.setLyricMaxWidth(Integer.parseInt(value));
                     lyricMaxWidth.setSummary(value);
@@ -144,6 +147,18 @@ public class SettingsActivity extends PreferenceActivity {
             } catch (NumberFormatException e) {
                 Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
             }
+            return true;
+        });
+
+        // 歌词最大自适应宽度
+        EditTextPreference lyricPosition = (EditTextPreference) findPreference("lyricPosition");
+        assert lyricPosition != null;
+        lyricPosition.setSummary((String.valueOf(config.getLyricPosition())));
+        lyricPosition.setDialogMessage("-100~100，当前:" + lyricMaxWidth.getSummary());
+        lyricPosition.setOnPreferenceChangeListener((preference, newValue) -> {
+            String value = newValue.toString().replaceAll(" ", "").replaceAll("\n", "");
+            config.setLyricPosition(Integer.parseInt(value));
+            lyricPosition.setSummary(value);
             return true;
         });
 
@@ -544,6 +559,10 @@ public class SettingsActivity extends PreferenceActivity {
         if (requestCode == 13131) {
             Utils.checkPermissions(activity);
         }
+    }
+
+    public boolean hasEnable() {
+        return false;
     }
 
 }

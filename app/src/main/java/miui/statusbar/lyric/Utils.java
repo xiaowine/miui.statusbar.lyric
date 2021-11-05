@@ -171,6 +171,7 @@ public class Utils {
                 config.setisUsedCount(true);
                 config.setAnim("off");
                 config.setHook("");
+                config.setLyricPosition(2);
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(activity, "初始化失败，请重启软件", Toast.LENGTH_LONG).show();
@@ -554,10 +555,6 @@ public class Utils {
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
         return sw.toString();
-    }
-
-    public static boolean isEnable() {
-        return false;
     }
 
     // 判断class是否存在

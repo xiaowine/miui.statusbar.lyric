@@ -90,6 +90,22 @@ public class Config {
         }
     }
 
+    public void setLyricPosition(int i) {
+        try {
+            this.config.put("LyricPosition", i);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
+
+    public int getLyricPosition() {
+        try {
+            return (Integer) this.config.get("LyricPosition");
+        } catch (JSONException e) {
+            return -1;
+        }
+    }
+
     public void setLyricMaxWidth(int i) {
         try {
             this.config.put("LyricMaxWidth", i);
