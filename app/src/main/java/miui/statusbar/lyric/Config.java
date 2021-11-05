@@ -102,7 +102,7 @@ public class Config {
         try {
             return (Integer) this.config.get("LyricPosition");
         } catch (JSONException e) {
-            return -1;
+            return 2;
         }
     }
 

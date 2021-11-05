@@ -150,11 +150,11 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
-        // 歌词最大自适应宽度
+        // 图标上下位置
         EditTextPreference lyricPosition = (EditTextPreference) findPreference("lyricPosition");
         assert lyricPosition != null;
         lyricPosition.setSummary((String.valueOf(config.getLyricPosition())));
-        lyricPosition.setDialogMessage("-100~100，当前:" + lyricMaxWidth.getSummary());
+        lyricPosition.setDialogMessage("-100~100，当前:" + lyricPosition.getSummary());
         lyricPosition.setOnPreferenceChangeListener((preference, newValue) -> {
             String value = newValue.toString().replaceAll(" ", "").replaceAll("\n", "");
             config.setLyricPosition(Integer.parseInt(value));
