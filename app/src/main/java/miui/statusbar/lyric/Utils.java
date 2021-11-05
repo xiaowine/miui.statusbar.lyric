@@ -1,5 +1,6 @@
 package miui.statusbar.lyric;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -48,13 +49,14 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-import java.util.Random;
 
 @SuppressWarnings("unused")
 public class Utils {
 
     public static String PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/media/miui.statusbar.lyric/";
     public static boolean hasMiuiSetting = isPresent("android.provider.MiuiSettings");
+    @SuppressLint("StaticFieldLeak")
+    public static Context context = null;
 
     public static String getLocalVersion(Context context) {
         String localVersion = "";
@@ -290,11 +292,22 @@ public class Utils {
 
 
 
-    //    MainHook
+    // log
     @SuppressWarnings("unused")
     public static void log(String text) {
         if (new Config().getDebug()) {
-            XposedBridge.log("MIUI状态栏歌词： " + text);
+            if (context == null) {
+                if (isPresent("de.robv.android.xposed.XposedBridge")) {
+                    XposedBridge.log("MIUI状态栏歌词： " + text);
+                } else {
+                    Log.d("MIUI状态栏歌词", text);
+                }
+            } else {
+                Log.d("MIUI状态栏歌词", text);
+                if (Utils.context != null) {
+                    showToastOnLooper(Utils.context, "MIUI状态栏歌词： " + text);
+                }
+            }
         }
     }
 
@@ -551,10 +564,10 @@ public class Utils {
     public static boolean isPresent(String name) {
         try {
             Thread.currentThread().getContextClassLoader().loadClass(name);
-            log(name + " class存在");
+            Log.d("MIUI状态栏歌词", name + " class存在");
             return true;
         } catch (ClassNotFoundException e) {
-            log(name + " class不存在");
+            Log.d("MIUI状态栏歌词", name + " class不存在");
             return false;
         }
     }

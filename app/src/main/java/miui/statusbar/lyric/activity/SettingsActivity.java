@@ -50,6 +50,8 @@ public class SettingsActivity extends PreferenceActivity {
         Utils.checkPermissions(activity);
         config = new Config();
 
+        Utils.context = activity;
+        Utils.log("debug开启");
 
         SharedPreferences preferences = activity.getSharedPreferences("Tips", 0);
         if (!preferences.getBoolean("Tips", false)) {
