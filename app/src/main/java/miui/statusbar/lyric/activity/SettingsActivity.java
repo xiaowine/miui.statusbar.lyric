@@ -259,36 +259,6 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
-        // 自定义Hook
-        Preference hook = findPreference("lyricHook");
-        assert hook != null;
-        hook.setSummary(config.getHook());
-        if (config.getHook().equals("")) {
-            hook.setSummary("默认Hook点");
-        }
-        hook.setOnPreferenceClickListener((preBuference) -> {
-            EditText editText = new EditText(activity);
-            editText.setText(config.getHook());
-            new AlertDialog.Builder(activity)
-                    .setTitle("自定义Hook点")
-                    .setView(editText)
-                    .setNegativeButton("恢复默认", (dialog, which) -> {
-                        hook.setSummary("默认Hook点");
-                        config.setHook("");
-                        Utils.showToastOnLooper(activity, "已恢复默认Hook点,请重启SystemUI");
-                    })
-                    .setPositiveButton("确定", (dialog, which) -> {
-                        config.setHook(editText.getText().toString());
-                        hook.setSummary(editText.getText().toString());
-                        if (config.getHook().equals("")) {
-                            hook.setSummary("默认Hook点");
-                        }
-                        Utils.showToastOnLooper(activity, "已设置Hook点为: " + config.getHook() + " 请重启SystemUI");
-                    })
-                    .create()
-                    .show();
-            return true;
-        });
 
         // 图标路径
         Preference iconPath = findPreference("iconPath");
@@ -399,6 +369,36 @@ public class SettingsActivity extends PreferenceActivity {
 //            config.setHAlarm((Boolean) newValue);
 //            return true;
 //        });
+        // 自定义Hook
+        Preference hook = findPreference("lyricHook");
+        assert hook != null;
+        hook.setSummary(config.getHook());
+        if (config.getHook().equals("")) {
+            hook.setSummary("默认Hook点");
+        }
+        hook.setOnPreferenceClickListener((preBuference) -> {
+            EditText editText = new EditText(activity);
+            editText.setText(config.getHook());
+            new AlertDialog.Builder(activity)
+                    .setTitle("自定义Hook点")
+                    .setView(editText)
+                    .setNegativeButton("恢复默认", (dialog, which) -> {
+                        hook.setSummary("默认Hook点");
+                        config.setHook("");
+                        Utils.showToastOnLooper(activity, "已恢复默认Hook点,请重启SystemUI");
+                    })
+                    .setPositiveButton("确定", (dialog, which) -> {
+                        config.setHook(editText.getText().toString());
+                        hook.setSummary(editText.getText().toString());
+                        if (config.getHook().equals("")) {
+                            hook.setSummary("默认Hook点");
+                        }
+                        Utils.showToastOnLooper(activity, "已设置Hook点为: " + config.getHook() + " 请重启SystemUI");
+                    })
+                    .create()
+                    .show();
+            return true;
+        });
 
         // Debug模式
         SwitchPreference debug = (SwitchPreference) findPreference("debug");

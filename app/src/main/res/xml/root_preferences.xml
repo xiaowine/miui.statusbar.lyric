@@ -75,12 +75,7 @@
             android:summary=""
             android:title="点击歌词切换时钟和歌词 (需重启系统界面)"/>
 
-    <Preference
-        android:key="lyricHook"
-        android:summary=""
-        android:title="自定义Hook点 (不懂勿动)(需重启系统界面)"/>
-
-    <SwitchPreference
+     <SwitchPreference
             android:defaultValue="false"
             android:key="antiburn"
             android:summary=""
@@ -130,6 +125,11 @@
 <!--            android:enabled="false"/>-->
 
     <PreferenceCategory android:title="辅助功能"/>
+    <Preference
+            android:key="lyricHook"
+            android:summary=""
+            android:title="自定义Hook点 (不懂勿动)(需重启系统界面)"/>
+
 
     <SwitchPreference
             android:defaultValue="false"
