@@ -557,6 +557,14 @@ public class Utils {
         return sw.toString();
     }
 
+    // 报错转内容
+    public static String dumpNoSuchFieldError(NoSuchFieldError e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        return sw.toString();
+    }
+
     // 判断class是否存在
     public static boolean isPresent(String name) {
         try {

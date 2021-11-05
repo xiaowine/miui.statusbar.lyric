@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -111,22 +112,30 @@ public class MainHook implements IXposedHookLoadPackage {
                         // 获取系统版本
                         String miuiVer = Utils.getMiuiVer();
                         boolean isEuMiui = Utils.getIsEuMiui();
-                        Utils.log("MIUI Ver: " + miuiVer + " IsEuMiui: " + isEuMiui);
+                        Utils.log("MIUI Ver: " + miuiVer + " IsEuMiui: " + isEuMiui + " Android: " + Build.VERSION.SDK_INT);
 
-                        // 反射获取时钟
                         if (!config.getHook().equals("")) {
                             Utils.log("自定义Hook点: " + config.getHook());
-                            clockField = XposedHelpers.findField(param.thisObject.getClass(), config.getHook());
-                        } else if (miuiVer.equals("V12")) {
-                            clockField = XposedHelpers.findField(param.thisObject.getClass(), "mStatusClock");
-                        } else if (miuiVer.equals("V125") && !isEuMiui) {
-                            clockField = XposedHelpers.findField(param.thisObject.getClass(), "mClockView");
-                        } else if (miuiVer.equals("V125") && isEuMiui) {
-                            clockField = XposedHelpers.findField(param.thisObject.getClass(), "mStatusClock");
+                            try {
+                                clockField = XposedHelpers.findField(param.thisObject.getClass(), config.getHook());
+                            } catch (NoSuchFieldError e) {
+                                Utils.log(config.getHook() + " 反射失败: " + e + "\n" + Utils.dumpNoSuchFieldError(e));
+                                return;
+                            }
                         } else {
-                            Utils.log("Unknown version");
-                            clockField = XposedHelpers.findField(param.thisObject.getClass(), "mClockView");
+                            try {
+                                clockField = XposedHelpers.findField(param.thisObject.getClass(), "mStatusClock");
+                            } catch (NoSuchFieldError e) {
+                                Utils.log("mStatusClock 反射失败: " + e + "\n" + Utils.dumpNoSuchFieldError(e));
+                                try {
+                                    clockField = XposedHelpers.findField(param.thisObject.getClass(), "mClockView");
+                                } catch (NoSuchFieldError mE) {
+                                    Utils.log("mStatusClock 反射失败: " + mE + "\n" + Utils.dumpNoSuchFieldError(mE));
+                                    return;
+                                }
+                            }
                         }
+
                         TextView clock = (TextView) clockField.get(param.thisObject);
 
                         // 创建TextView
