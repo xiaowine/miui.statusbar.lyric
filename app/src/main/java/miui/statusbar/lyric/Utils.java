@@ -581,14 +581,22 @@ public class Utils {
     public static String[] getLyricFile() {
         String[] res = {"", ""};
         try {
-            File file = new File(PATH + "lyric.txt");
-            FileInputStream fis = new FileInputStream(file);
-            int length = fis.available();
-            byte[] buffer = new byte[length];
-            fis.read(buffer);
-            JSONArray jsonArray = new JSONArray(buffer.toString());
+            StringBuilder stringBuffer = new StringBuilder();
+            // 打开文件输入流
+            FileInputStream fileInputStream = new FileInputStream(PATH + "lyric.txt");
+
+            byte[] buffer = new byte[1024];
+            int len = fileInputStream.read(buffer);
+            // 读取文件内容
+            while (len > 0) {
+                stringBuffer.append(new String(buffer, 0, len));
+                // 继续将数据放到buffer中
+                len = fileInputStream.read(buffer);
+            }
+            String json = stringBuffer.toString();
+            log("获取歌词 " + json);
+            JSONArray jsonArray = new JSONArray(json);
             res = new String[]{(String) jsonArray.get(0), (String) jsonArray.get(1)};
-            fis.close();
         } catch (Exception e) {
             log("歌词读取错误: " + e + "\n" + dumpException(e));
         }
@@ -601,7 +609,9 @@ public class Utils {
             JSONArray jsonArray = new JSONArray();
             jsonArray.put(app_name);
             jsonArray.put(lyric);
-            outputStream.write(jsonArray.toString().getBytes());
+            String json = jsonArray.toString();
+            log("设置歌词 " + json);
+            outputStream.write(json.getBytes());
             outputStream.close();
         } catch (Exception e) {
             log("写歌词错误: " + e + "\n" + dumpException(e));

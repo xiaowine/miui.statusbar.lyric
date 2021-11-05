@@ -294,7 +294,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                                     if (config.getFileLyric()) {
                                                         String[] strArr = Utils.getLyricFile();
                                                         lyric = strArr[1];
-                                                        icon[0] = "app";
+                                                        icon[0] = "hook";
                                                         if (config.getIcon()) {
                                                             icon[1] = config.getIconPath() + strArr[0] + ".webp";
                                                         } else {

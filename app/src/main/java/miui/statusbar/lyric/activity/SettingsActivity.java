@@ -74,11 +74,6 @@ public class SettingsActivity extends PreferenceActivity {
         Preference verExplain = findPreference("ver_explain");
         assert verExplain != null;
         verExplain.setSummary("当前版本[" + Utils.getLocalVersion(activity) + "]适用于 " + getString(R.string.ver_explain));
-//        verExplain.setOnPreferenceClickListener((preference) -> {
-//            Utils.setIAlarm("settings put secure icon_blacklist alarm_clock");
-//            Toast.makeText(activity, "233", Toast.LENGTH_LONG).show();
-//            return false;
-//        });
 
         // 隐藏桌面图标
         SwitchPreference hIcons = (SwitchPreference) findPreference("hLauncherIcon");
@@ -131,8 +126,7 @@ public class SettingsActivity extends PreferenceActivity {
             try {
                 String value = newValue.toString().replaceAll(" ", "").replaceAll("\n", "");
                 if (value.equals("-1")) {
-                    config.setLyricMaxWidth(Integer.parseInt(value));
-                    lyricMaxWidth.setSummary(value);
+                    return true;
                 } else if (Integer.parseInt(value) <= 100 && Integer.parseInt(value) >= 0) {
                     config.setLyricMaxWidth(Integer.parseInt(value));
                     lyricMaxWidth.setSummary(value);
@@ -175,6 +169,7 @@ public class SettingsActivity extends PreferenceActivity {
 
             try {
                 if (value.equals("-1")) {
+                    return true;
                 } else if (Integer.parseInt(value) <= 100 && Integer.parseInt(value) >= 0) {
                     config.setLyricWidth(Integer.parseInt(value));
                     lyricWidth.setSummary(value);
@@ -348,29 +343,50 @@ public class SettingsActivity extends PreferenceActivity {
         // 隐藏通知图标
         SwitchPreference hNoticeIcon = (SwitchPreference) findPreference("hNoticeIcon");
         assert hNoticeIcon != null;
-        hNoticeIcon.setChecked(config.getHNoticeIco());
-        hNoticeIcon.setOnPreferenceChangeListener((preference, newValue) -> {
-            config.sethNoticeIcon((Boolean) newValue);
-            return true;
-        });
+        if (!Utils.hasMiuiSetting) {
+            hNoticeIcon.setEnabled(false);
+            hNoticeIcon.setChecked(false);
+            hNoticeIcon.setSummary(hNoticeIcon.getSummary() + " (您不是MIUI系统)");
+            config.sethNoticeIcon(false);
+        } else {
+            hNoticeIcon.setChecked(config.getHNoticeIco());
+            hNoticeIcon.setOnPreferenceChangeListener((preference, newValue) -> {
+                config.sethNoticeIcon((Boolean) newValue);
+                return true;
+            });
+        }
 
         // 隐藏实时网速
         SwitchPreference hNetWork = (SwitchPreference) findPreference("hNetWork");
         assert hNetWork != null;
-        hNetWork.setChecked(config.getHNetSpeed());
-        hNetWork.setOnPreferenceChangeListener((preference, newValue) -> {
-            config.sethNetSpeed((Boolean) newValue);
-            return true;
-        });
+        if (!Utils.hasMiuiSetting) {
+            hNetWork.setEnabled(false);
+            hNetWork.setChecked(false);
+            hNetWork.setSummary(hNetWork.getSummary() + " (您不是MIUI系统)");
+            config.sethNoticeIcon(false);
+        } else {
+            hNetWork.setChecked(config.getHNetSpeed());
+            hNetWork.setOnPreferenceChangeListener((preference, newValue) -> {
+                config.sethNetSpeed((Boolean) newValue);
+                return true;
+            });
+        }
 
         // 隐藏运营商名称
         SwitchPreference hCUK = (SwitchPreference) findPreference("hCUK");
         assert hCUK != null;
-        hCUK.setChecked(config.getHCUK());
-        hCUK.setOnPreferenceChangeListener((preference, newValue) -> {
-            config.sethCUK((Boolean) newValue);
-            return true;
-        });
+        if (!Utils.hasMiuiSetting) {
+            hCUK.setEnabled(false);
+            hCUK.setChecked(false);
+            hCUK.setSummary(hCUK.getSummary() + " (您不是MIUI系统)");
+            config.sethNoticeIcon(false);
+        } else {
+            hCUK.setChecked(config.getHCUK());
+            hCUK.setOnPreferenceChangeListener((preference, newValue) -> {
+                config.sethCUK((Boolean) newValue);
+                return true;
+            });
+        }
 
         // 隐藏闹钟图标
 //        SwitchPreference hAlarm = (SwitchPreference) findPreference("hAlarm");
@@ -555,12 +571,5 @@ public class SettingsActivity extends PreferenceActivity {
             Utils.checkPermissions(activity);
         }
     }
-
-//    public String hasEnable() {
-//        if (!Utils.hasXposed) {
-//        } else {
-//            return "总开关 (模块已激活[仅供参考])";
-//        }
-//    }
 
 }
