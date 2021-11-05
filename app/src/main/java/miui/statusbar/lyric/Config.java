@@ -372,4 +372,20 @@ public class Config {
         }
     }
 
+    public boolean getFileLyric() {
+        try {
+            return (boolean) this.config.get("FileLyric");
+        } catch (JSONException e) {
+            return false;
+        }
+    }
+
+    public void setFileLyric(boolean bool) {
+        try {
+            this.config.put("FileLyric", bool);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
+
 }

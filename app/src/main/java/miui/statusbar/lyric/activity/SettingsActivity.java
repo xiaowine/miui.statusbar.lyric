@@ -1,8 +1,6 @@
 package miui.statusbar.lyric.activity;
 
 
-import static miui.statusbar.lyric.Utils.setIAlarm;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -53,19 +51,17 @@ public class SettingsActivity extends PreferenceActivity {
         config = new Config();
 
 
-        SharedPreferences preferences = activity.getSharedPreferences("protocol", 0);
-        if (!preferences.getBoolean("protocol", false)) {
+        SharedPreferences preferences = activity.getSharedPreferences("Tips", 0);
+        if (!preferences.getBoolean("Tips", false)) {
             new AlertDialog.Builder(activity)
-                    .setTitle("警告")
-                    .setMessage("本模块布不久，可能会有许多BUG\n" +
-                            "使用本模块造成的破坏，软件不负责\n" +
-                            "继续代表同意")
-                    .setNegativeButton("继续", (dialog, which) -> {
+                    .setTitle("提示")
+                    .setMessage("请认真阅读此一次性警告！\n\n很抱歉花费您的时间。\n\n请检查软件版本是否正确！\n\n模块不生效请打开debug并重启SystemUI并附上日志，前往 Github/电报 进行反馈。\n\n模块内的生效检测仅供参考，Xposed有时不一定能Hook到自身，望周知！")
+                    .setNegativeButton("我已知晓", (dialog, which) -> {
                         SharedPreferences.Editor a = preferences.edit();
-                        a.putBoolean("protocol", true);
+                        a.putBoolean("Tips", true);
                         a.apply();
                     })
-                    .setPositiveButton("不同意", (dialog, which) -> activity.finish())
+                    .setPositiveButton("退出", (dialog, which) -> activity.finish())
                     .setCancelable(false)
                     .create()
                     .show();
@@ -247,6 +243,15 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
+        // 文件传输歌词
+        SwitchPreference fileLyric = (SwitchPreference) findPreference("fileLyric");
+        assert fileLyric != null;
+        fileLyric.setChecked(config.getFileLyric());
+        fileLyric.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.setFileLyric((Boolean) newValue);
+            return true;
+        });
+
         // 自定义Hook
         Preference hook = findPreference("lyricHook");
         assert hook != null;
@@ -356,16 +361,16 @@ public class SettingsActivity extends PreferenceActivity {
         });
 
         // 隐藏闹钟图标
-        SwitchPreference hAlarm = (SwitchPreference) findPreference("hAlarm");
-        assert hAlarm != null;
-        hAlarm.setChecked(config.getHAlarm());
-        hAlarm.setOnPreferenceChangeListener((preference, newValue) -> {
-            if (!(Boolean) newValue) {
-                setIAlarm("settings delete secure icon_blacklist");
-            }
-            config.setHAlarm((Boolean) newValue);
-            return true;
-        });
+//        SwitchPreference hAlarm = (SwitchPreference) findPreference("hAlarm");
+//        assert hAlarm != null;
+//        hAlarm.setChecked(config.getHAlarm());
+//        hAlarm.setOnPreferenceChangeListener((preference, newValue) -> {
+//            if (!(Boolean) newValue) {
+//                setIAlarm("settings delete secure icon_blacklist");
+//            }
+//            config.setHAlarm((Boolean) newValue);
+//            return true;
+//        });
 
         // Debug模式
         SwitchPreference debug = (SwitchPreference) findPreference("debug");

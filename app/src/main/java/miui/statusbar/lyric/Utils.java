@@ -29,12 +29,15 @@ import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
 import de.robv.android.xposed.XposedBridge;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +53,8 @@ import java.util.Random;
 @SuppressWarnings("unused")
 public class Utils {
 
-    public static String PATH = Environment.getExternalStorageDirectory() + "/Android/media/miui.statusbar.lyric/";
+    public static String PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/media/miui.statusbar.lyric/";
+    public static boolean hasMiuiSetting = isPresent("android.provider.MiuiSettings");
 
     public static String getLocalVersion(Context context) {
         String localVersion = "";
@@ -331,6 +335,9 @@ public class Utils {
 
     @SuppressWarnings("unused")
     public static void setStatusBar(Context application, Boolean isOpen) {
+        if (!hasMiuiSetting) {
+            return;
+        }
         Config config = new Config();
         int isCarrier = 1;
         int notCarrier = 0;
@@ -379,7 +386,11 @@ public class Utils {
 
     @SuppressWarnings("unused")
     public static void sendLyric(Context context, String lyric, String icon) {
-        context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Icon", icon).putExtra("Lyric_Type", "hook"));
+        if (new Config().getFileLyric()) {
+            Utils.setLyricFile(icon, lyric);
+        } else {
+            context.sendBroadcast(new Intent().setAction("Lyric_Server").putExtra("Lyric_Data", lyric).putExtra("Lyric_Icon", icon).putExtra("Lyric_Type", "hook"));
+        }
     }
 
     public static void addLyricCount() {
@@ -534,6 +545,48 @@ public class Utils {
 
     public static boolean isEnable() {
         return false;
+    }
+
+    // 判断class是否存在
+    public static boolean isPresent(String name) {
+        try {
+            Thread.currentThread().getContextClassLoader().loadClass(name);
+            log(name + " class存在");
+            return true;
+        } catch (ClassNotFoundException e) {
+            log(name + " class不存在");
+            return false;
+        }
+    }
+
+    public static String[] getLyricFile() {
+        String[] res = {"", ""};
+        try {
+            File file = new File(PATH + "lyric.txt");
+            FileInputStream fis = new FileInputStream(file);
+            int length = fis.available();
+            byte[] buffer = new byte[length];
+            fis.read(buffer);
+            JSONArray jsonArray = new JSONArray(buffer.toString());
+            res = new String[]{(String) jsonArray.get(0), (String) jsonArray.get(1)};
+            fis.close();
+        } catch (Exception e) {
+            log("歌词读取错误: " + e + "\n" + dumpException(e));
+        }
+        return res;
+    }
+
+    public static void setLyricFile(String app_name, String lyric) {
+        try {
+            FileOutputStream outputStream = new FileOutputStream(PATH + "lyric.txt");
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put(app_name);
+            jsonArray.put(lyric);
+            outputStream.write(jsonArray.toString().getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            log("写歌词错误: " + e + "\n" + dumpException(e));
+        }
     }
 
 }

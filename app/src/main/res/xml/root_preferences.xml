@@ -111,11 +111,17 @@
             android:title="隐藏锁屏运营商名称"/>
 
     <SwitchPreference
-            android:defaultValue="false"
-            android:key="hAlarm"
-            android:summary="自动隐藏闹钟图标（需ROOT）"
-            android:title="隐藏闹钟图标"
-            android:enabled="false"/>
+        android:defaultValue="false"
+        android:key="fileLyric"
+        android:summary="广播无法使用请打开此开关\n(存储空间隔离请设置好相关权限)"
+        android:title="文件传输歌词"/>
+
+<!--    <SwitchPreference-->
+<!--            android:defaultValue="false"-->
+<!--            android:key="hAlarm"-->
+<!--            android:summary="自动隐藏闹钟图标（需ROOT）"-->
+<!--            android:title="隐藏闹钟图标"-->
+<!--            android:enabled="false"/>-->
 
     <PreferenceCategory android:title="辅助功能"/>
 

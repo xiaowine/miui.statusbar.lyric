@@ -268,6 +268,16 @@ public class MainHook implements IXposedHookLoadPackage {
                                         try {
                                             if (count == 50) {
                                                 config = new Config();
+                                                if (config.getFileLyric()) {
+                                                    String[] strArr = Utils.getLyricFile();
+                                                    lyric = strArr[1];
+                                                    icon[0] = "app";
+                                                    if (config.getIcon()) {
+                                                        icon[1] = config.getIconPath() + strArr[0] + ".webp";
+                                                    } else {
+                                                        icon[1] = "";
+                                                    }
+                                                }
                                             }
                                             if (config.getLyricService()) {
                                                 if (count == 100) {
