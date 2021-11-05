@@ -1,4 +1,6 @@
-# MIUI 状态栏歌词
+<h1 align="center">MIUI 状态栏歌词</h1>
+
+<div align="center">
 
 ![Release Download](https://img.shields.io/github/downloads/xiaowine/miui.statusbar.lyric/total?style=flat-square)
 [![Release Version](https://img.shields.io/github/v/release/xiaowine/miui.statusbar.lyric?style=flat-square)](https://github.com/xiaowine/miui.statusbar.lyric/releases/latest)
@@ -13,6 +15,8 @@
 [![电报群](https://img.shields.io/badge/电报群-MIUIStatusBatLyric-blue.svg?style=flat-square&color=12b7f5)](https://t.me/MIUIStatusBatLyric)
 [![爱发电](https://img.shields.io/badge/爱发电-@xiao_wine-blue.svg?style=flat-square&color=12b7f5)](https://afdian.net/@xiao_wine)
 
+</div>
+    
 ### 自动获取音乐软件当前播放的歌曲，并实时将歌词显示在状态栏
 
 支持 MIUI 12 以后的 MIUI
