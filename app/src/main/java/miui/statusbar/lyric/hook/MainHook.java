@@ -65,6 +65,7 @@ public class MainHook implements IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+        Utils.hasXposed = true;
         Utils.log("DeBug已开启");
 
         // 获取Context
@@ -125,12 +126,14 @@ public class MainHook implements IXposedHookLoadPackage {
                         } else {
                             try {
                                 clockField = XposedHelpers.findField(param.thisObject.getClass(), "mStatusClock");
+                                Utils.log("mStatusClock 反射成功");
                             } catch (NoSuchFieldError e) {
                                 Utils.log("mStatusClock 反射失败: " + e + "\n" + Utils.dumpNoSuchFieldError(e));
                                 try {
                                     clockField = XposedHelpers.findField(param.thisObject.getClass(), "mClockView");
+                                    Utils.log("mClockView 反射成功");
                                 } catch (NoSuchFieldError mE) {
-                                    Utils.log("mStatusClock 反射失败: " + mE + "\n" + Utils.dumpNoSuchFieldError(mE));
+                                    Utils.log("mClockView 反射失败: " + mE + "\n" + Utils.dumpNoSuchFieldError(mE));
                                     return;
                                 }
                             }
@@ -278,23 +281,27 @@ public class MainHook implements IXposedHookLoadPackage {
                                         try {
                                             if (count == 50) {
                                                 config = new Config();
-                                                if (config.getFileLyric()) {
-                                                    String[] strArr = Utils.getLyricFile();
-                                                    lyric = strArr[1];
-                                                    icon[0] = "app";
-                                                    if (config.getIcon()) {
-                                                        icon[1] = config.getIconPath() + strArr[0] + ".webp";
-                                                    } else {
-                                                        icon[1] = "";
-                                                    }
-                                                }
-                                                if (config.getLyricPosition() != oldPos) {
-                                                    oldPos = config.getLyricPosition();
-                                                    iconParams.setMargins(0, oldPos, 0, 0);
-                                                }
                                             }
                                             if (config.getLyricService()) {
-                                                if (count == 100) {
+                                                if (count == 25) {
+                                                    if (!lyric.equals("") && !config.getAntiBurn()) {
+                                                        if (config.getLyricPosition() != oldPos) {
+                                                            oldPos = config.getLyricPosition();
+                                                            iconParams.setMargins(0, oldPos, 0, 0);
+                                                        }
+                                                    }
+                                                } else if (count == 75) {
+                                                    if (config.getFileLyric()) {
+                                                        String[] strArr = Utils.getLyricFile();
+                                                        lyric = strArr[1];
+                                                        icon[0] = "app";
+                                                        if (config.getIcon()) {
+                                                            icon[1] = config.getIconPath() + strArr[0] + ".webp";
+                                                        } else {
+                                                            icon[1] = "";
+                                                        }
+                                                    }
+                                                } else if (count == 100) {
                                                     if (Utils.isServiceRunningList(application, musicServer)) {
                                                         enable = true;
                                                         if (config.getLyricAutoOff()) {
@@ -340,7 +347,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                                 setOff("开关关闭");
                                             }
                                         } catch (Exception e) {
-                                            Utils.log("出现错误! " + e);
+                                            Utils.log("出现错误! " + e + "\n" + Utils.dumpException(e));
                                             e.printStackTrace();
                                             count = 0;
                                         }
@@ -418,9 +425,11 @@ public class MainHook implements IXposedHookLoadPackage {
                                 new TimerTask() {
                                     int i = 1;
                                     boolean order = true;
+                                    int oldPos = 0;
 
                                     @Override
                                     public void run() {
+                                        oldPos = config.getLyricPosition();
                                         if (!lyric.equals("") && config.getAntiBurn()) {
                                             if (order) {
                                                 i += 1;
@@ -429,7 +438,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                             }
                                             Utils.log("当钱位移：" + i);
                                             lyricParams.setMargins(10 + i, 0, 0, 0);
-                                            iconParams.setMargins(i, 2, 0, 0);
+                                            iconParams.setMargins(i, oldPos, 0, 0);
                                             if (i == 0) {
                                                 order = true;
                                             } else if (i == 10) {
@@ -437,7 +446,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                             }
                                         } else {
                                             lyricParams.setMargins(10, 0, 0, 0);
-                                            iconParams.setMargins(0, 2, 0, 0);
+                                            iconParams.setMargins(0, oldPos, 0, 0);
                                         }
                                     }
                                 }, 0, 60000);
@@ -602,15 +611,11 @@ public class MainHook implements IXposedHookLoadPackage {
                             Utils.addLyricCount();
                             lyric = intent.getStringExtra("Lyric_Data");
                             icon[0] = "hook";
-                            try {
-                                if (config.getIcon()) {
-                                    icon[1] = config.getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
-                                    lIcon = intent.getStringExtra("Lyric_Icon");
-                                } else {
+                            if (config.getIcon()) {
+                                icon[1] = config.getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
+                                if (icon[1] == null) {
                                     icon[1] = "";
                                 }
-                            } catch (RuntimeException e) {
-                                icon[1] = lIcon;
                             }
                             Utils.log("收到广播hook: lyric:" + lyric + " icon:" + icon[1]);
                             break;
@@ -618,7 +623,7 @@ public class MainHook implements IXposedHookLoadPackage {
                             Utils.addLyricCount();
                             lyric = intent.getStringExtra("Lyric_Data");
                             icon[0] = "app";
-                            String  icon_data = intent.getStringExtra("Lyric_Icon");
+                            String icon_data = intent.getStringExtra("Lyric_Icon");
                             if (icon_data != null) {
                                 icon[1] = icon_data;
                             } else {

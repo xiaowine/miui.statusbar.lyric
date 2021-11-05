@@ -57,6 +57,7 @@ public class Utils {
     public static boolean hasMiuiSetting = isPresent("android.provider.MiuiSettings");
     @SuppressLint("StaticFieldLeak")
     public static Context context = null;
+    public static boolean hasXposed = false;
 
     public static String getLocalVersion(Context context) {
         String localVersion = "";
@@ -298,7 +299,7 @@ public class Utils {
     public static void log(String text) {
         if (new Config().getDebug()) {
             if (context == null) {
-                if (isPresent("de.robv.android.xposed.XposedBridge")) {
+                if (hasXposed) {
                     XposedBridge.log("MIUI状态栏歌词： " + text);
                 } else {
                     Log.d("MIUI状态栏歌词", text);
