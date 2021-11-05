@@ -581,22 +581,6 @@ public class MainHook implements IXposedHookLoadPackage {
                 });
                 Utils.log("hook myplayer结束");
                 break;
-            case "miui.statusbar.lyric":
-                Utils.log("正在hook自身");
-                XposedHelpers.findAndHookMethod("miui.statusbar.lyric.activity.SettingsActivity", lpparam.classLoader, "hasEnable", new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        super.beforeHookedMethod(param);
-                    }
-
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        super.afterHookedMethod(param);
-                        param.setResult(true);
-                    }
-                });
-                Utils.log("Hook自身结束");
-                break;
         }
     }
 
