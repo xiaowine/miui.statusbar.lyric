@@ -99,11 +99,6 @@ public class SettingsActivity extends PreferenceActivity {
         // 歌词总开关
         SwitchPreference lyricService = (SwitchPreference) findPreference("lyricService");
         assert lyricService != null;
-        if (hasEnable()) {
-            lyricService.setTitle("总开关 (模块已激活[仅供参考])");
-        } else {
-            lyricService.setTitle("总开关 (模块未激活[仅供参考])");
-        }
         lyricService.setChecked(config.getLyricService());
         lyricService.setOnPreferenceChangeListener((preference, newValue) -> {
             config.setLyricService((Boolean) newValue);
@@ -561,8 +556,11 @@ public class SettingsActivity extends PreferenceActivity {
         }
     }
 
-    public boolean hasEnable() {
-        return false;
-    }
+//    public String hasEnable() {
+//        if (!Utils.hasXposed) {
+//        } else {
+//            return "总开关 (模块已激活[仅供参考])";
+//        }
+//    }
 
 }
