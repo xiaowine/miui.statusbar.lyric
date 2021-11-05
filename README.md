@@ -1,5 +1,18 @@
 # MIUI 状态栏歌词
 
+![Release Download](https://img.shields.io/github/downloads/xiaowine/miui.statusbar.lyric/total?style=flat-square)
+[![Release Version](https://img.shields.io/github/v/release/xiaowine/miui.statusbar.lyric?style=flat-square)](https://github.com/xiaowine/miui.statusbar.lyric/releases/latest)
+[![GitHub license](https://img.shields.io/github/license/xiaowine/miui.statusbar.lyric?style=flat-square)](LICENSE)
+[![GitHub Star](https://img.shields.io/github/stars/xiaowine/miui.statusbar.lyric?style=flat-square)](https://github.com/xiaowine/miui.statusbar.lyric/stargazers)
+[![GitHub Fork](https://img.shields.io/github/forks/xiaowine/miui.statusbar.lyric?style=flat-square)](https://github.com/xiaowine/miui.statusbar.lyric/network/members)
+![GitHub Repo size](https://img.shields.io/github/repo-size/xiaowine/miui.statusbar.lyric?style=flat-square&color=3cb371)
+[![GitHub Repo Languages](https://img.shields.io/github/languages/top/xiaowine/miui.statusbar.lyric?style=flat-square)](https://github.com/xiaowine/miui.statusbar.lyric/search?l=java)
+
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FSteamTools-Team%2FSteamTools%2Fbadge%3Fref%3Ddevelop&style=flat-square)](https://actions-badge.atrox.dev/xiaowine/miui.statusbar.lyric/goto?ref=develop)
+[![GitHub Star](https://img.shields.io/github/stars/xiaowine/miui.statusbar.lyric.svg?style=social)](https://github.com/xiaowine/miui.statusbar.lyric)
+[![电报群](https://img.shields.io/badge/电报群-MIUIStatusBatLyric-blue.svg?style=flat-square&color=12b7f5)](https://t.me/MIUIStatusBatLyric)
+[![爱发电](https://img.shields.io/badge/爱发电-@xiao_wine-blue.svg?style=flat-square&color=12b7f5)](https://afdian.net/@xiao_wine)
+
 ### 自动获取音乐软件当前播放的歌曲，并实时将歌词显示在状态栏
 
 支持 MIUI 12 以后的 MIUI
@@ -23,13 +36,6 @@
 [Releases](https://github.com/577fkj/MIUIStatusBarLyric_new/releases)  
 [酷安](https://www.coolapk.com/apk/miui.statusbar.lyric)  
 [测试版](https://github.com/xiaowine/miui.statusbar.lyric/actions)  
-
-### 联系方式
-
-[电报群](https://t.me/MIUIStatusBatLyric)  
-[爱发电](https://afdian.net/@xiao_wine)
-
-
 
 ## 音乐主动适配
 ### API 发送歌词示例
