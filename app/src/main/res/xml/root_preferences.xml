@@ -27,9 +27,9 @@
             android:title="歌曲暂停关闭歌词"/>
 
     <ListPreference
-        android:key="lyricAnim"
-        android:summary="关闭"
-        android:title="歌词动效" />
+            android:key="lyricAnim"
+            android:summary="关闭"
+            android:title="歌词动效"/>
 
     <EditTextPreference
             android:defaultValue="-1"
@@ -56,10 +56,10 @@
             android:title="歌词图标"/>
 
     <EditTextPreference
-        android:defaultValue="2"
-        android:key="lyricPosition"
-        android:summary="2"
-        android:title="图标上下位置"/>
+            android:defaultValue="2"
+            android:key="lyricPosition"
+            android:summary="默认"
+            android:title="图标上下位置"/>
 
     <SwitchPreference
             android:defaultValue="false"
@@ -75,7 +75,7 @@
             android:summary=""
             android:title="点击歌词切换时钟和歌词 (需重启系统界面)"/>
 
-     <SwitchPreference
+    <SwitchPreference
             android:defaultValue="false"
             android:key="antiburn"
             android:summary=""
@@ -112,17 +112,17 @@
             android:title="隐藏锁屏运营商名称"/>
 
     <SwitchPreference
-        android:defaultValue="false"
-        android:key="fileLyric"
-        android:summary="广播无法使用请打开此开关\n(存储空间隔离请设置好相关权限)"
-        android:title="文件传输歌词"/>
+            android:defaultValue="false"
+            android:key="fileLyric"
+            android:summary="广播无法使用请打开此开关\n(存储空间隔离请设置好相关权限)"
+            android:title="文件传输歌词"/>
 
-<!--    <SwitchPreference-->
-<!--            android:defaultValue="false"-->
-<!--            android:key="hAlarm"-->
-<!--            android:summary="自动隐藏闹钟图标（需ROOT）"-->
-<!--            android:title="隐藏闹钟图标"-->
-<!--            android:enabled="false"/>-->
+    <!--    <SwitchPreference-->
+    <!--            android:defaultValue="false"-->
+    <!--            android:key="hAlarm"-->
+    <!--            android:summary="自动隐藏闹钟图标（需ROOT）"-->
+    <!--            android:title="隐藏闹钟图标"-->
+    <!--            android:enabled="false"/>-->
 
     <PreferenceCategory android:title="辅助功能"/>
     <Preference

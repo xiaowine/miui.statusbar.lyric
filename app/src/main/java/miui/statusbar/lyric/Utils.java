@@ -30,7 +30,6 @@ import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
 import de.robv.android.xposed.XposedBridge;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,19 +94,29 @@ public class Utils {
         }
     }
 
+
     public static Boolean getIsEuMiui() {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader
                     (Runtime.getRuntime().exec("getprop ro.product.mod_device").getInputStream()), 1024);
             String ver = bufferedReader.readLine();
             bufferedReader.close();
-            return !ver.replace("\n", "").equals("");
+            return !ver.replaceAll("\n", "").equals("");
         } catch (Exception e) {
             return false;
         }
     }
 
     public static void setIAlarm(String s) {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader
+                    (Runtime.getRuntime().exec("settings get secure icon_blacklist").getInputStream()), 1024);
+            String icons = bufferedReader.readLine();
+            bufferedReader.close();
+            icons.replaceAll("\n", "");
+        } catch (Exception ignored) {
+
+        }
         try {
             java.lang.Process p = Runtime.getRuntime().exec("su");
             OutputStream outputStream = p.getOutputStream();
@@ -290,8 +299,6 @@ public class Utils {
             Looper.loop();
         }).start();
     }
-
-
 
 
     // log
@@ -479,7 +486,7 @@ public class Utils {
                         "left", "right", "random"
                 }[
                         (int) (Math.random() * 4)
-                 ]);
+                        ]);
             default:
                 return null;
         }
@@ -517,7 +524,7 @@ public class Utils {
                         "left", "right", "random"
                 }[
                         (int) (Math.random() * 4)
-                  ]);
+                        ]);
             default:
                 return null;
         }
@@ -542,9 +549,9 @@ public class Utils {
             for (int i = 0; i < stackElements.length; i++) {
 
                 log("Dump Stack" + i + ": " + stackElements[i].getClassName()
-                        + "----"+stackElements[i].getFileName()
+                        + "----" + stackElements[i].getFileName()
                         + "----" + stackElements[i].getLineNumber()
-                        + "----" +stackElements[i].getMethodName());
+                        + "----" + stackElements[i].getMethodName());
             }
         }
         log("Dump Stack: ---------------over----------------");

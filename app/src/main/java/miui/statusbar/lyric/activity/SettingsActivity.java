@@ -120,7 +120,6 @@ public class SettingsActivity extends PreferenceActivity {
         lyricMaxWidth.setDialogMessage("(-1~100，-1为关闭，仅在歌词宽度为自适应时生效)，当前:" + lyricMaxWidth.getSummary());
         lyricMaxWidth.setOnPreferenceChangeListener((preference, newValue) -> {
             lyricMaxWidth.setDialogMessage("(-1~100，-1为关闭，仅在歌词宽度为自适应时生效)，当前:自适应");
-            config.setLyricMaxWidth(-1);
             lyricMaxWidth.setSummary("自适应");
             config.setLyricMaxWidth(-1);
             try {
@@ -145,9 +144,21 @@ public class SettingsActivity extends PreferenceActivity {
         lyricPosition.setSummary((String.valueOf(config.getLyricPosition())));
         lyricPosition.setDialogMessage("-100~100，当前:" + lyricPosition.getSummary());
         lyricPosition.setOnPreferenceChangeListener((preference, newValue) -> {
-            String value = newValue.toString().replaceAll(" ", "").replaceAll("\n", "");
-            config.setLyricPosition(Integer.parseInt(value));
-            lyricPosition.setSummary(value);
+            lyricPosition.setDialogMessage("-100~100，当前:默认");
+            lyricPosition.setSummary("默认");
+            try {
+                String value = newValue.toString().replaceAll(" ", "").replaceAll("\n", "");
+                if (value.equals("2")) {
+                    return true;
+                } else if (Integer.parseInt(value) <= 100 && Integer.parseInt(value) >= -100) {
+                    config.setLyricPosition(Integer.parseInt(value));
+                    lyricPosition.setSummary(value);
+                } else {
+                    Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
+                }
+            } catch (NumberFormatException e) {
+                Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
+            }
             return true;
         });
 
