@@ -26,10 +26,43 @@ public class netease {
                     String enableBTLyric_Method;
                     String getMusicName_Class;
                     String getMusicName_Method;
-                    Class<?>[] getMusicName_ClsArr;
+                    Object[] getMusicName_ClsArr;
+                    XC_MethodHook getMusicName_Hook = new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            super.beforeHookedMethod(param);
+                        }
+
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            super.afterHookedMethod(param);
+                            if (param.args[0] != null) {
+                                Utils.sendLyric(context, param.args[0].toString(), "netease");
+                                musicName = param.args[0].toString();
+                                Utils.log("网易云： " + param.args[0].toString());
+                            }
+                        }
+                    };
                     String getMusicLyric_Class;
                     String getMusicLyric_Method;
-                    Class<?>[] getMusicLyric_ClsArr;
+                    Object[] getMusicLyric_ClsArr;
+                    XC_MethodHook getMusicLyric_Hook = new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            super.beforeHookedMethod(param);
+                            if (param.args[0] != null) {
+                                Utils.sendLyric(context, param.args[0].toString(), "netease");
+                                Utils.log("网易云： " + param.args[0].toString());
+                            }
+                            param.args[0] = musicName;
+                            param.setResult(param.args);
+                        }
+
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            super.afterHookedMethod(param);
+                        }
+                    };
                     try {
                         int cloudmusicVer = context.getPackageManager().getPackageInfo(PACKAGE_NAME, 0).versionCode;
                         if (cloudmusicVer >= 8006000) {
@@ -38,14 +71,14 @@ public class netease {
 
                             getMusicName_Class = "com.netease.cloudmusic.module.player.w.h";
                             getMusicName_Method = "B";
-                            getMusicName_ClsArr = new Class[]{
-                                    String.class, String.class, String.class, Long.TYPE, boolean.class
+                            getMusicName_ClsArr = new Object[]{
+                                    String.class, String.class, String.class, long.class, Boolean.class, getMusicName_Hook
                             };
 
                             getMusicLyric_Class = "com.netease.cloudmusic.module.player.w.h";
                             getMusicLyric_Method = "F";
-                            getMusicLyric_ClsArr = new Class[]{
-                                    java.lang.String.class, java.lang.String.class
+                            getMusicLyric_ClsArr = new Object[]{
+                                    java.lang.String.class, java.lang.String.class, getMusicLyric_Hook
                             };
                         } else if (cloudmusicVer > 7002022) {
                             enableBTLyric_Class = "com.netease.cloudmusic.module.player.t.e";
@@ -53,14 +86,14 @@ public class netease {
 
                             getMusicName_Class = "com.netease.cloudmusic.module.player.t.e";
                             getMusicName_Method = "B";
-                            getMusicName_ClsArr = new Class[]{
-                                    String.class, String.class, String.class, Long.TYPE, boolean.class
+                            getMusicName_ClsArr = new Object[]{
+                                    String.class, String.class, String.class, Long.TYPE, Boolean.class, getMusicName_Hook
                             };
 
                             getMusicLyric_Class = "com.netease.cloudmusic.module.player.t.e";
                             getMusicLyric_Method = "F";
-                            getMusicLyric_ClsArr = new Class[]{
-                                    java.lang.String.class, java.lang.String.class
+                            getMusicLyric_ClsArr = new Object[]{
+                                    java.lang.String.class, java.lang.String.class, getMusicLyric_Hook
                             };
                         } else {
                             enableBTLyric_Class = "com.netease.cloudmusic.module.player.f.e";
@@ -68,12 +101,12 @@ public class netease {
 
                             getMusicName_Class = "";
                             getMusicName_Method = "";
-                            getMusicName_ClsArr = new Class[]{};
+                            getMusicName_ClsArr = new Object[]{};
 
                             getMusicLyric_Class = "com.netease.cloudmusic.module.player.t.e";
                             getMusicLyric_Method = "a";
-                            getMusicLyric_ClsArr = new Class[]{
-                                    String.class, String.class, String.class, Bitmap.class, String.class
+                            getMusicLyric_ClsArr = new Object[]{
+                                    String.class, String.class, String.class, Bitmap.class, String.class, getMusicLyric_Hook
                             };
                         }
                         try {
@@ -90,40 +123,9 @@ public class netease {
                                 }
                             });
                             if (!getMusicName_Class.equals("")) {
-                                XposedHelpers.findAndHookMethod(getMusicName_Class, lpparam.classLoader, getMusicName_Method, getMusicName_ClsArr, new XC_MethodHook() {
-                                    @Override
-                                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                        super.beforeHookedMethod(param);
-                                    }
-
-                                    @Override
-                                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                        super.afterHookedMethod(param);
-                                        if (param.args[0] != null) {
-                                            Utils.sendLyric(context, param.args[0].toString(), "netease");
-                                            musicName = param.args[0].toString();
-                                            Utils.log("网易云： " + param.args[0].toString());
-                                        }
-                                    }
-                                });
+                                XposedHelpers.findAndHookMethod(getMusicName_Class, lpparam.classLoader, getMusicName_Method, getMusicName_ClsArr);
                             }
-                            XposedHelpers.findAndHookMethod(getMusicLyric_Class, lpparam.classLoader, getMusicLyric_Method, getMusicLyric_ClsArr, new XC_MethodHook() {
-                                @Override
-                                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                    super.beforeHookedMethod(param);
-                                    if (param.args[0] != null) {
-                                        Utils.sendLyric(context, param.args[0].toString(), "netease");
-                                        Utils.log("网易云： " + param.args[0].toString());
-                                    }
-                                    param.args[0] = musicName;
-                                    param.setResult(param.args);
-                                }
-
-                                @Override
-                                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                    super.afterHookedMethod(param);
-                                }
-                            });
+                            XposedHelpers.findAndHookMethod(getMusicLyric_Class, lpparam.classLoader, getMusicLyric_Method, getMusicLyric_ClsArr);
                         } catch (Exception e) {
                             Utils.log("网易云Hook失败: " + e + "\n" + Utils.dumpException(e));
                             Utils.log("正在尝试通用Hook");
