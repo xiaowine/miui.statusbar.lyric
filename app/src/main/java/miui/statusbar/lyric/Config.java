@@ -51,7 +51,11 @@ public class Config {
 
 
     public Boolean getLyricService() {
-        return this.config.optBoolean("LyricService", false);
+        try {
+            return (Boolean) this.config.get("LyricService");
+        } catch (JSONException e) {
+            return false;
+        }
     }
 
     public void setLyricService(Boolean bool) {
@@ -63,7 +67,11 @@ public class Config {
     }
 
     public int getLyricWidth() {
-        return this.config.optInt("LyricWidth", -1);
+        try {
+            return (Integer) this.config.get("LyricWidth");
+        } catch (JSONException e) {
+            return -1;
+        }
     }
 
     public void setLyricWidth(int i) {
@@ -75,7 +83,11 @@ public class Config {
     }
 
     public int getLyricMaxWidth() {
-        return this.config.optInt("LyricMaxWidth", -1);
+        try {
+            return (Integer) this.config.get("LyricMaxWidth");
+        } catch (JSONException e) {
+            return -1;
+        }
     }
 
     public void setLyricPosition(int i) {
@@ -87,7 +99,11 @@ public class Config {
     }
 
     public int getLyricPosition() {
-        return this.config.optInt("LyricPosition", 2);
+        try {
+            return (Integer) this.config.get("LyricPosition");
+        } catch (JSONException e) {
+            return 2;
+        }
     }
 
     public void setLyricMaxWidth(int i) {
@@ -99,7 +115,11 @@ public class Config {
     }
 
     public Boolean getLyricAutoOff() {
-        return this.config.optBoolean("LyricAutoOff", true);
+        try {
+            return (Boolean) this.config.get("LyricAutoOff");
+        } catch (JSONException e) {
+            return true;
+        }
     }
 
     public void setLyricAutoOff(Boolean bool) {
@@ -119,12 +139,20 @@ public class Config {
     }
 
     public String getLyricColor() {
-        return this.config.optString("LyricColor", "off");
+        try {
+            return (String) this.config.get("LyricColor");
+        } catch (JSONException e) {
+            return "off";
+        }
     }
 
 
     public Boolean getLyricSwitch() {
-        return this.config.optBoolean("LyricSwitch", false);
+        try {
+            return (Boolean) this.config.get("LyricSwitch");
+        } catch (JSONException e) {
+            return false;
+        }
     }
 
     public void setLyricSwitch(Boolean bool) {
@@ -136,7 +164,11 @@ public class Config {
     }
 
     public Boolean getHNoticeIco() {
-        return this.config.optBoolean("hNoticeIcon", false);
+        try {
+            return (Boolean) this.config.get("hNoticeIcon");
+        } catch (JSONException e) {
+            return false;
+        }
     }
 
     public void setHAlarm(Boolean bool) {
@@ -148,7 +180,11 @@ public class Config {
     }
 
     public Boolean getHAlarm() {
-        return this.config.optBoolean("hAlarm", true);
+        try {
+            return (Boolean) this.config.get("hAlarm");
+        } catch (JSONException e) {
+            return true;
+        }
     }
 
 
@@ -161,7 +197,11 @@ public class Config {
     }
 
     public Boolean getHNetSpeed() {
-        return this.config.optBoolean("hNetSpeed", true);
+        try {
+            return (Boolean) this.config.get("hNetSpeed");
+        } catch (JSONException e) {
+            return true;
+        }
     }
 
     public void sethNetSpeed(Boolean bool) {
@@ -173,7 +213,11 @@ public class Config {
     }
 
     public Boolean getHCUK() {
-        return this.config.optBoolean("hCUK", false);
+        try {
+            return (Boolean) this.config.get("hCUK");
+        } catch (JSONException e) {
+            return false;
+        }
     }
 
     public void sethCUK(Boolean bool) {
@@ -185,7 +229,11 @@ public class Config {
     }
 
     public Boolean getDebug() {
-        return this.config.optBoolean("debug", false);
+        try {
+            return (Boolean) this.config.get("debug");
+        } catch (JSONException e) {
+            return false;
+        }
     }
 
     public void setDebug(Boolean bool) {
@@ -197,7 +245,11 @@ public class Config {
     }
 
     public Boolean getisUsedCount() {
-        return this.config.optBoolean("isusedcount", true);
+        try {
+            return (Boolean) this.config.get("isusedcount");
+        } catch (JSONException e) {
+            return true;
+        }
     }
 
     public void setisUsedCount(Boolean bool) {
@@ -209,7 +261,11 @@ public class Config {
     }
 
     public boolean getIcon() {
-        return this.config.optBoolean("Icon", true);
+        try {
+            return (Boolean) this.config.get("Icon");
+        } catch (JSONException e) {
+            return true;
+        }
     }
 
     public void setIcon(Boolean bool) {
@@ -221,7 +277,11 @@ public class Config {
     }
 
     public boolean getLShowOnce() {
-        return this.config.optBoolean("LShowOnce", false);
+        try {
+            return (Boolean) this.config.get("LShowOnce");
+        } catch (JSONException e) {
+            return false;
+        }
     }
 
     public void setLShowOnce(Boolean bool) {
@@ -233,7 +293,11 @@ public class Config {
     }
 
     public Boolean getIconAutoColor() {
-        return this.config.optBoolean("IconAutoColor", true);
+        try {
+            return (Boolean) this.config.get("IconAutoColor");
+        } catch (JSONException e) {
+            return true;
+        }
     }
 
     public void setIconAutoColor(Boolean bool) {
@@ -245,7 +309,11 @@ public class Config {
     }
 
     public String getIconPath() {
-        return this.config.optString("IconPath", PATH);
+        try {
+            return (String) this.config.get("IconPath");
+        } catch (JSONException e) {
+            return PATH;
+        }
     }
 
     public void setIconPath(String str) {
@@ -257,7 +325,11 @@ public class Config {
     }
 
     public boolean getAntiBurn() {
-        return this.config.optBoolean("antiburn", false);
+        try {
+            return (boolean) this.config.get("antiburn");
+        } catch (JSONException e) {
+            return false;
+        }
     }
 
     public void setAntiBurn(Boolean bool) {
@@ -269,7 +341,11 @@ public class Config {
     }
 
     public int getUsedCount() {
-        return this.config.optInt("usedcount", 0);
+        try {
+            return (int) this.config.get("usedcount");
+        } catch (JSONException e) {
+            return 0;
+        }
     }
 
     public void setUsedCount(int i) {
@@ -281,7 +357,11 @@ public class Config {
     }
 
     public String getAnim() {
-        return this.config.optString("Anim", "off");
+        try {
+            return (String) this.config.get("Anim");
+        } catch (JSONException e) {
+            return "off";
+        }
     }
 
     public void setAnim(String str) {
@@ -293,7 +373,11 @@ public class Config {
     }
 
     public String getHook() {
-        return this.config.optString("Hook", "");
+        try {
+            return (String) this.config.get("Hook");
+        } catch (JSONException e) {
+            return "";
+        }
     }
 
     public void setHook(String str) {
@@ -305,7 +389,11 @@ public class Config {
     }
 
     public boolean getFileLyric() {
-        return this.config.optBoolean("FileLyric", false);
+        try {
+            return (boolean) this.config.get("FileLyric");
+        } catch (JSONException e) {
+            return false;
+        }
     }
 
     public void setFileLyric(boolean bool) {
