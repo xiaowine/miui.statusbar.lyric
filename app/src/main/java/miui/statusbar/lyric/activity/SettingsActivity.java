@@ -51,14 +51,14 @@ public class SettingsActivity extends PreferenceActivity {
         config = new Config();
 
         Utils.context = activity;
-        Utils.log("debug开启");
+        Utils.log("Debug开启");
 
         String tips = "Tips1";
         SharedPreferences preferences = activity.getSharedPreferences(tips, 0);
         if (!preferences.getBoolean(tips, false)) {
             new AlertDialog.Builder(activity)
                     .setTitle("提示")
-                    .setMessage("请认真阅读此一次性警告！\n\n很抱歉花费您的时间。\n\n请检查软件版本是否正确！\n\n如果出现不生效请重新优化软件\n\n模块不生效请打开debug并重启SystemUI并附上日志，前往 Github/电报 进行反馈。\n\n模块内的生效检测仅供参考，Xposed有时不一定能Hook到自身，望周知！")
+                    .setMessage(getString(R.string.Tips1))
                     .setNegativeButton("我已知晓", (dialog, which) -> {
                         SharedPreferences.Editor a = preferences.edit();
                         a.putBoolean(tips, true);
@@ -558,10 +558,8 @@ public class SettingsActivity extends PreferenceActivity {
                     .setTitle("获取存储权限失败")
                     .setMessage("请开通存储权限\n否则无法正常使用本模块\n若不信任本模块,请卸载")
                     .setNegativeButton("重新申请", (dialog, which) -> Utils.checkPermissions(activity))
-                    .setPositiveButton("卸载本模块", (dialog, which) -> {
-                        Uri uri = Uri.fromParts("package", getPackageName(), null);
-                        Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-                        startActivity(intent);
+                    .setPositiveButton("推出", (dialog, which) -> {
+                        finish();
                     })
                     .setNeutralButton("前往设置授予权限", (dialog, which) -> {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)

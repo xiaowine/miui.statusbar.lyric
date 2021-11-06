@@ -10,7 +10,6 @@
             android:name="android.permission.WRITE_EXTERNAL_STORAGE"
             tools:ignore="ScopedStorage"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES"/>
 
     <application
             android:icon="@mipmap/ic_launcher"
@@ -22,9 +21,9 @@
             android:theme="@style/AppTheme"
             tools:ignore="AllowBackup">
 
-        <activity android:name=".activity.AboutActivity" />
+        <activity android:name=".activity.AboutActivity"/>
 
-        <activity android:name=".activity.TestActivity" />
+        <activity android:name=".activity.TestActivity"/>
 
         <activity
                 android:name=".activity.SettingsActivity"
@@ -63,17 +62,17 @@
                 android:resource="@array/need_module"/>
 
         <service
-            android:name=".QuickTitleService"
-            android:label="状态栏歌词"
-            android:icon="@drawable/title_icon"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+                android:name=".QuickTitleService"
+                android:label="状态栏歌词"
+                android:icon="@drawable/title_icon"
+                android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE"/>
             </intent-filter>
 
             <meta-data
-                android:name="android.service.quicksettings.ACTIVE_TILE"
-                android:value="true"/>
+                    android:name="android.service.quicksettings.ACTIVE_TILE"
+                    android:value="true"/>
         </service>
 
 

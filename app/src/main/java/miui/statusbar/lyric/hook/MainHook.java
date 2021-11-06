@@ -66,7 +66,7 @@ public class MainHook implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         Utils.hasXposed = true;
-        Utils.log("DeBug已开启");
+        Utils.log("Debug已开启");
 
         // 获取Context
         XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
@@ -305,11 +305,16 @@ public class MainHook implements IXposedHookLoadPackage {
                                                     if (Utils.isServiceRunningList(application, musicServer)) {
                                                         enable = true;
                                                         if (config.getLyricAutoOff()) {
+                                                            Utils.log("icon[0] = " + icon[0]);
                                                             if (icon[0].equals("app")) {
                                                                 lyricOff = musicOffStatus;
+                                                                Utils.log("musicOffStatus = " + lyricOff);
                                                             } else {
                                                                 lyricOff = audioManager.isMusicActive();
+                                                                Utils.log("isMusicActive = " + lyricOff);
                                                             }
+                                                        } else {
+                                                            lyricOff = true;
                                                         }
                                                         iconReverseColor = config.getIconAutoColor();
 
@@ -580,6 +585,11 @@ public class MainHook implements IXposedHookLoadPackage {
                     }
                 });
                 Utils.log("hook myplayer结束");
+                break;
+            case "com.netease.cloudmusic.lite":
+                Utils.log("正在Hook网易云音乐Lite");
+                new neteaseLite.Hook(lpparam);
+                Utils.log("Hook网易云音乐Lite结束");
                 break;
         }
     }

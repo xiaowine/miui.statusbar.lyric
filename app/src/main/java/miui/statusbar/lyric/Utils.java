@@ -38,6 +38,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -604,6 +605,7 @@ public class Utils {
             log("获取歌词 " + json);
             JSONArray jsonArray = new JSONArray(json);
             res = new String[]{(String) jsonArray.get(0), (String) jsonArray.get(1)};
+        } catch (FileNotFoundException ignored) {
         } catch (Exception e) {
             log("歌词读取错误: " + e + "\n" + dumpException(e));
         }
