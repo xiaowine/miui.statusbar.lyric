@@ -1,6 +1,5 @@
 package miui.statusbar.lyric;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileInputStream;
@@ -20,7 +19,7 @@ public class Config {
                 return;
             }
             this.config = new JSONObject(getConfig());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -53,7 +52,7 @@ public class Config {
     public Boolean getLyricService() {
         try {
             return (Boolean) this.config.get("LyricService");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -62,14 +61,14 @@ public class Config {
         try {
             this.config.put("LyricService", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public int getLyricWidth() {
         try {
             return (Integer) this.config.get("LyricWidth");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return -1;
         }
     }
@@ -78,14 +77,14 @@ public class Config {
         try {
             this.config.put("LyricWidth", i);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public int getLyricMaxWidth() {
         try {
             return (Integer) this.config.get("LyricMaxWidth");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return -1;
         }
     }
@@ -94,14 +93,14 @@ public class Config {
         try {
             this.config.put("LyricPosition", i);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public int getLyricPosition() {
         try {
             return (Integer) this.config.get("LyricPosition");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return 2;
         }
     }
@@ -110,14 +109,14 @@ public class Config {
         try {
             this.config.put("LyricMaxWidth", i);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public Boolean getLyricAutoOff() {
         try {
             return (Boolean) this.config.get("LyricAutoOff");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return true;
         }
     }
@@ -126,7 +125,7 @@ public class Config {
         try {
             this.config.put("LyricAutoOff", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -134,14 +133,14 @@ public class Config {
         try {
             this.config.put("hNoticeIcon", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public String getLyricColor() {
         try {
             return (String) this.config.get("LyricColor");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return "off";
         }
     }
@@ -150,7 +149,7 @@ public class Config {
     public Boolean getLyricSwitch() {
         try {
             return (Boolean) this.config.get("LyricSwitch");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -159,14 +158,14 @@ public class Config {
         try {
             this.config.put("LyricSwitch", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public Boolean getHNoticeIco() {
         try {
             return (Boolean) this.config.get("hNoticeIcon");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -175,14 +174,14 @@ public class Config {
         try {
             this.config.put("hAlarm", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public Boolean getHAlarm() {
         try {
             return (Boolean) this.config.get("hAlarm");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return true;
         }
     }
@@ -192,14 +191,14 @@ public class Config {
         try {
             this.config.put("LyricColor", str);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public Boolean getHNetSpeed() {
         try {
             return (Boolean) this.config.get("hNetSpeed");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return true;
         }
     }
@@ -208,14 +207,14 @@ public class Config {
         try {
             this.config.put("hNetSpeed", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public Boolean getHCUK() {
         try {
             return (Boolean) this.config.get("hCUK");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -224,14 +223,14 @@ public class Config {
         try {
             this.config.put("hCUK", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public Boolean getDebug() {
         try {
             return (Boolean) this.config.get("debug");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -240,14 +239,14 @@ public class Config {
         try {
             this.config.put("debug", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public Boolean getisUsedCount() {
         try {
             return (Boolean) this.config.get("isusedcount");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return true;
         }
     }
@@ -256,14 +255,14 @@ public class Config {
         try {
             this.config.put("isusedcount", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public boolean getIcon() {
         try {
             return (Boolean) this.config.get("Icon");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return true;
         }
     }
@@ -272,14 +271,14 @@ public class Config {
         try {
             this.config.put("Icon", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public boolean getLShowOnce() {
         try {
             return (Boolean) this.config.get("LShowOnce");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -288,14 +287,14 @@ public class Config {
         try {
             this.config.put("LShowOnce", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public Boolean getIconAutoColor() {
         try {
             return (Boolean) this.config.get("IconAutoColor");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return true;
         }
     }
@@ -304,14 +303,14 @@ public class Config {
         try {
             this.config.put("IconAutoColor", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public String getIconPath() {
         try {
             return (String) this.config.get("IconPath");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return PATH;
         }
     }
@@ -320,14 +319,14 @@ public class Config {
         try {
             this.config.put("IconPath", str);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public boolean getAntiBurn() {
         try {
             return (boolean) this.config.get("antiburn");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -336,14 +335,14 @@ public class Config {
         try {
             this.config.put("antiburn", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public int getUsedCount() {
         try {
             return (int) this.config.get("usedcount");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return 0;
         }
     }
@@ -352,14 +351,14 @@ public class Config {
         try {
             this.config.put("usedcount", i);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public String getAnim() {
         try {
             return (String) this.config.get("Anim");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return "off";
         }
     }
@@ -368,14 +367,14 @@ public class Config {
         try {
             this.config.put("Anim", str);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public String getHook() {
         try {
             return (String) this.config.get("Hook");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return "";
         }
     }
@@ -384,14 +383,14 @@ public class Config {
         try {
             this.config.put("Hook", str);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
     public boolean getFileLyric() {
         try {
             return (boolean) this.config.get("FileLyric");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -400,7 +399,7 @@ public class Config {
         try {
             this.config.put("FileLyric", bool);
             setConfig(this.config.toString());
-        } catch (JSONException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
