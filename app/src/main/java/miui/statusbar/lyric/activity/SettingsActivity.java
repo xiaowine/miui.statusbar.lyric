@@ -73,7 +73,7 @@ public class SettingsActivity extends PreferenceActivity {
         //版本介绍
         Preference verExplain = findPreference("ver_explain");
         assert verExplain != null;
-        verExplain.setSummary("当前版本[" + Utils.getLocalVersion(activity) + "]适用于 " + getString(R.string.ver_explain));
+        verExplain.setSummary(" 当前版本[" + Utils.getLocalVersion(activity) + "]适用于 " + getString(R.string.ver_explain));
 
         // 隐藏桌面图标
         SwitchPreference hIcons = (SwitchPreference) findPreference("hLauncherIcon");
