@@ -1,9 +1,12 @@
 package miui.statusbar.lyric;
 
+import android.annotation.TargetApi;
 import android.graphics.drawable.Icon;
+import android.os.Build;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 
+@TargetApi(Build.VERSION_CODES.N)
 public class QuickTitleService extends TileService {
 
     @Override
