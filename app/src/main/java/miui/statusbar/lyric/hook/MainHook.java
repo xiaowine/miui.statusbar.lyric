@@ -43,7 +43,6 @@ import java.util.TimerTask;
 public class MainHook implements IXposedHookLoadPackage {
     static final String KEY_LYRIC = "lyric";
     static final String[] icon = new String[]{"hook", ""};
-    static String lIcon = "";
     static String lyric = "";
     static String[] musicServer = new String[]{
             "com.kugou",
@@ -376,7 +375,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                         }
                                     }
 
-                                }, 0, 80);
+                                }, 0, 10);
 
                         // 反色/图标
                         new Timer().schedule(
@@ -397,26 +396,22 @@ public class MainHook implements IXposedHookLoadPackage {
                                                 lyricTextView.setTextColor(color);
 
                                             }
-                                            if (!lIcon.equals("")) {
+                                            if (!icon[1].equals("")) {
                                                 Drawable createFromPath = null;
-                                                if (!lIcon.equals(icon[1])) {
-                                                    if (icon[0].equals("hook")) {
-                                                        createFromPath = Drawable.createFromPath(lIcon);
-                                                    } else if (icon[0].equals("app")) {
-                                                        createFromPath = new BitmapDrawable(Utils.stringToBitmap(lIcon));
-                                                    }
-                                                    if (createFromPath != null) {
-                                                        createFromPath.setBounds(0, 0, (int) clock.getTextSize(), (int) clock.getTextSize());
-                                                        if (iconReverseColor) {
-                                                            createFromPath = Utils.reverseColor(createFromPath, Utils.isDark(clock.getTextColors().getDefaultColor()));
-                                                        }
-                                                        Message obtainMessage2 = iconUpdate.obtainMessage();
-                                                        obtainMessage2.obj = createFromPath;
-                                                        iconUpdate.sendMessage(obtainMessage2);
-                                                    }
+                                                if (icon[0].equals("hook")) {
+                                                    createFromPath = Drawable.createFromPath(icon[1]);
+                                                } else if (icon[0].equals("app")) {
+                                                    createFromPath = new BitmapDrawable(Utils.stringToBitmap(icon[1]));
                                                 }
-
-
+                                                if (createFromPath != null) {
+                                                    createFromPath.setBounds(0, 0, (int) clock.getTextSize(), (int) clock.getTextSize());
+                                                    if (iconReverseColor) {
+                                                        createFromPath = Utils.reverseColor(createFromPath, Utils.isDark(clock.getTextColors().getDefaultColor()));
+                                                    }
+                                                    Message obtainMessage2 = iconUpdate.obtainMessage();
+                                                    obtainMessage2.obj = createFromPath;
+                                                    iconUpdate.sendMessage(obtainMessage2);
+                                                }
                                             } else {
                                                 Drawable createFromPath = Drawable.createFromPath(null);
                                                 Message obtainMessage2 = iconUpdate.obtainMessage();
@@ -425,7 +420,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                             }
                                         }
                                     }
-                                }, 0, 80);
+                                }, 0, 10);
 
                         // 防烧屏
                         new Timer().schedule(
@@ -613,12 +608,10 @@ public class MainHook implements IXposedHookLoadPackage {
                             lyric = intent.getStringExtra("Lyric_Data");
                             icon[0] = "hook";
                             if (config.getIcon()) {
-                                String icon_data = config.getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
-                                if (!lIcon.equals(icon_data)) {
-                                    lIcon = icon_data;
-                                }
+                                icon[1] = config.getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
+
                             }
-                            Utils.log("收到广播hook: lyric:" + lyric + " icon:" + lIcon);
+                            Utils.log("收到广播hook: lyric:" + lyric + " icon:" +  icon[1]);
                             break;
                         case "app":
                             Utils.addLyricCount();
@@ -626,11 +619,10 @@ public class MainHook implements IXposedHookLoadPackage {
                             icon[0] = "app";
                             String icon_data = intent.getStringExtra("Lyric_Icon");
                             if (icon_data != null) {
-                                if (!lIcon.equals(icon_data)) {
-                                    lIcon = icon_data;
-                                }
+                                icon[1] = icon_data;
+
                             } else {
-                                lIcon = "";
+                                icon[1] = "";
                             }
                             boolean isPackName = true;
                             String packName = intent.getStringExtra("Lyric_PackName");
@@ -647,7 +639,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                 }
                             }
                             musicOffStatus = true;
-                            Utils.log("收到广播app: lyric:" + lyric + " icon:" + lIcon);
+                            Utils.log("收到广播app: lyric:" + lyric + " icon:" +  icon[1]);
                             break;
                         case "app_stop":
                             musicOffStatus = false;

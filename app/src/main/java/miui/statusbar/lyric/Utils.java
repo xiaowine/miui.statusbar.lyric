@@ -15,7 +15,6 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -136,8 +135,7 @@ public class Utils {
     @SuppressWarnings("unused")
     public static void checkPermissions(Activity activity) {
         if (checkSelfPermission(activity) == -1) {
-            Toast.makeText(activity, String.valueOf((Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)), Toast.LENGTH_LONG).show();
-            activity.requestPermissions(new String[]{
+           activity.requestPermissions(new String[]{
                     "android.permission.WRITE_EXTERNAL_STORAGE"
             }, 1);
         } else {
