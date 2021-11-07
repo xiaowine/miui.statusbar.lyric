@@ -26,7 +26,6 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
-
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
@@ -398,12 +397,12 @@ public class MainHook implements IXposedHookLoadPackage {
                                                 lyricTextView.setTextColor(color);
 
                                             }
-                                            if (!icon[1].equals("")) {
+                                            if (!lIcon.equals("")) {
                                                 Drawable createFromPath = null;
                                                 if (icon[0].equals("hook")) {
-                                                    createFromPath = Drawable.createFromPath(icon[1]);
+                                                    createFromPath = Drawable.createFromPath(lIcon);
                                                 } else if (icon[0].equals("app")) {
-                                                    createFromPath = new BitmapDrawable(Utils.stringToBitmap(icon[1]));
+                                                    createFromPath = new BitmapDrawable(Utils.stringToBitmap(lIcon));
                                                 }
                                                 if (createFromPath != null) {
                                                     createFromPath.setBounds(0, 0, (int) clock.getTextSize(), (int) clock.getTextSize());
@@ -441,7 +440,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                             } else {
                                                 i -= 1;
                                             }
-                                            Utils.log("当钱位移：" + i);
+                                            Utils.log("当前位移：" + i);
                                             lyricParams.setMargins(10 + i, 0, 0, 0);
                                             iconParams.setMargins(i, oldPos, 0, 0);
                                             if (i == 0) {
@@ -606,12 +605,12 @@ public class MainHook implements IXposedHookLoadPackage {
                             lyric = intent.getStringExtra("Lyric_Data");
                             icon[0] = "hook";
                             if (config.getIcon()) {
-                                icon[1] = config.getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
-                                if (icon[1] == null) {
-                                    icon[1] = "";
+                                String icon_data = config.getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
+                                if (!lIcon.equals(icon_data)) {
+                                    lIcon = icon_data;
                                 }
                             }
-                            Utils.log("收到广播hook: lyric:" + lyric + " icon:" + icon[1]);
+                            Utils.log("收到广播hook: lyric:" + lyric + " icon:" + lIcon);
                             break;
                         case "app":
                             Utils.addLyricCount();
@@ -619,9 +618,11 @@ public class MainHook implements IXposedHookLoadPackage {
                             icon[0] = "app";
                             String icon_data = intent.getStringExtra("Lyric_Icon");
                             if (icon_data != null) {
-                                icon[1] = icon_data;
+                                if (!lIcon.equals(icon_data)) {
+                                    lIcon = icon_data;
+                                }
                             } else {
-                                icon[1] = "";
+                                lIcon = "";
                             }
                             boolean isPackName = true;
                             String packName = intent.getStringExtra("Lyric_PackName");
@@ -638,7 +639,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                 }
                             }
                             musicOffStatus = true;
-                            Utils.log("收到广播app: lyric:" + lyric + " icon:" + icon[1]);
+                            Utils.log("收到广播app: lyric:" + lyric + " icon:" + lIcon);
                             break;
                         case "app_stop":
                             musicOffStatus = false;

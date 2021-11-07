@@ -15,6 +15,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -49,6 +50,7 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class Utils {
@@ -134,6 +136,7 @@ public class Utils {
     @SuppressWarnings("unused")
     public static void checkPermissions(Activity activity) {
         if (checkSelfPermission(activity) == -1) {
+            Toast.makeText(activity, String.valueOf((Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)), Toast.LENGTH_LONG).show();
             activity.requestPermissions(new String[]{
                     "android.permission.WRITE_EXTERNAL_STORAGE"
             }, 1);
@@ -505,7 +508,7 @@ public class Utils {
 
     public static Animation outAnim(String str) {
         AnimationSet animationSet = new AnimationSet(true);
-        TranslateAnimation translateAnimation = null;
+        TranslateAnimation translateAnimation;
         switch (str) {
             case "top":
                 translateAnimation = new TranslateAnimation(0, 0, 0, -100);
@@ -546,14 +549,12 @@ public class Utils {
         log("Dump Stack: ---------------start----------------");
         Throwable ex = new Throwable();
         StackTraceElement[] stackElements = ex.getStackTrace();
-        if (stackElements != null) {
-            for (int i = 0; i < stackElements.length; i++) {
+        for (int i = 0; i < stackElements.length; i++) {
 
-                log("Dump Stack" + i + ": " + stackElements[i].getClassName()
-                        + "----" + stackElements[i].getFileName()
-                        + "----" + stackElements[i].getLineNumber()
-                        + "----" + stackElements[i].getMethodName());
-            }
+            log("Dump Stack" + i + ": " + stackElements[i].getClassName()
+                    + "----" + stackElements[i].getFileName()
+                    + "----" + stackElements[i].getLineNumber()
+                    + "----" + stackElements[i].getMethodName());
         }
         log("Dump Stack: ---------------over----------------");
     }
@@ -577,7 +578,7 @@ public class Utils {
     // 判断class是否存在
     public static boolean isPresent(String name) {
         try {
-            Thread.currentThread().getContextClassLoader().loadClass(name);
+            Objects.requireNonNull(Thread.currentThread().getContextClassLoader()).loadClass(name);
             Log.d("MIUI状态栏歌词", name + " class存在");
             return true;
         } catch (ClassNotFoundException e) {

@@ -324,50 +324,32 @@ public class SettingsActivity extends PreferenceActivity {
         // 隐藏通知图标
         SwitchPreference hNoticeIcon = (SwitchPreference) findPreference("hNoticeIcon");
         assert hNoticeIcon != null;
-        if (!Utils.hasMiuiSetting) {
-            hNoticeIcon.setEnabled(false);
-            hNoticeIcon.setChecked(false);
-            hNoticeIcon.setSummary(hNoticeIcon.getSummary() + " (您不是MIUI系统)");
-            config.sethNoticeIcon(false);
-        } else {
-            hNoticeIcon.setChecked(config.getHNoticeIco());
-            hNoticeIcon.setOnPreferenceChangeListener((preference, newValue) -> {
-                config.sethNoticeIcon((Boolean) newValue);
-                return true;
-            });
-        }
+        hNoticeIcon.setChecked(config.getHNoticeIco());
+        hNoticeIcon.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.sethNoticeIcon((Boolean) newValue);
+            return true;
+        });
+
 
         // 隐藏实时网速
         SwitchPreference hNetWork = (SwitchPreference) findPreference("hNetWork");
         assert hNetWork != null;
-        if (!Utils.hasMiuiSetting) {
-            hNetWork.setEnabled(false);
-            hNetWork.setChecked(false);
-            hNetWork.setSummary(hNetWork.getSummary() + " (您不是MIUI系统)");
-            config.sethNoticeIcon(false);
-        } else {
-            hNetWork.setChecked(config.getHNetSpeed());
-            hNetWork.setOnPreferenceChangeListener((preference, newValue) -> {
-                config.sethNetSpeed((Boolean) newValue);
-                return true;
-            });
-        }
+        hNetWork.setChecked(config.getHNetSpeed());
+        hNetWork.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.sethNetSpeed((Boolean) newValue);
+            return true;
+        });
+
 
         // 隐藏运营商名称
         SwitchPreference hCUK = (SwitchPreference) findPreference("hCUK");
         assert hCUK != null;
-        if (!Utils.hasMiuiSetting) {
-            hCUK.setEnabled(false);
-            hCUK.setChecked(false);
-            hCUK.setSummary(hCUK.getSummary() + " (您不是MIUI系统)");
-            config.sethNoticeIcon(false);
-        } else {
-            hCUK.setChecked(config.getHCUK());
-            hCUK.setOnPreferenceChangeListener((preference, newValue) -> {
-                config.sethCUK((Boolean) newValue);
-                return true;
-            });
-        }
+        hCUK.setChecked(config.getHCUK());
+        hCUK.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.sethCUK((Boolean) newValue);
+            return true;
+        });
+
 
         // 隐藏闹钟图标
 //        SwitchPreference hAlarm = (SwitchPreference) findPreference("hAlarm");
@@ -519,13 +501,28 @@ public class SettingsActivity extends PreferenceActivity {
         dict.put("left", "左滑");
         dict.put("right", "右滑");
         dict.put("random", "随机");
-
         anim.setSummary(dict.get(new Config().getAnim()));
         anim.setOnPreferenceChangeListener((preference, newValue) -> {
             new Config().setAnim(newValue.toString());
             anim.setSummary(dict.get(new Config().getAnim()));
             return true;
         });
+
+//        非MIUI关闭功能
+        if (!Utils.hasMiuiSetting) {
+            hNoticeIcon.setEnabled(false);
+            hNoticeIcon.setChecked(false);
+            hNoticeIcon.setSummary(hNoticeIcon.getSummary() + " (您不是MIUI系统)");
+            config.sethNoticeIcon(false);
+            hNetWork.setEnabled(false);
+            hNetWork.setChecked(false);
+            hNetWork.setSummary(hNetWork.getSummary() + " (您不是MIUI系统)");
+            config.sethNoticeIcon(false);
+            hCUK.setEnabled(false);
+            hCUK.setChecked(false);
+            hCUK.setSummary(hCUK.getSummary() + " (您不是MIUI系统)");
+            config.sethNoticeIcon(false);
+        }
 
         Handler titleUpdate = new Handler(Looper.getMainLooper(), message -> {
             setTitle("已获取歌词数句数：" + new Config().getUsedCount());
@@ -554,7 +551,7 @@ public class SettingsActivity extends PreferenceActivity {
             Utils.initIcon(activity);
         } else {
             new AlertDialog.Builder(activity)
-                    .setIcon(R.drawable.ic_launcher_foreground)
+                    .setIcon(R.mipmap.ic_launcher)
                     .setTitle("获取存储权限失败")
                     .setMessage("请开通存储权限\n否则无法正常使用本模块\n若不信任本模块,请卸载")
                     .setNegativeButton("重新申请", (dialog, which) -> Utils.checkPermissions(activity))
