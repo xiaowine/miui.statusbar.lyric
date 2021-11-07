@@ -286,7 +286,6 @@ public class Utils {
 
         new Thread(() -> {
             Looper.prepare();
-            Toast.makeText(activity, "开始检查是否有更新", Toast.LENGTH_LONG).show();
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL("https://api.github.com/repos/xiaowine/miui.statusbar.lyric/releases/latest").openConnection();
                 connection.setRequestMethod("GET");

@@ -54,8 +54,10 @@ public class netease {
                                 Utils.sendLyric(context, param.args[0].toString(), "netease");
                                 Utils.log("网易云： " + param.args[0].toString());
                             }
-                            param.args[0] = musicName;
-                            param.setResult(param.args);
+                            if (!musicName.equals("")) {
+                                param.args[0] = musicName;
+                                param.setResult(param.args);
+                            }
                         }
 
                         @Override

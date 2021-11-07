@@ -116,6 +116,30 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
+        // 歌词动效
+        ListPreference anim = (ListPreference) findPreference("lyricAnim");
+        anim.setEntryValues(new String[]{
+                "off", "top", "lower",
+                "left", "right", "random"
+        });
+        anim.setEntries(new String[]{
+                "关闭", "上滑", "下滑",
+                "左滑", "右滑", "随机"
+        });
+        Dictionary<String, String> dict = new Hashtable<>();
+        dict.put("off", "关闭");
+        dict.put("top", "上滑");
+        dict.put("lower", "下滑");
+        dict.put("left", "左滑");
+        dict.put("right", "右滑");
+        dict.put("random", "随机");
+        anim.setSummary(dict.get(new Config().getAnim()));
+        anim.setOnPreferenceChangeListener((preference, newValue) -> {
+            new Config().setAnim(newValue.toString());
+            anim.setSummary(dict.get(new Config().getAnim()));
+            return true;
+        });
+
         // 歌词最大自适应宽度
         EditTextPreference lyricMaxWidth = (EditTextPreference) findPreference("lyricMaxWidth");
         assert lyricMaxWidth != null;
@@ -478,6 +502,7 @@ public class SettingsActivity extends PreferenceActivity {
         assert checkUpdate != null;
         checkUpdate.setSummary("当前版本: " + Utils.getLocalVersion(activity));
         checkUpdate.setOnPreferenceClickListener((preference) -> {
+            Toast.makeText(activity, "开始检查是否有更新", Toast.LENGTH_LONG).show();
             Utils.checkUpdate(activity);
             return true;
         });
@@ -490,30 +515,6 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
-        // 歌词动效
-        ListPreference anim = (ListPreference) findPreference("lyricAnim");
-        anim.setEntryValues(new String[]{
-                "off", "top", "lower",
-                "left", "right", "random"
-        });
-        anim.setEntries(new String[]{
-                "关闭", "上滑", "下滑",
-                "左滑", "右滑", "随机"
-        });
-
-        Dictionary<String, String> dict = new Hashtable<>();
-        dict.put("off", "关闭");
-        dict.put("top", "上滑");
-        dict.put("lower", "下滑");
-        dict.put("left", "左滑");
-        dict.put("right", "右滑");
-        dict.put("random", "随机");
-        anim.setSummary(dict.get(new Config().getAnim()));
-        anim.setOnPreferenceChangeListener((preference, newValue) -> {
-            new Config().setAnim(newValue.toString());
-            anim.setSummary(dict.get(new Config().getAnim()));
-            return true;
-        });
 
 //        非MIUI关闭功能
         if (!Utils.hasMiuiSetting) {

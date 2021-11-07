@@ -42,9 +42,9 @@ import java.util.TimerTask;
 
 public class MainHook implements IXposedHookLoadPackage {
     static final String KEY_LYRIC = "lyric";
+    static final String[] icon = new String[]{"hook", ""};
     static String lIcon = "";
     static String lyric = "";
-    static final String[] icon = new String[]{"hook", ""};
     static String[] musicServer = new String[]{
             "com.kugou",
             "com.netease.cloudmusic",
@@ -52,16 +52,14 @@ public class MainHook implements IXposedHookLoadPackage {
             "cn.kuwo",
             "com.maxmpz.audioplayer",
             "remix.myplayer",
-            "com.salt.music",
             "cmccwm.mobilemusic"
     };
-    Context context = null;
-    boolean showLyric = true;
     static boolean musicOffStatus = false;
     static boolean enable = false;
     static boolean iconReverseColor = false;
     static Config config = new Config();
-
+    Context context = null;
+    boolean showLyric = true;
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
@@ -336,6 +334,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                                                 message.setData(bundle);
                                                                 LyricUpdate.sendMessage(message);
                                                                 oldLyric = lyric;
+
                                                             }
                                                         } else {
                                                             setOff("歌词为空");
@@ -377,7 +376,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                         }
                                     }
 
-                                }, 0, 10);
+                                }, 0, 80);
 
                         // 反色/图标
                         new Timer().schedule(
@@ -400,20 +399,23 @@ public class MainHook implements IXposedHookLoadPackage {
                                             }
                                             if (!lIcon.equals("")) {
                                                 Drawable createFromPath = null;
-                                                if (icon[0].equals("hook")) {
-                                                    createFromPath = Drawable.createFromPath(lIcon);
-                                                } else if (icon[0].equals("app")) {
-                                                    createFromPath = new BitmapDrawable(Utils.stringToBitmap(lIcon));
-                                                }
-                                                if (createFromPath != null) {
-                                                    createFromPath.setBounds(0, 0, (int) clock.getTextSize(), (int) clock.getTextSize());
-                                                    if (iconReverseColor) {
-                                                        createFromPath = Utils.reverseColor(createFromPath, Utils.isDark(clock.getTextColors().getDefaultColor()));
+                                                if (!lIcon.equals(icon[1])) {
+                                                    if (icon[0].equals("hook")) {
+                                                        createFromPath = Drawable.createFromPath(lIcon);
+                                                    } else if (icon[0].equals("app")) {
+                                                        createFromPath = new BitmapDrawable(Utils.stringToBitmap(lIcon));
                                                     }
-                                                    Message obtainMessage2 = iconUpdate.obtainMessage();
-                                                    obtainMessage2.obj = createFromPath;
-                                                    iconUpdate.sendMessage(obtainMessage2);
+                                                    if (createFromPath != null) {
+                                                        createFromPath.setBounds(0, 0, (int) clock.getTextSize(), (int) clock.getTextSize());
+                                                        if (iconReverseColor) {
+                                                            createFromPath = Utils.reverseColor(createFromPath, Utils.isDark(clock.getTextColors().getDefaultColor()));
+                                                        }
+                                                        Message obtainMessage2 = iconUpdate.obtainMessage();
+                                                        obtainMessage2.obj = createFromPath;
+                                                        iconUpdate.sendMessage(obtainMessage2);
+                                                    }
                                                 }
+
 
                                             } else {
                                                 Drawable createFromPath = Drawable.createFromPath(null);
@@ -423,7 +425,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                             }
                                         }
                                     }
-                                }, 0, 10);
+                                }, 0, 80);
 
                         // 防烧屏
                         new Timer().schedule(
