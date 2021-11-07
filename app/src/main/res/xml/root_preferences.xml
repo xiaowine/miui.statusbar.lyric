@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference
             android:key="ver_explain"
-            android:summary=""
+            android:summary="点击查看详情"
             android:title="使用说明"/>
 
     <SwitchPreference

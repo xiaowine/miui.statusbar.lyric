@@ -103,10 +103,10 @@ public class netease {
                             getMusicName_Method = "";
                             getMusicName_ClsArr = new Object[]{};
 
-                            getMusicLyric_Class = "com.netease.cloudmusic.module.player.t.e";
+                            getMusicLyric_Class = "com.netease.cloudmusic.module.player.f.e";
                             getMusicLyric_Method = "a";
                             getMusicLyric_ClsArr = new Object[]{
-                                    String.class, String.class, String.class, Bitmap.class, String.class, getMusicLyric_Hook
+                                    String.class, String.class, String.class, long.class, Bitmap.class, String.class, getMusicLyric_Hook
                             };
                         }
                         try {
@@ -126,8 +126,8 @@ public class netease {
                                 XposedHelpers.findAndHookMethod(getMusicName_Class, lpparam.classLoader, getMusicName_Method, getMusicName_ClsArr);
                             }
                             XposedHelpers.findAndHookMethod(getMusicLyric_Class, lpparam.classLoader, getMusicLyric_Method, getMusicLyric_ClsArr);
-                        } catch (Exception e) {
-                            Utils.log("网易云Hook失败: " + e + "\n" + Utils.dumpException(e));
+                        } catch (NoSuchMethodError e) {
+                            Utils.log("网易云Hook失败: " + e);
                             Utils.log("正在尝试通用Hook");
                             try {
                                 XposedHelpers.findAndHookMethod("android.support.v4.media.MediaMetadataCompat$Builder", lpparam.classLoader, "putString", String.class, String.class, new XC_MethodHook() {
@@ -147,8 +147,8 @@ public class netease {
                                         }
                                     }
                                 });
-                            } catch (Exception mE) {
-                                Utils.log("网易云通用Hook失败: " + e + "\n" + Utils.dumpException(e));
+                            } catch (NoSuchMethodError mE) {
+                                Utils.log("网易云通用Hook失败: " + mE);
                                 Utils.log("未知版本: " + cloudmusicVer);
                                 Utils.showToastOnLooper(context, "MIUI状态栏歌词 未知版本: " + cloudmusicVer);
                             }

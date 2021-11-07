@@ -53,7 +53,8 @@ public class MainHook implements IXposedHookLoadPackage {
             "cn.kuwo",
             "com.maxmpz.audioplayer",
             "remix.myplayer",
-            "com.salt.music"
+            "com.salt.music",
+            "cmccwm.mobilemusic"
     };
     Context context = null;
     boolean showLyric = true;
@@ -590,6 +591,11 @@ public class MainHook implements IXposedHookLoadPackage {
                 Utils.log("正在Hook网易云音乐Lite");
                 new neteaseLite.Hook(lpparam);
                 Utils.log("Hook网易云音乐Lite结束");
+                break;
+            case "cmccwm.mobilemusic":
+                Utils.log("正在Hook正在咪咕音乐");
+                new migu.Hook(lpparam);
+                Utils.log("Hook咪咕音乐结束");
                 break;
         }
     }

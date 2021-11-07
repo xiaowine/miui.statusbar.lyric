@@ -73,8 +73,15 @@ public class SettingsActivity extends PreferenceActivity {
         //版本介绍
         Preference verExplain = findPreference("ver_explain");
         assert verExplain != null;
-        verExplain.setSummary(" 当前版本[" + Utils.getLocalVersion(activity) + "]适用于 " + getString(R.string.ver_explain));
-
+        verExplain.setOnPreferenceClickListener((preference) -> {
+            new AlertDialog.Builder(activity)
+                    .setTitle("版本说明")
+                    .setMessage(" 当前版本 [" + Utils.getLocalVersion(activity) + "] 适用情况：\n\n " + getString(R.string.ver_explain))
+                    .setNegativeButton("我已知晓", null)
+                    .create()
+                    .show();
+            return true;
+        });
         // 隐藏桌面图标
         SwitchPreference hIcons = (SwitchPreference) findPreference("hLauncherIcon");
         assert hIcons != null;

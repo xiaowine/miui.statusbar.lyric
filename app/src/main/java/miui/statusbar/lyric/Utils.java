@@ -208,6 +208,9 @@ public class Utils {
         if (!new File(config.getIconPath(), "myplayer.webp").exists()) {
             copyAssets(activity, "icon/myplayer.webp", config.getIconPath() + "myplayer.webp");
         }
+        if (!new File(config.getIconPath(), "migu.webp").exists()) {
+            copyAssets(activity, "icon/migu.webp", config.getIconPath() + "migu.webp");
+        }
         if (!new File(config.getIconPath(), ".nomedia").exists()) {
             try {
                 new File(config.getIconPath(), ".nomedia").createNewFile();
@@ -369,13 +372,6 @@ public class Utils {
             notCarrier = 1;
         }
 
-//        if (config.getHAlarm() && !isOpen) {
-//            setIAlarm("settings put secure icon_blacklist alarm_clock");
-//        } else {
-//            if (config.getHAlarm()) {
-//                setIAlarm("settings delete secure icon_blacklist");
-//            }
-//        }
         if (config.getHNoticeIco() && MiuiStatusBarManager.isShowNotificationIcon(application) != isOpen) {
             MiuiStatusBarManager.setShowNotificationIcon(application, isOpen);
         }
