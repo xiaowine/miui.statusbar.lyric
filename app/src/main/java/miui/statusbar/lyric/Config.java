@@ -54,7 +54,7 @@ public class Config {
         try {
             return (Boolean) this.config.get("LyricService");
         } catch (JSONException e) {
-            return false;
+            return true;
         }
     }
 
@@ -183,7 +183,7 @@ public class Config {
         try {
             return (Boolean) this.config.get("hAlarm");
         } catch (JSONException e) {
-            return true;
+            return false;
         }
     }
 
@@ -200,7 +200,7 @@ public class Config {
         try {
             return (Boolean) this.config.get("hNetSpeed");
         } catch (JSONException e) {
-            return true;
+            return false;
         }
     }
 
