@@ -326,6 +326,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                                     lyricSpeed = 0;
                                                     if (lyricOff) {
                                                         if (!lyric.equals("")) {
+
                                                             if (!oldLyric.equals(lyric)) {
                                                                 Message message = LyricUpdate.obtainMessage();
                                                                 Bundle bundle = new Bundle();
@@ -611,7 +612,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                 icon[1] = config.getIconPath() + intent.getStringExtra("Lyric_Icon") + ".webp";
 
                             }
-                            Utils.log("收到广播hook: lyric:" + lyric + " icon:" +  icon[1]);
+                            Utils.log("收到广播hook: lyric:" + lyric + " icon:" + icon[1]);
                             break;
                         case "app":
                             Utils.addLyricCount();
@@ -639,7 +640,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                 }
                             }
                             musicOffStatus = true;
-                            Utils.log("收到广播app: lyric:" + lyric + " icon:" +  icon[1]);
+                            Utils.log("收到广播app: lyric:" + lyric + " icon:" + icon[1]);
                             break;
                         case "app_stop":
                             musicOffStatus = false;
