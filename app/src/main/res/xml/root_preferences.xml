@@ -26,10 +26,6 @@
             android:summary=""
             android:title="歌曲暂停关闭歌词"/>
 
-    <ListPreference
-            android:key="lyricAnim"
-            android:summary="关闭"
-            android:title="歌词动效"/>
 
     <EditTextPreference
             android:defaultValue="-1"
@@ -43,6 +39,11 @@
             android:summary="关闭"
             android:title="歌词自适应最大宽度"/>
 
+    <ListPreference
+            android:key="lyricAnim"
+            android:summary="关闭"
+            android:title="歌词动效"/>
+
     <EditTextPreference
             android:defaultValue="自适应"
             android:key="lyricColour"
@@ -55,17 +56,12 @@
             android:summary=""
             android:title="歌词图标"/>
 
-    <EditTextPreference
-            android:defaultValue="2"
-            android:key="lyricPosition"
-            android:summary="默认"
-            android:title="图标上下位置"/>
 
     <SwitchPreference
             android:defaultValue="false"
             android:key="lshowonce"
             android:summary="歌词太长，仅显示一次不循环"
-            android:title="歌词不循环显示 (需重启系统界面)"/>
+            android:title="歌词不循环显示 （需重启系统界面）"/>
 
     <PreferenceCategory android:title="高级设置 (停止音乐后改动选项)"/>
 
@@ -79,13 +75,19 @@
             android:defaultValue="false"
             android:key="antiburn"
             android:summary=""
-            android:title="防烧屏"/>
+            android:title="防烧屏（需重启系统界面）"/>
 
 
     <Preference
             android:key="iconPath"
             android:summary=""
             android:title="图标路径"/>
+
+    <EditTextPreference
+            android:defaultValue="2"
+            android:key="lyricPosition"
+            android:summary="默认"
+            android:title="图标上下位置"/>
 
     <SwitchPreference
             android:defaultValue="true"
@@ -95,12 +97,18 @@
 
     <SwitchPreference
             android:defaultValue="false"
+            android:key="lockScreenOff"
+            android:summary="锁屏和息屏不显示歌词"
+            android:title="仅解锁显示"/>
+
+    <SwitchPreference
+            android:defaultValue="false"
             android:key="hNoticeIcon"
             android:summary="自动隐藏通知图标"
             android:title="隐藏通知图标"/>
 
     <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="hNetWork"
             android:summary="自动隐藏实时网速"
             android:title="隐藏实时网速"/>

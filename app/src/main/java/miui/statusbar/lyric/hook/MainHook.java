@@ -3,6 +3,7 @@ package miui.statusbar.lyric.hook;
 
 import android.app.AndroidAppHelper;
 import android.app.Application;
+import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -276,6 +277,13 @@ public class MainHook implements IXposedHookLoadPackage {
                                     @Override
                                     public void run() {
                                         try {
+                                            KeyguardManager mKeyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+                                            boolean isLock = mKeyguardManager.inKeyguardRestrictedInputMode();
+                                            if (config.getLockScreenOff()&& isLock) {
+                                                setOff("未解锁");
+                                                return;
+                                            }
+
                                             if (count == 50) {
                                                 config = new Config();
                                             }

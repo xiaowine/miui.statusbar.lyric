@@ -51,13 +51,13 @@ import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("unused")
+
 public class Utils {
 
     public static String PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/media/miui.statusbar.lyric/";
     public static boolean hasMiuiSetting = isPresent("android.provider.MiuiSettings");
     @SuppressLint("StaticFieldLeak")
-    public static Context context = null;
+    public static Context context;
     public static boolean hasXposed = false;
 
     public static String getLocalVersion(Context context) {
@@ -132,10 +132,10 @@ public class Utils {
         }
     }
 
-    @SuppressWarnings("unused")
+
     public static void checkPermissions(Activity activity) {
         if (checkSelfPermission(activity) == -1) {
-           activity.requestPermissions(new String[]{
+            activity.requestPermissions(new String[]{
                     "android.permission.WRITE_EXTERNAL_STORAGE"
             }, 1);
         } else {
@@ -148,10 +148,6 @@ public class Utils {
         return context.checkPermission("android.permission.WRITE_EXTERNAL_STORAGE", android.os.Process.myPid(), Process.myUid());
     }
 
-    @SuppressWarnings("unused")
-    private static boolean shouldShowRequestPermissionRationale(Activity activity) {
-        return activity.shouldShowRequestPermissionRationale("android.permission.WRITE_EXTERNAL_STORAGE");
-    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void init(Activity activity) {
@@ -170,20 +166,22 @@ public class Utils {
                 config.setLyricSwitch(false);
                 config.setLyricWidth(-1);
                 config.setLyricMaxWidth(-1);
+                config.setAnim("off");
                 config.setLyricColor("off");
                 config.setIcon(true);
                 config.setLShowOnce(false);
+                config.setLyricPosition(2);
                 config.setIconPath(PATH);
                 config.setIconAutoColor(true);
+                config.setLockScreenOff(true);
                 config.sethNoticeIcon(false);
                 config.sethNetSpeed(false);
                 config.sethCUK(false);
                 config.setHAlarm(false);
                 config.setDebug(false);
                 config.setisUsedCount(true);
-                config.setAnim("off");
                 config.setHook("");
-                config.setLyricPosition(2);
+
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(activity, "初始化失败，请重启软件", Toast.LENGTH_LONG).show();
@@ -306,7 +304,7 @@ public class Utils {
 
 
     // log
-    @SuppressWarnings("unused")
+
     public static void log(String text) {
         if (new Config().getDebug()) {
             if (context == null) {
@@ -325,7 +323,7 @@ public class Utils {
     }
 
     // 判断服务是否运行
-    @SuppressWarnings("unused")
+
     public static boolean isServiceRunning(Context context, String str) {
         List<ActivityManager.RunningServiceInfo> runningServices = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningServices(200);
         if (runningServices.size() <= 0) {
@@ -341,7 +339,7 @@ public class Utils {
     }
 
     // 判断程序是否运行
-    @SuppressWarnings("unused")
+
     public static boolean isAppRunning(Context context, String str) {
         if (isServiceRunning(context, str)) {
             return true;
@@ -359,7 +357,7 @@ public class Utils {
         return false;
     }
 
-    @SuppressWarnings("unused")
+
     public static void setStatusBar(Context application, Boolean isOpen) {
         if (!hasMiuiSetting) {
             return;
@@ -383,7 +381,7 @@ public class Utils {
         }
     }
 
-    @SuppressWarnings("unused")
+
     public static Drawable reverseColor(Drawable icon, Boolean black) {
         ColorMatrix cm = new ColorMatrix();
         if (black) {
@@ -398,12 +396,12 @@ public class Utils {
         return icon;
     }
 
-    @SuppressWarnings("unused")
+
     public static boolean isDark(int color) {
         return ColorUtils.calculateLuminance(color) < 0.5;
     }
 
-    @SuppressWarnings("unused")
+
     public static void sendLyric(Context context, String lyric, String icon) {
         if (new Config().getFileLyric()) {
             Utils.setLyricFile(icon, lyric);
@@ -419,7 +417,7 @@ public class Utils {
     }
 
     // 判断服务是否运行 列表
-    @SuppressWarnings("unused")
+
     public static boolean isServiceRunningList(Context context, String[] str) {
         for (String mStr : str) {
             if (mStr != null) {
@@ -432,7 +430,7 @@ public class Utils {
     }
 
     // 弹出toast
-    @SuppressWarnings("unused")
+
     public static void showToastOnLooper(final Context context, final String message) {
         try {
             Handler handler = new Handler(Looper.getMainLooper());
@@ -442,7 +440,7 @@ public class Utils {
         }
     }
 
-    @SuppressWarnings("unused")
+
     public static Bitmap stringToBitmap(String string) {
         Bitmap bitmap = null;
         try {
