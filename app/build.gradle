@@ -13,7 +13,7 @@ android {
         //noinspection OldTargetApi
         targetSdkVersion 29
         versionCode 46
-        versionName "2.21.41"
+        versionName "2.22.41"
         aaptOptions.cruncherEnabled = false
         aaptOptions.useNewCruncher = false
     }

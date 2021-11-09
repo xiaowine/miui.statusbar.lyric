@@ -38,8 +38,8 @@ import java.util.Objects;
 
 @SuppressLint("ExportedPreferenceActivity")
 public class SettingsActivity extends PreferenceActivity {
-    private Config config;
     private final Activity activity = this;
+    private Config config;
 
     @SuppressLint("WrongConstant")
     @SuppressWarnings({"ResultOfMethodCallIgnored", "deprecation"})
@@ -169,29 +169,6 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
-        // 图标上下位置
-        EditTextPreference lyricPosition = (EditTextPreference) findPreference("lyricPosition");
-        assert lyricPosition != null;
-        lyricPosition.setSummary((String.valueOf(config.getLyricPosition())));
-        lyricPosition.setDialogMessage("-100~100，当前:" + lyricPosition.getSummary());
-        lyricPosition.setOnPreferenceChangeListener((preference, newValue) -> {
-            lyricPosition.setDialogMessage("-100~100，当前:默认");
-            lyricPosition.setSummary("默认");
-            try {
-                String value = newValue.toString().replaceAll(" ", "").replaceAll("\n", "");
-                if (value.equals("2")) {
-                    return true;
-                } else if (Integer.parseInt(value) <= 100 && Integer.parseInt(value) >= -100) {
-                    config.setLyricPosition(Integer.parseInt(value));
-                    lyricPosition.setSummary(value);
-                } else {
-                    Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
-                }
-            } catch (NumberFormatException e) {
-                Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
-            }
-            return true;
-        });
 
         // 歌词宽度
         EditTextPreference lyricWidth = (EditTextPreference) findPreference("lyricWidth");
@@ -264,7 +241,8 @@ public class SettingsActivity extends PreferenceActivity {
             config.setIcon((Boolean) newValue);
             return true;
         });
-        // 歌词图标
+
+        // 歌词仅显示一次
         SwitchPreference lshowonce = (SwitchPreference) findPreference("lshowonce");
         assert lshowonce != null;
         lshowonce.setChecked(config.getLShowOnce());
@@ -289,15 +267,6 @@ public class SettingsActivity extends PreferenceActivity {
         antiburn.setChecked(config.getAntiBurn());
         antiburn.setOnPreferenceChangeListener((preference, newValue) -> {
             config.setAntiBurn((Boolean) newValue);
-            return true;
-        });
-
-        // 文件传输歌词
-        SwitchPreference fileLyric = (SwitchPreference) findPreference("fileLyric");
-        assert fileLyric != null;
-        fileLyric.setChecked(config.getFileLyric());
-        fileLyric.setOnPreferenceChangeListener((preference, newValue) -> {
-            config.setFileLyric((Boolean) newValue);
             return true;
         });
 
@@ -339,6 +308,33 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         }));
 
+        // 图标上下位置
+        EditTextPreference lyricPosition = (EditTextPreference) findPreference("lyricPosition");
+        assert lyricPosition != null;
+        lyricPosition.setSummary((String.valueOf(config.getLyricPosition())));
+        if (String.valueOf(config.getLyricPosition()).equals("2")) {
+            lyricPosition.setSummary("默认");
+        }
+        lyricPosition.setDialogMessage("-100~100，当前:" + lyricPosition.getSummary());
+        lyricPosition.setOnPreferenceChangeListener((preference, newValue) -> {
+            lyricPosition.setDialogMessage("-100~100，当前:默认");
+            lyricPosition.setSummary("默认");
+            try {
+                String value = newValue.toString().replaceAll(" ", "").replaceAll("\n", "");
+                if (value.equals("2")) {
+                    return true;
+                } else if (Integer.parseInt(value) <= 100 && Integer.parseInt(value) >= -100) {
+                    config.setLyricPosition(Integer.parseInt(value));
+                    lyricPosition.setSummary(value);
+                } else {
+                    Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
+                }
+            } catch (NumberFormatException e) {
+                Toast.makeText(activity, "范围输入错误，恢复默认", Toast.LENGTH_LONG).show();
+            }
+            return true;
+        });
+
         // 图标反色
         SwitchPreference iconColor = (SwitchPreference) findPreference("iconAutoColor");
         assert iconColor != null;
@@ -351,6 +347,15 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         });
 
+
+        // 锁屏隐藏
+        SwitchPreference lockScreenOff = (SwitchPreference) findPreference("lockScreenOff");
+        assert lockScreenOff != null;
+        lockScreenOff.setChecked(config.getLockScreenOff());
+        lockScreenOff.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.setLockScreenOff((Boolean) newValue);
+            return true;
+        });
 
         // 隐藏通知图标
         SwitchPreference hNoticeIcon = (SwitchPreference) findPreference("hNoticeIcon");
@@ -378,6 +383,15 @@ public class SettingsActivity extends PreferenceActivity {
         hCUK.setChecked(config.getHCUK());
         hCUK.setOnPreferenceChangeListener((preference, newValue) -> {
             config.sethCUK((Boolean) newValue);
+            return true;
+        });
+
+        // 文件传输歌词
+        SwitchPreference fileLyric = (SwitchPreference) findPreference("fileLyric");
+        assert fileLyric != null;
+        fileLyric.setChecked(config.getFileLyric());
+        fileLyric.setOnPreferenceChangeListener((preference, newValue) -> {
+            config.setFileLyric((Boolean) newValue);
             return true;
         });
 

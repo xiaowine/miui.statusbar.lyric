@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import static miui.statusbar.lyric.Utils.PATH;
 
-@SuppressWarnings("unused")
+
 public class Config {
     JSONObject config;
 
@@ -24,7 +24,6 @@ public class Config {
         }
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static String getConfig() {
         String str = "";
         try {
@@ -105,6 +104,17 @@ public class Config {
     public void setLyricAutoOff(Boolean bool) {
         try {
             this.config.put("LyricAutoOff", bool);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
+    public Boolean getLockScreenOff() {
+        return this.config.optBoolean("lockScreenOff", true);
+    }
+
+    public void setLockScreenOff(Boolean bool) {
+        try {
+            this.config.put("lockScreenOff", bool);
             setConfig(this.config.toString());
         } catch (JSONException ignored) {
         }
