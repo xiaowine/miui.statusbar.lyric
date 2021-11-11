@@ -38,10 +38,7 @@
 - 网易云音乐:v7.2.22
 
 ## 感谢名单
-- @潇风残月 (感谢提供的库以及对代码的极限精简)
-- @柒猫Sebun_Neko (感谢提供的图标)
-- @Yife Playte (感谢帮忙优化矢量图)
-
+[点击查看感谢名单](https://io.xiaowine.cc/app/callme)
 ### 下载
 
 [Releases](https://github.com/577fkj/MIUIStatusBarLyric_new/releases)  

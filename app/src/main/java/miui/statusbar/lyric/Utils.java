@@ -173,7 +173,7 @@ public class Utils {
                 config.setLyricPosition(2);
                 config.setIconPath(PATH);
                 config.setIconAutoColor(true);
-                config.setLockScreenOff(true);
+                config.setLockScreenOff(false);
                 config.sethNoticeIcon(false);
                 config.sethNetSpeed(false);
                 config.sethCUK(false);

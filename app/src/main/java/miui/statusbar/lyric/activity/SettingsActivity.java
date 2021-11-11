@@ -573,7 +573,7 @@ public class SettingsActivity extends PreferenceActivity {
             Utils.initIcon(activity);
         } else {
             new AlertDialog.Builder(activity)
-                    .setIcon(R.mipmap.ic_launcher)
+//                    .setIcon(R.mipmap.ic_launcher)
                     .setTitle("获取存储权限失败")
                     .setMessage("请开通存储权限\n否则无法正常使用本模块\n若不信任本模块,请卸载")
                     .setNegativeButton("重新申请", (dialog, which) -> Utils.checkPermissions(activity))

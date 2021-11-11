@@ -3,7 +3,6 @@ package miui.statusbar.lyric.hook;
 
 import android.app.AndroidAppHelper;
 import android.app.Application;
-import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -57,9 +56,11 @@ public class MainHook implements IXposedHookLoadPackage {
     static boolean musicOffStatus = false;
     static boolean enable = false;
     static boolean iconReverseColor = false;
+    static boolean isLock = true;
     static Config config = new Config();
     Context context = null;
     boolean showLyric = true;
+    private IntentFilter intentFilter;
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
@@ -76,6 +77,11 @@ public class MainHook implements IXposedHookLoadPackage {
                     IntentFilter filter = new IntentFilter();
                     filter.addAction("Lyric_Server");
                     context.registerReceiver(new LyricReceiver(), filter);
+                    intentFilter = new IntentFilter();
+                    intentFilter.addAction(Intent.ACTION_USER_PRESENT);                    
+                    intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+                    context.registerReceiver(new LockChangeReceiver(), intentFilter);
+
                 }
             }
         });
@@ -277,9 +283,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                     @Override
                                     public void run() {
                                         try {
-                                            KeyguardManager mKeyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-                                            boolean isLock = mKeyguardManager.inKeyguardRestrictedInputMode();
-                                            if (config.getLockScreenOff()&& isLock) {
+                                            if (config.getLockScreenOff() && isLock) {
                                                 setOff("未解锁");
                                                 return;
                                             }
@@ -592,11 +596,6 @@ public class MainHook implements IXposedHookLoadPackage {
                 });
                 Utils.log("hook myplayer结束");
                 break;
-            case "com.netease.cloudmusic.lite":
-                Utils.log("正在Hook网易云音乐Lite");
-                new neteaseLite.Hook(lpparam);
-                Utils.log("Hook网易云音乐Lite结束");
-                break;
             case "cmccwm.mobilemusic":
                 Utils.log("正在Hook正在咪咕音乐");
                 new migu.Hook(lpparam);
@@ -605,6 +604,18 @@ public class MainHook implements IXposedHookLoadPackage {
         }
     }
 
+    public static class LockChangeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                isLock = !intent.getAction().equals(Intent.ACTION_USER_PRESENT);
+                Utils.log("锁屏，关闭歌词:"+isLock);
+
+            } catch (Exception e) {
+                Utils.log("广播接收错误 " + e + "\n" + Utils.dumpException(e));
+            }
+        }
+    }
 
     public static class LyricReceiver extends BroadcastReceiver {
         @Override
@@ -659,8 +670,8 @@ public class MainHook implements IXposedHookLoadPackage {
             } catch (Exception e) {
                 Utils.log("广播接收错误 " + e + "\n" + Utils.dumpException(e));
             }
+            
         }
     }
-
 
 }

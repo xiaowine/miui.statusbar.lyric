@@ -29,21 +29,11 @@
 
     <Preference
             android:key=""
-            android:summary="感谢提供的库以及对代码的极限精简"
-            android:title="潇风残月"
-            android:icon="@drawable/header_yang">
+            android:summary="点击查看感谢名单"
+            android:title="感谢名单">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://www.coolapk.com/u/666190"/>
-    </Preference>
-    <Preference
-            android:key=""
-            android:summary="感谢提供的图标"
-            android:title="柒猫Sebun_Neko"
-            android:icon="@drawable/header_neko">
-        <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://www.coolapk.com/u/2129443"/>
+                android:data="https://github.com/xiaowine/miui.statusbar.lyric#%E6%84%9F%E8%B0%A2%E5%90%8D%E5%8D%95"/>
     </Preference>
 
 
@@ -59,38 +49,12 @@
     </Preference>
 
     <Preference
-            android:key="donate"
-            android:summary=""
-            android:title="BUG反馈或功能提议">
-        <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://github.com/xiaowine/miui.statusbar.lyric/issues/new"/>
-    </Preference>
-
-    <Preference
-            android:key="sourceCode"
-            android:summary="https://github.com/xiaowine/miui.statusbar.lyric"
-            android:title="项目地址">
-        <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://github.com/xiaowine/miui.statusbar.lyric"/>
-    </Preference>
-    <Preference
-            android:key="coolapk"
-            android:summary=""
-            android:title="酷安地址">
-        <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://www.coolapk.com/apk/miui.statusbar.lyric"/>
-    </Preference>
-
-    <Preference
             android:key="contact"
             android:summary=""
-            android:title="联系我们（电报群）">
+            android:title="联系我们">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://t.me/MIUIStatusBatLyric"/>
+                android:data="https://io.xiaowine.cc/app/callme"/>
     </Preference>
 
     <Preference

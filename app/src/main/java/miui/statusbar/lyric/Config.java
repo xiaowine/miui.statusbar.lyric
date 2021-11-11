@@ -109,7 +109,7 @@ public class Config {
         }
     }
     public Boolean getLockScreenOff() {
-        return this.config.optBoolean("lockScreenOff", true);
+        return this.config.optBoolean("lockScreenOff", false);
     }
 
     public void setLockScreenOff(Boolean bool) {
