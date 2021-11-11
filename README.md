@@ -39,6 +39,7 @@
 
 ## 感谢名单
 [点击查看感谢名单](https://io.xiaowine.cc/app/callme)
+
 ### 下载
 
 [Releases](https://github.com/577fkj/MIUIStatusBarLyric_new/releases)  
