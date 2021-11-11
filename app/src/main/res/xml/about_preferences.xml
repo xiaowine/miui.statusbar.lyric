@@ -50,7 +50,7 @@
 
     <Preference
             android:key="contact"
-            android:summary=""
+            android:summary="内有多种方式"
             android:title="联系我们">
         <intent
                 android:action="android.intent.action.VIEW"
