@@ -49,6 +49,20 @@ public class Config {
     }
 
 
+
+    public int getId() {
+        return this.config.optBoolean("id", 0);
+    }
+
+    public void setId(int i) {
+        try {
+            this.config.put("id", i);
+            setConfig(this.config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
+    
+    
     public Boolean getLyricService() {
         return this.config.optBoolean("LyricService", false);
     }

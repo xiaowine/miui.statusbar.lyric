@@ -597,9 +597,14 @@ public class MainHook implements IXposedHookLoadPackage {
                 Utils.log("hook myplayer结束");
                 break;
             case "cmccwm.mobilemusic":
-                Utils.log("正在Hook正在咪咕音乐");
+                Utils.log("正在Hook 咪咕音乐");
                 new migu.Hook(lpparam);
-                Utils.log("Hook咪咕音乐结束");
+                Utils.log("Hook 咪咕音乐结束");
+                break;
+            case "com.netease.cloudmusic.lite":
+                Utils.log("正在Hook 网易云音乐极速版");
+                new neteaseLite.Hook(lpparam);
+                Utils.log("Hook 网易云音乐极速版结束");
                 break;
         }
     }
