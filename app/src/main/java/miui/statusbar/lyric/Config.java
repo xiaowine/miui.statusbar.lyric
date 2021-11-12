@@ -51,7 +51,7 @@ public class Config {
 
 
     public int getId() {
-        return this.config.optBoolean("id", 0);
+        return this.config.optInt"id", 0);
     }
 
     public void setId(int i) {
