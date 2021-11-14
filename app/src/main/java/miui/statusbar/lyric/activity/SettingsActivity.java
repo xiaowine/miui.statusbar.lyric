@@ -58,6 +58,7 @@ public class SettingsActivity extends PreferenceActivity {
         if (!preferences.getBoolean(tips, false)) {
             new AlertDialog.Builder(activity)
                     .setTitle("提示")
+                    .setIcon(R.mipmap.ic_launcher)
                     .setMessage(getString(R.string.Tips1))
                     .setNegativeButton("我已知晓", (dialog, which) -> {
                         SharedPreferences.Editor a = preferences.edit();
@@ -76,6 +77,7 @@ public class SettingsActivity extends PreferenceActivity {
         verExplain.setOnPreferenceClickListener((preference) -> {
             new AlertDialog.Builder(activity)
                     .setTitle("版本说明")
+                    .setIcon(R.mipmap.ic_launcher)
                     .setMessage(" 当前版本 [" + Utils.getLocalVersion(activity) + "] 适用情况：\n\n " + getString(R.string.ver_explain))
                     .setNegativeButton("我已知晓", null)
                     .create()
