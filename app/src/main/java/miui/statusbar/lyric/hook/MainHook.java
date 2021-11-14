@@ -32,7 +32,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import miui.statusbar.lyric.AutoMarqueeTextView;
 import miui.statusbar.lyric.Config;
-import miui.statusbar.lyric.Utils;
+import miui.statusbar.lyric.Utils.Utils;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -51,7 +51,8 @@ public class MainHook implements IXposedHookLoadPackage {
             "cn.kuwo",
             "com.maxmpz.audioplayer",
             "remix.myplayer",
-            "cmccwm.mobilemusic"
+            "cmccwm.mobilemusic",
+            "com.netease.cloudmusic.lite"
     };
     static boolean musicOffStatus = false;
     static boolean enable = false;

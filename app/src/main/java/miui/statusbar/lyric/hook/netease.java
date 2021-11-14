@@ -8,7 +8,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import miui.statusbar.lyric.Utils;
+import miui.statusbar.lyric.Utils.Utils;
 
 public class netease {
     private static String musicName = "";
