@@ -29,7 +29,6 @@ import miui.statusbar.lyric.R;
 import miui.statusbar.lyric.Utils.Utils;
 
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.OutputStream;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -42,7 +41,7 @@ public class SettingsActivity extends PreferenceActivity {
     private Config config;
 
     @SuppressLint("WrongConstant")
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "deprecation"})
+    @SuppressWarnings({"deprecation"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +68,8 @@ public class SettingsActivity extends PreferenceActivity {
                     .setCancelable(false)
                     .create()
                     .show();
+        }else{
+            Utils.checkConfig(activity, config.getId());
         }
 
         //版本介绍
@@ -494,18 +495,7 @@ public class SettingsActivity extends PreferenceActivity {
             new AlertDialog.Builder(activity)
                     .setTitle("是否要重置模块")
                     .setMessage("模块没问题请不要随意重置")
-                    .setPositiveButton("确定", (dialog, which) -> {
-                        SharedPreferences userSettings = activity.getSharedPreferences("miui.statusbar.lyric_preferences", 0);
-                        SharedPreferences.Editor editor = userSettings.edit();
-                        editor.clear();
-                        editor.apply();
-                        new File(Utils.PATH + "Config.json").delete();
-                        PackageManager packageManager = Objects.requireNonNull(activity).getPackageManager();
-                        packageManager.setComponentEnabledSetting(new ComponentName(activity, "miui.statusbar.lyric.launcher"), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-
-                        Toast.makeText(activity, "重置成功", Toast.LENGTH_LONG).show();
-                        activity.finishAffinity();
-                    })
+                    .setPositiveButton("确定", (dialog, which) -> Utils.cleanConfig(activity))
                     .setNegativeButton("取消", null)
                     .create()
                     .show();
@@ -579,9 +569,7 @@ public class SettingsActivity extends PreferenceActivity {
                     .setTitle("获取存储权限失败")
                     .setMessage("请开通存储权限\n否则无法正常使用本模块\n若不信任本模块,请卸载")
                     .setNegativeButton("重新申请", (dialog, which) -> Utils.checkPermissions(activity))
-                    .setPositiveButton("推出", (dialog, which) -> {
-                        finish();
-                    })
+                    .setPositiveButton("推出", (dialog, which) ->finish())
                     .setNeutralButton("前往设置授予权限", (dialog, which) -> {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                                 .setData(Uri.fromParts("package", getPackageName(), null));

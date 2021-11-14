@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.MiuiStatusBarManager;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,7 +18,12 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.*;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.os.Process;
 import android.provider.Settings;
 import android.util.Base64;
@@ -162,6 +169,7 @@ public class Utils {
             try {
                 Config config = new Config();
                 file2.createNewFile();
+                config.setId(1);
                 config.setUsedCount(0);
                 config.setLyricService(false);
                 config.setLyricAutoOff(true);
@@ -306,7 +314,6 @@ public class Utils {
 
 
     // log
-
     public static void log(String text) {
         if (new Config().getDebug()) {
             if (context == null) {
@@ -443,6 +450,38 @@ public class Utils {
     }
 
 
+    public static void checkConfig(final Activity activity, int id) {
+        if (id == 0) {
+            try {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(() -> new AlertDialog.Builder(activity)
+                        .setTitle("警告")
+                        .setMessage("配置文件错误\n可能是文件内容丢失或者配置文件有所升级\n可能造成不必要的问题\n是否重置")
+                        .setNegativeButton("立即重置", (dialog, which) -> {cleanConfig(activity);
+                           })
+                        .setPositiveButton("先不重置", null)
+                        .setCancelable(false)
+                        .create()
+                        .show());
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public static void cleanConfig(Activity activity){         SharedPreferences userSettings = activity.getSharedPreferences("miui.statusbar.lyric_preferences", 0);
+
+        SharedPreferences.Editor editor = userSettings.edit();
+        editor.clear();
+        editor.apply();
+        new File(Utils.PATH + "Config.json").delete();
+        PackageManager packageManager = Objects.requireNonNull(activity).getPackageManager();
+        packageManager.setComponentEnabledSetting(new ComponentName(activity, "miui.statusbar.lyric.launcher"), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+
+        Toast.makeText(activity, "重置成功", Toast.LENGTH_LONG).show();
+        activity.finishAffinity();
+    }
     public static Bitmap stringToBitmap(String string) {
         Bitmap bitmap = null;
         try {
