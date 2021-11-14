@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.MiuiStatusBarManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -15,11 +16,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
+import android.os.*;
 import android.os.Process;
 import android.provider.Settings;
 import android.util.Base64;
@@ -29,7 +26,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
+import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import miui.statusbar.lyric.ColorUtils;
 import miui.statusbar.lyric.Config;
 import miui.statusbar.lyric.R;
@@ -56,7 +56,6 @@ import java.util.Objects;
 
 
 public class Utils {
-
     public static String PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/media/miui.statusbar.lyric/";
     public static boolean hasMiuiSetting = isPresent("android.provider.MiuiSettings");
     @SuppressLint("StaticFieldLeak")
@@ -620,6 +619,104 @@ public class Utils {
         } catch (Exception e) {
             log("写歌词错误: " + e + "\n" + dumpException(e));
         }
+    }
+
+    public static void guiseFlyme(XC_LoadPackage.LoadPackageParam lpparam) {
+        XposedHelpers.findAndHookMethod("android.provider.Settings.System", lpparam.classLoader, "getInt", ContentResolver.class, String.class, int.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+            }
+
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if (param.args[0].toString().equals("status_bar_show_lyric")) {
+                    param.setResult(1);
+                }
+            }
+        });
+        XposedHelpers.findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class, String.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                XposedHelpers.setStaticObjectField(Build.class, "BRAND", "meizu");
+                XposedHelpers.setStaticObjectField(Build.class, "MANUFACTURER", "Meizu");
+                XposedHelpers.setStaticObjectField(Build.class, "DEVICE", "m1892");
+                XposedHelpers.setStaticObjectField(Build.class, "DISPLAY", "Flyme");
+                XposedHelpers.setStaticObjectField(Build.class, "PRODUCT", "meizu_16thPlus_CN");
+                XposedHelpers.setStaticObjectField(Build.class, "MODEL", "meizu 16th Plus");
+                String str = param.args[0].toString();
+                if (str.equals("ro.miui.ui.version.code") || str.equals("ro.miui.ui.version.name") || str.equals("ro.miui.internal.storage") || str.equals("ro.build.hw_emui_api_level") || str.equals("ro.build.version.emui") || str.equals("ro.confg.hw_systemversion") || str.equals("ro.build.version.opporom") || str.equals("ro.vivo.os.version") || str.equals("ro.smartisan.version")) {
+//                    XposedBridge.log("getargs1 " + param.args[0]);
+                    param.args[0] = param.args[1];
+                }
+                if (str.equals("ro.build.display.id")) {
+                    param.setResult("flyme");
+                }
+            }
+
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                String str = param.args[0].toString();
+//                XposedBridge.log("SystemProperties#get: " + str + " | " + param.getResult());
+                if (str.equals("ro.build.display.id")) {
+                    param.setResult("flyme");
+                }
+//                XposedBridge.log("return " + param.getResult());
+            }
+        });
+        XposedHelpers.findAndHookMethod("java.util.Properties", lpparam.classLoader, "getProperty", String.class, String.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                String str = param.args[0].toString();
+                if (str.equals("ro.miui.ui.version.code") || str.equals("ro.miui.ui.version.name") || str.equals("ro.miui.internal.storage") || str.equals("ro.build.hw_emui_api_level") || str.equals("ro.build.version.emui") || str.equals("ro.confg.hw_systemversion") || str.equals("ro.build.version.opporom") || str.equals("ro.vivo.os.version") || str.equals("ro.smartisan.version")) {
+//                    XposedBridge.log("getargs1 " + param.args[0]);
+                    param.args[0] = param.args[1];
+                }
+                if (str.equals("ro.build.display.id")) {
+                    param.setResult("flyme");
+                }
+            }
+
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                String str = param.args[0].toString();
+//                XposedBridge.log("Properties#getProperty: " + str + " | " + param.getResult());
+                if (str.equals("ro.build.display.id")) {
+                    param.setResult("flyme");
+                }
+//                XposedBridge.log("return " + param.getResult());
+            }
+        });
+        XposedHelpers.findAndHookMethod("java.util.Properties", lpparam.classLoader, "getProperty", String.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                String str = param.args[0].toString();
+                if (str.equals("ro.miui.ui.version.code") || str.equals("ro.miui.ui.version.name") || str.equals("ro.miui.internal.storage") || str.equals("ro.build.hw_emui_api_level") || str.equals("ro.build.version.emui") || str.equals("ro.confg.hw_systemversion") || str.equals("ro.build.version.opporom") || str.equals("ro.vivo.os.version") || str.equals("ro.smartisan.version")) {
+//                    XposedBridge.log("getargs1 " + param.args[0]);
+                    param.args[0] = "";
+                }
+                if (str.equals("ro.build.display.id")) {
+                    param.setResult("flyme");
+                }
+            }
+
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                String str = param.args[0].toString();
+//                XposedBridge.log("Properties#getProperty: " + str + " | " + param.getResult());
+                if (str.equals("ro.build.display.id")) {
+                    param.setResult("flyme");
+                }
+//                XposedBridge.log("return " + param.getResult());
+            }
+        });
     }
 
 }

@@ -61,7 +61,6 @@ public class MainHook implements IXposedHookLoadPackage {
     static Config config = new Config();
     Context context = null;
     boolean showLyric = true;
-    private IntentFilter intentFilter;
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
@@ -78,11 +77,12 @@ public class MainHook implements IXposedHookLoadPackage {
                     IntentFilter filter = new IntentFilter();
                     filter.addAction("Lyric_Server");
                     context.registerReceiver(new LyricReceiver(), filter);
-                    intentFilter = new IntentFilter();
-                    intentFilter.addAction(Intent.ACTION_USER_PRESENT);                    
-                    intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-                    context.registerReceiver(new LockChangeReceiver(), intentFilter);
 
+                    // 锁屏广播
+                    IntentFilter screenOff = new IntentFilter();
+                    screenOff.addAction(Intent.ACTION_USER_PRESENT);
+                    screenOff.addAction(Intent.ACTION_SCREEN_OFF);
+                    context.registerReceiver(new LockChangeReceiver(), screenOff);
                 }
             }
         });
@@ -165,6 +165,7 @@ public class MainHook implements IXposedHookLoadPackage {
                         } else {// 设置跑马灯重复次数，-1为无限重复
                             lyricTextView.setMarqueeRepeatLimit(-1);
                         }
+
                         // 单行显示
                         lyricTextView.setSingleLine(true);
                         lyricTextView.setMaxLines(1);
@@ -254,8 +255,10 @@ public class MainHook implements IXposedHookLoadPackage {
                                     clock.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
                                 }
                                 return false;
-                            } else {
-                                lyricTextView.setText("");
+                            }
+                            lyricTextView.setText("");
+                            if (config.getFileLyric()) {
+                                Utils.setLyricFile("", "");
                             }
                             // 清除图标
                             iconView.setCompoundDrawables(null, null, null, null);
@@ -284,13 +287,8 @@ public class MainHook implements IXposedHookLoadPackage {
                                     @Override
                                     public void run() {
                                         try {
-                                            if (config.getLockScreenOff() && isLock) {
-                                                setOff("未解锁");
-                                                return;
-                                            }
-
                                             if (count == 50) {
-                                                config = new Config();
+                                                config = new Config(config);
                                             }
                                             if (config.getLyricService()) {
                                                 if (count == 25) {
@@ -298,17 +296,6 @@ public class MainHook implements IXposedHookLoadPackage {
                                                         if (config.getLyricPosition() != oldPos) {
                                                             oldPos = config.getLyricPosition();
                                                             iconParams.setMargins(0, oldPos, 0, 0);
-                                                        }
-                                                    }
-                                                } else if (count == 75) {
-                                                    if (config.getFileLyric()) {
-                                                        String[] strArr = Utils.getLyricFile();
-                                                        lyric = strArr[1];
-                                                        icon[0] = "hook";
-                                                        if (config.getIcon()) {
-                                                            icon[1] = config.getIconPath() + strArr[0] + ".webp";
-                                                        } else {
-                                                            icon[1] = "";
                                                         }
                                                     }
                                                 } else if (count == 100) {
@@ -337,9 +324,11 @@ public class MainHook implements IXposedHookLoadPackage {
 
                                                 if (enable && lyricSpeed == 10) {
                                                     lyricSpeed = 0;
+                                                    if (config.getLockScreenOff() && isLock) {
+                                                        lyricOff = false;
+                                                    }
                                                     if (lyricOff) {
                                                         if (!lyric.equals("")) {
-
                                                             if (!oldLyric.equals(lyric)) {
                                                                 Message message = LyricUpdate.obtainMessage();
                                                                 Bundle bundle = new Bundle();
@@ -353,7 +342,11 @@ public class MainHook implements IXposedHookLoadPackage {
                                                             setOff("歌词为空");
                                                         }
                                                     } else {
-                                                        setOff("暂停播放");
+                                                        if (isLock) {
+                                                            setOff("锁屏");
+                                                        } else {
+                                                            setOff("暂停播放");
+                                                        }
                                                     }
                                                 }
 
@@ -391,13 +384,33 @@ public class MainHook implements IXposedHookLoadPackage {
 
                                 }, 0, 10);
 
-                        // 反色/图标
+                        // 反色/图标/文件歌词
                         new Timer().schedule(
                                 new TimerTask() {
                                     ColorStateList color = null;
+                                    int count = 0;
 
                                     @Override
                                     public void run() {
+                                        if (count == 50) {
+                                            count = 0;
+                                            if (enable) {
+                                                if (config.getFileLyric()) {
+                                                    String[] strArr = Utils.getLyricFile();
+                                                    if (!strArr[1].equals("")) {
+                                                        lyric = strArr[1];
+                                                    }
+                                                    icon[0] = "hook";
+                                                    if (!strArr[0].equals("")) {
+                                                        if (config.getIcon()) {
+                                                            icon[1] = config.getIconPath() + strArr[0] + ".webp";
+                                                        } else {
+                                                            icon[1] = "";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                         if (enable && !lyric.equals("")) {
                                             // 设置颜色
                                             if (!config.getLyricColor().equals("off")) {
@@ -433,6 +446,7 @@ public class MainHook implements IXposedHookLoadPackage {
                                                 iconUpdate.sendMessage(obtainMessage2);
                                             }
                                         }
+                                        count++;
                                     }
                                 }, 0, 10);
 
@@ -543,28 +557,7 @@ public class MainHook implements IXposedHookLoadPackage {
                 break;
             case "com.tencent.qqmusic":
                 Utils.log("正在hookQQ音乐");
-                XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass("com.tencent.qqmusicplayerprocess.servicenew.mediasession.d$d"), "run", new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        super.beforeHookedMethod(param);
-                    }
-
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        super.afterHookedMethod(param);
-
-                        Class<?> findClass = XposedHelpers.findClass("com.lyricengine.base.h", lpparam.classLoader);
-                        Field declaredField = findClass.getDeclaredField("a");
-                        declaredField.setAccessible(true);
-
-                        Object obj = XposedHelpers.findField(param.thisObject.getClass(), "b").get(param.thisObject);
-                        String str = (String) declaredField.get(obj);
-
-                        Utils.log("qq音乐: " + str);
-
-                        Utils.sendLyric(context, str, "qqmusic");
-                    }
-                });
+                new qqmusic.Hook(lpparam);
                 Utils.log("hookQQ音乐结束");
                 break;
             case "remix.myplayer":
@@ -615,8 +608,7 @@ public class MainHook implements IXposedHookLoadPackage {
         public void onReceive(Context context, Intent intent) {
             try {
                 isLock = !intent.getAction().equals(Intent.ACTION_USER_PRESENT);
-                Utils.log("锁屏，关闭歌词:"+isLock);
-
+                Utils.log("锁屏: " + isLock);
             } catch (Exception e) {
                 Utils.log("广播接收错误 " + e + "\n" + Utils.dumpException(e));
             }

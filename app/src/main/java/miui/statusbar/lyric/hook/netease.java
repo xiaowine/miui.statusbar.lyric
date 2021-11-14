@@ -1,9 +1,11 @@
 package miui.statusbar.lyric.hook;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import android.os.Build;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -18,6 +20,20 @@ public class netease {
 
     public static class Hook {
         public Hook(XC_LoadPackage.LoadPackageParam lpparam) {
+//            Settings.System.getInt(context.contentResolver, "status_bar_show_lyric", 0)
+            Utils.guiseFlyme(lpparam);
+            XposedHelpers.findAndHookMethod("com.netease.insightar.commonbase.b.i", lpparam.classLoader, "a", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    super.beforeHookedMethod(param);
+                }
+
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    super.afterHookedMethod(param);
+                    XposedBridge.log("con.netease.insightar.commonbase.b.i#a: " + param.getResult());
+                }
+            });
             XposedHelpers.findAndHookMethod(XposedHelpers.findClass("com.netease.cloudmusic.NeteaseMusicApplication", lpparam.classLoader), "attachBaseContext", Context.class, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) {
