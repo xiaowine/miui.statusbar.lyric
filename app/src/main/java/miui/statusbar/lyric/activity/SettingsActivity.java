@@ -26,7 +26,7 @@ import androidx.annotation.Nullable;
 import com.byyang.choose.ChooseFileUtils;
 import miui.statusbar.lyric.Config;
 import miui.statusbar.lyric.R;
-import miui.statusbar.lyric.Utils;
+import miui.statusbar.lyric.Utils.Utils;
 
 import java.io.DataOutputStream;
 import java.io.File;

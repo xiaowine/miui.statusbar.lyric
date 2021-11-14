@@ -1,5 +1,6 @@
 package miui.statusbar.lyric;
 
+import miui.statusbar.lyric.Utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,7 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static miui.statusbar.lyric.Utils.PATH;
+import static miui.statusbar.lyric.Utils.Utils.PATH;
 
 
 public class Config {

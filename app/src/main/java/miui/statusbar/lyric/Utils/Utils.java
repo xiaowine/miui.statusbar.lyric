@@ -1,4 +1,4 @@
-package miui.statusbar.lyric;
+package miui.statusbar.lyric.Utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -30,6 +30,9 @@ import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
 import de.robv.android.xposed.XposedBridge;
+import miui.statusbar.lyric.ColorUtils;
+import miui.statusbar.lyric.Config;
+import miui.statusbar.lyric.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
