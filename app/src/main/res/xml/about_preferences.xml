@@ -6,7 +6,7 @@
 
     <Preference
             android:key="author"
-            android:summary="主要负责Hook部分"
+            android:summary="主要负责Hook"
             android:title="577fkj"
             android:icon="@drawable/header_577fkj">
         <intent
@@ -16,7 +16,7 @@
 
     <Preference
             android:key="author"
-            android:summary="主要负责UI，以及Bug修复"
+            android:summary="主要负责UI"
             android:title="xiaowine"
             android:icon="@drawable/header_xiaowine">
         <intent
