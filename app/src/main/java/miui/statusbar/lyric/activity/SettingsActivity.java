@@ -26,6 +26,7 @@ import androidx.annotation.Nullable;
 import com.byyang.choose.ChooseFileUtils;
 import miui.statusbar.lyric.Config;
 import miui.statusbar.lyric.R;
+import miui.statusbar.lyric.Utils.ActivityUtils;
 import miui.statusbar.lyric.Utils.Utils;
 
 import java.io.DataOutputStream;
@@ -46,7 +47,7 @@ public class SettingsActivity extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.root_preferences);
-        Utils.checkPermissions(activity);
+        ActivityUtils.checkPermissions(activity);
         config = new Config();
 
         Utils.context = activity;
@@ -69,7 +70,7 @@ public class SettingsActivity extends PreferenceActivity {
                     .create()
                     .show();
         }else{
-            Utils.checkConfig(activity, config.getId());
+            ActivityUtils.checkConfig(activity, config.getId());
         }
 
         //版本介绍
@@ -79,7 +80,7 @@ public class SettingsActivity extends PreferenceActivity {
             new AlertDialog.Builder(activity)
                     .setTitle("版本说明")
                     .setIcon(R.mipmap.ic_launcher)
-                    .setMessage(" 当前版本 [" + Utils.getLocalVersion(activity) + "] 适用情况：\n\n " + getString(R.string.ver_explain))
+                    .setMessage(" 当前版本 [" + ActivityUtils.getLocalVersion(activity) + "] 适用情况：\n\n " + getString(R.string.ver_explain))
                     .setNegativeButton("我已知晓", null)
                     .create()
                     .show();
@@ -287,7 +288,7 @@ public class SettingsActivity extends PreferenceActivity {
                     .setNegativeButton("恢复默认路径", (dialog, which) -> {
                         iconPath.setSummary("默认路径");
                         config.setIconPath(Utils.PATH);
-                        Utils.initIcon(activity);
+                        ActivityUtils.initIcon(activity);
                     })
                     .setPositiveButton("选择新路径", (dialog, which) -> {
                         ChooseFileUtils chooseFileUtils = new ChooseFileUtils(activity);
@@ -300,7 +301,7 @@ public class SettingsActivity extends PreferenceActivity {
                                 if (config.getIconPath().equals(Utils.PATH)) {
                                     iconPath.setSummary("默认路径");
                                 }
-                                Utils.initIcon(activity);
+                                ActivityUtils.initIcon(activity);
                             }
                         });
                     })
@@ -506,10 +507,10 @@ public class SettingsActivity extends PreferenceActivity {
         //检查更新
         Preference checkUpdate = findPreference("CheckUpdate");
         assert checkUpdate != null;
-        checkUpdate.setSummary("当前版本: " + Utils.getLocalVersion(activity));
+        checkUpdate.setSummary("当前版本: " + ActivityUtils.getLocalVersion(activity));
         checkUpdate.setOnPreferenceClickListener((preference) -> {
             Toast.makeText(activity, "开始检查是否有更新", Toast.LENGTH_LONG).show();
-            Utils.checkUpdate(activity);
+            ActivityUtils.checkUpdate(activity);
             return true;
         });
 
@@ -561,14 +562,14 @@ public class SettingsActivity extends PreferenceActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == 0) {
-            Utils.init(activity);
-            Utils.initIcon(activity);
+            ActivityUtils.init(activity);
+            ActivityUtils.initIcon(activity);
         } else {
             new AlertDialog.Builder(activity)
 //                    .setIcon(R.mipmap.ic_launcher)
                     .setTitle("获取存储权限失败")
                     .setMessage("请开通存储权限\n否则无法正常使用本模块\n若不信任本模块,请卸载")
-                    .setNegativeButton("重新申请", (dialog, which) -> Utils.checkPermissions(activity))
+                    .setNegativeButton("重新申请", (dialog, which) -> ActivityUtils.checkPermissions(activity))
                     .setPositiveButton("推出", (dialog, which) ->finish())
                     .setNeutralButton("前往设置授予权限", (dialog, which) -> {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -586,7 +587,7 @@ public class SettingsActivity extends PreferenceActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 13131) {
-            Utils.checkPermissions(activity);
+            ActivityUtils.checkPermissions(activity);
         }
     }
 
