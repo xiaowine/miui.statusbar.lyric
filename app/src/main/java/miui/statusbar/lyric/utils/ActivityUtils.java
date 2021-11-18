@@ -1,4 +1,4 @@
-package miui.statusbar.lyric.Utils;
+package miui.statusbar.lyric.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;

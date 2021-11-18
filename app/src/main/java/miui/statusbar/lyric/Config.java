@@ -3,7 +3,7 @@ package miui.statusbar.lyric;
 import android.annotation.SuppressLint;
 import android.os.Environment;
 import android.util.Log;
-import miui.statusbar.lyric.Utils.Utils;
+import miui.statusbar.lyric.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static miui.statusbar.lyric.Utils.Utils.PATH;
+import static miui.statusbar.lyric.utils.Utils.PATH;
 
 @SuppressLint("LongLogTag")
 public class Config {
@@ -47,10 +47,6 @@ public class Config {
         }
     }
 
-    public JSONObject getConfigObject() {
-        return config;
-    }
-
     public static String getConfig() {
         String str = "";
         try {
@@ -62,7 +58,8 @@ public class Config {
             fileInputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
-        };
+        }
+        ;
         return str;
     }
 
@@ -76,7 +73,9 @@ public class Config {
         }
     }
 
-
+    public JSONObject getConfigObject() {
+        return config;
+    }
 
     public int getId() {
         return config.optInt("id", 0);
@@ -89,8 +88,8 @@ public class Config {
         } catch (JSONException ignored) {
         }
     }
-    
-    
+
+
     public Boolean getLyricService() {
         return config.optBoolean("LyricService", false);
     }
@@ -119,9 +118,9 @@ public class Config {
         return config.optInt("LyricMaxWidth", -1);
     }
 
-    public void setLyricPosition(int i) {
+    public void setLyricMaxWidth(int i) {
         try {
-            config.put("LyricPosition", i);
+            config.put("LyricMaxWidth", i);
             setConfig(config.toString());
         } catch (JSONException ignored) {
         }
@@ -131,9 +130,9 @@ public class Config {
         return config.optInt("LyricPosition", 2);
     }
 
-    public void setLyricMaxWidth(int i) {
+    public void setLyricPosition(int i) {
         try {
-            config.put("LyricMaxWidth", i);
+            config.put("LyricPosition", i);
             setConfig(config.toString());
         } catch (JSONException ignored) {
         }
@@ -150,6 +149,7 @@ public class Config {
         } catch (JSONException ignored) {
         }
     }
+
     public Boolean getLockScreenOff() {
         return config.optBoolean("lockScreenOff", false);
     }
@@ -174,6 +174,13 @@ public class Config {
         return config.optString("LyricColor", "off");
     }
 
+    public void setLyricColor(String str) {
+        try {
+            config.put("LyricColor", str);
+            setConfig(config.toString());
+        } catch (JSONException ignored) {
+        }
+    }
 
     public Boolean getLyricSwitch() {
         return config.optBoolean("LyricSwitch", false);
@@ -191,22 +198,13 @@ public class Config {
         return config.optBoolean("hNoticeIcon", false);
     }
 
-    public void setHAlarm(Boolean bool) {
-        try {
-            config.put("hAlarm", bool);
-            setConfig(config.toString());
-        } catch (JSONException ignored) {
-        }
-    }
-
     public Boolean getHAlarm() {
         return config.optBoolean("hAlarm", false);
     }
 
-
-    public void setLyricColor(String str) {
+    public void setHAlarm(Boolean bool) {
         try {
-            config.put("LyricColor", str);
+            config.put("hAlarm", bool);
             setConfig(config.toString());
         } catch (JSONException ignored) {
         }

@@ -32,7 +32,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import miui.statusbar.lyric.AutoMarqueeTextView;
 import miui.statusbar.lyric.Config;
-import miui.statusbar.lyric.Utils.Utils;
+import miui.statusbar.lyric.utils.Utils;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

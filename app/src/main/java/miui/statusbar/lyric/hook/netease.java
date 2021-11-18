@@ -1,16 +1,14 @@
 package miui.statusbar.lyric.hook;
 
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import android.os.Build;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import miui.statusbar.lyric.Utils.Utils;
+import miui.statusbar.lyric.utils.Utils;
 
 public class netease {
     private static String musicName = "";

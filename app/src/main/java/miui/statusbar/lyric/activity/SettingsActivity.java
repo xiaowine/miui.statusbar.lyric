@@ -26,11 +26,10 @@ import androidx.annotation.Nullable;
 import com.byyang.choose.ChooseFileUtils;
 import miui.statusbar.lyric.Config;
 import miui.statusbar.lyric.R;
-import miui.statusbar.lyric.Utils.ActivityUtils;
-import miui.statusbar.lyric.Utils.Utils;
+import miui.statusbar.lyric.utils.ActivityUtils;
+import miui.statusbar.lyric.utils.ShellUtils;
+import miui.statusbar.lyric.utils.Utils;
 
-import java.io.DataOutputStream;
-import java.io.OutputStream;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Objects;
@@ -69,7 +68,7 @@ public class SettingsActivity extends PreferenceActivity {
                     .setCancelable(false)
                     .create()
                     .show();
-        }else{
+        } else {
             ActivityUtils.checkConfig(activity, config.getId());
         }
 
@@ -470,19 +469,7 @@ public class SettingsActivity extends PreferenceActivity {
             new AlertDialog.Builder(activity)
                     .setTitle("确定重启系统界面吗？")
                     .setMessage("若使用中突然发现不能使用，可尝试重启系统界面。")
-                    .setPositiveButton("确定", (dialog, which) -> {
-                        try {
-                            Process p = Runtime.getRuntime().exec("su");
-                            OutputStream outputStream = p.getOutputStream();
-                            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-                            dataOutputStream.writeBytes("pkill -f com.android.systemui");
-                            dataOutputStream.flush();
-                            dataOutputStream.close();
-                            outputStream.close();
-                        } catch (Throwable t) {
-                            t.printStackTrace();
-                        }
-                    })
+                    .setPositiveButton("确定", (dialog, which) -> ShellUtils.voidShell("pkill -f com.android.systemui", true))
                     .setNegativeButton("取消", null)
                     .create()
                     .show();
@@ -570,7 +557,7 @@ public class SettingsActivity extends PreferenceActivity {
                     .setTitle("获取存储权限失败")
                     .setMessage("请开通存储权限\n否则无法正常使用本模块\n若不信任本模块,请卸载")
                     .setNegativeButton("重新申请", (dialog, which) -> ActivityUtils.checkPermissions(activity))
-                    .setPositiveButton("推出", (dialog, which) ->finish())
+                    .setPositiveButton("推出", (dialog, which) -> finish())
                     .setNeutralButton("前往设置授予权限", (dialog, which) -> {
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                                 .setData(Uri.fromParts("package", getPackageName(), null));
