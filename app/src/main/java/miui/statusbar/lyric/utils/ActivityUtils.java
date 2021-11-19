@@ -94,26 +94,31 @@ public class ActivityUtils {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void initIcon(Activity activity) {
-        String[] IconList = {""};
+        String[] IconList = {"kugou.webp", "netease.webp", "netease.webp", "myplayer.webp", "migu.webp"};
         Config config = new Config();
-        if (!new File(config.getIconPath(), "kugou.webp").exists()) {
-            copyAssets(activity, "icon/kugou.webp", config.getIconPath() + "kugou.webp");
+        for (String s : IconList) {
+            if (!new File(config.getIconPath(), s).exists()) {
+                copyAssets(activity, "icon/" + s, config.getIconPath() + s);
+            }
         }
-        if (!new File(config.getIconPath(), "netease.webp").exists()) {
-            copyAssets(activity, "icon/netease.webp", config.getIconPath() + "netease.webp");
-        }
-        if (!new File(config.getIconPath(), "qqmusic.webp").exists()) {
-            copyAssets(activity, "icon/qqmusic.webp", config.getIconPath() + "qqmusic.webp");
-        }
-        if (!new File(config.getIconPath(), "kuwo.webp").exists()) {
-            copyAssets(activity, "icon/kuwo.webp", config.getIconPath() + "kuwo.webp");
-        }
-        if (!new File(config.getIconPath(), "myplayer.webp").exists()) {
-            copyAssets(activity, "icon/myplayer.webp", config.getIconPath() + "myplayer.webp");
-        }
-        if (!new File(config.getIconPath(), "migu.webp").exists()) {
-            copyAssets(activity, "icon/migu.webp", config.getIconPath() + "migu.webp");
-        }
+//        if (!new File(config.getIconPath(), "kugou.webp").exists()) {
+//            copyAssets(activity, "icon/kugou.webp", config.getIconPath() + "kugou.webp");
+//        }
+//        if (!new File(config.getIconPath(), "netease.webp").exists()) {
+//            copyAssets(activity, "icon/netease.webp", config.getIconPath() + "netease.webp");
+//        }
+//        if (!new File(config.getIconPath(), "netease.webp").exists()) {
+//            copyAssets(activity, "icon/qqmusic.webp", config.getIconPath() + "qqmusic.webp");
+//        }
+//        if (!new File(config.getIconPath(), "kuwo.webp").exists()) {
+//            copyAssets(activity, "icon/kuwo.webp", config.getIconPath() + "kuwo.webp");
+//        }
+//        if (!new File(config.getIconPath(), "myplayer.webp").exists()) {
+//            copyAssets(activity, "icon/myplayer.webp", config.getIconPath() + "myplayer.webp");
+//        }
+//        if (!new File(config.getIconPath(), "migu.webp").exists()) {
+//            copyAssets(activity, "icon/migu.webp", config.getIconPath() + "migu.webp");
+//        }
         if (!new File(config.getIconPath(), ".nomedia").exists()) {
             try {
                 new File(config.getIconPath(), ".nomedia").createNewFile();
@@ -216,5 +221,9 @@ public class ActivityUtils {
             }
         }
 
+    }
+
+    public static void post(Activity activity) {
+        HttpUtils.Get("");
     }
 }
