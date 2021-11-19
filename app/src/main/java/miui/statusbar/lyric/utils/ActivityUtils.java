@@ -12,21 +12,16 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
-import android.util.Log;
 import android.widget.Toast;
 import miui.statusbar.lyric.Config;
 import miui.statusbar.lyric.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class ActivityUtils {
     public static String getLocalVersion(Context context) {
@@ -99,6 +94,7 @@ public class ActivityUtils {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void initIcon(Activity activity) {
+        String[] IconList = {""};
         Config config = new Config();
         if (!new File(config.getIconPath(), "kugou.webp").exists()) {
             copyAssets(activity, "icon/kugou.webp", config.getIconPath() + "kugou.webp");
@@ -154,7 +150,6 @@ public class ActivityUtils {
             try {
                 JSONObject jsonObject = new JSONObject(data);
                 if (!getLocalVersion(activity).equals("")) {
-//                    if (Integer.parseInt(jsonObject.getString("tag_name").split(" ")[1])
                     if (Integer.parseInt(jsonObject.getString("tag_name").split("v")[1])
                             > Utils.getLocalVersionCode(activity)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -190,23 +185,17 @@ public class ActivityUtils {
 
         new Thread(() -> {
             Looper.prepare();
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL("https://api.github.com/repos/xiaowine/miui.statusbar.lyric/releases/latest").openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(5000);
-                InputStream in = connection.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            String value = HttpUtils.Get("https://api.github.com/repos/xiaowine/miui.statusbar.lyric/releases/latest");
+            if (!value.equals("")) {
                 Message message = handler.obtainMessage();
                 Bundle bundle = new Bundle();
-                bundle.putString("value", reader.readLine());
+                bundle.putString("value", value);
                 message.setData(bundle);
                 handler.sendMessage(message);
-            } catch (Exception e) {
-                Toast.makeText(activity, "检查更新失败: " + e, Toast.LENGTH_LONG).show();
-                Log.d("checkUpdate: ", e + "");
-                e.printStackTrace();
+            } else {
+                Toast.makeText(activity, "检查更新失败: ", Toast.LENGTH_LONG).show();
+                Looper.loop();
             }
-            Looper.loop();
         }).start();
     }
 
@@ -217,9 +206,7 @@ public class ActivityUtils {
                 handler.post(() -> new AlertDialog.Builder(activity)
                         .setTitle("警告")
                         .setMessage("配置文件错误\n可能是文件内容丢失或者配置文件有所升级\n可能造成不必要的问题\n是否重置")
-                        .setNegativeButton("立即重置", (dialog, which) -> {
-                            Utils.cleanConfig(activity);
-                        })
+                        .setNegativeButton("立即重置", (dialog, which) -> Utils.cleanConfig(activity))
                         .setPositiveButton("先不重置", null)
                         .setCancelable(false)
                         .create()
