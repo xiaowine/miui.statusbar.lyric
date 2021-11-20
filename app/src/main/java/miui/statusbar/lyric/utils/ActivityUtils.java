@@ -2,8 +2,10 @@ package miui.statusbar.lyric.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -22,8 +24,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 public class ActivityUtils {
+
     public static String getLocalVersion(Context context) {
         String localVersion = "";
         try {
@@ -94,7 +98,7 @@ public class ActivityUtils {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void initIcon(Activity activity) {
-        String[] IconList = {"kugou.webp", "netease.webp", "netease.webp", "myplayer.webp", "migu.webp"};
+        String[] IconList = {"kugou.webp", "netease.webp", "qqmusic.webp", "myplayer.webp", "migu.webp"};
         Config config = new Config();
         for (String s : IconList) {
             if (!new File(config.getIconPath(), s).exists()) {
@@ -107,7 +111,7 @@ public class ActivityUtils {
 //        if (!new File(config.getIconPath(), "netease.webp").exists()) {
 //            copyAssets(activity, "icon/netease.webp", config.getIconPath() + "netease.webp");
 //        }
-//        if (!new File(config.getIconPath(), "netease.webp").exists()) {
+//        if (!new File(config.getIconPath(), "qqmusic.webp").exists()) {
 //            copyAssets(activity, "icon/qqmusic.webp", config.getIconPath() + "qqmusic.webp");
 //        }
 //        if (!new File(config.getIconPath(), "kuwo.webp").exists()) {
@@ -187,7 +191,6 @@ public class ActivityUtils {
             return true;
         });
 
-
         new Thread(() -> {
             Looper.prepare();
             String value = HttpUtils.Get("https://api.github.com/repos/xiaowine/miui.statusbar.lyric/releases/latest");
@@ -204,26 +207,68 @@ public class ActivityUtils {
         }).start();
     }
 
+    public static void cleanConfig(Activity activity) {
+        SharedPreferences userSettings = activity.getSharedPreferences("miui.statusbar.lyric_preferences", 0);
+        SharedPreferences.Editor editor = userSettings.edit();
+        editor.clear();
+        editor.apply();
+        new File(Utils.PATH + "Config.json").delete();
+        PackageManager packageManager = Objects.requireNonNull(activity).getPackageManager();
+        packageManager.setComponentEnabledSetting(new ComponentName(activity, "miui.statusbar.lyric.launcher"), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+
+        Toast.makeText(activity, "重置成功", Toast.LENGTH_LONG).show();
+        activity.finishAffinity();
+    }
+
     public static void checkConfig(final Activity activity, int id) {
         if (id == 0) {
             try {
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.post(() -> new AlertDialog.Builder(activity)
+//                Handler handler = new Handler(Looper.getMainLooper());
+//                handler.post(() ->
+                new AlertDialog.Builder(activity)
                         .setTitle("警告")
                         .setMessage("配置文件错误\n可能是文件内容丢失或者配置文件有所升级\n可能造成不必要的问题\n是否重置")
-                        .setNegativeButton("立即重置", (dialog, which) -> Utils.cleanConfig(activity))
+                        .setNegativeButton("立即重置", (dialog, which) -> cleanConfig(activity))
                         .setPositiveButton("先不重置", null)
                         .setCancelable(false)
                         .create()
-                        .show());
+//                        .show());
+                        .show();
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
         }
-
     }
 
-    public static void post(Activity activity) {
-        HttpUtils.Get("");
+    public static void setData(Activity activity) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            String data = HttpUtils.Get("https://io.xiaowine.cc/app/data.json");
+            try {
+                JSONObject jsonObject = new JSONObject(data);
+                SharedPreferences preferences = activity.getSharedPreferences("dataId", 0);
+                int dataId=preferences.getInt("id",0);
+                if (Integer.parseInt(jsonObject.getString("id"))
+                        > dataId) {
+                    SharedPreferences.Editor preferenceEditor = preferences.edit();
+                    preferenceEditor.putInt("id", Integer.parseInt(jsonObject.getString("id")));
+                    preferenceEditor.putString("data", jsonObject.getString("data"));
+                    preferenceEditor.apply();
+                    Looper.prepare();
+                    Toast.makeText(activity, jsonObject.getString("id"), Toast.LENGTH_LONG).show();
+                    Looper.loop();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                 Looper.prepare();
+                    Toast.makeText(activity, e.toString(), Toast.LENGTH_LONG).show();
+                    Looper.loop();
+
+            }
+        }).start();
     }
 }

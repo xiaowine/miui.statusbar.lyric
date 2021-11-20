@@ -77,8 +77,8 @@ public class SettingsActivity extends PreferenceActivity {
         assert verExplain != null;
         verExplain.setOnPreferenceClickListener((preference) -> {
             new AlertDialog.Builder(activity)
-                    .setTitle("版本说明")
                     .setIcon(R.mipmap.ic_launcher)
+                    .setTitle("版本说明")
                     .setMessage(" 当前版本 [" + ActivityUtils.getLocalVersion(activity) + "] 适用情况：\n\n " + getString(R.string.ver_explain))
                     .setNegativeButton("我已知晓", null)
                     .create()
@@ -483,7 +483,7 @@ public class SettingsActivity extends PreferenceActivity {
             new AlertDialog.Builder(activity)
                     .setTitle("是否要重置模块")
                     .setMessage("模块没问题请不要随意重置")
-                    .setPositiveButton("确定", (dialog, which) -> Utils.cleanConfig(activity))
+                    .setPositiveButton("确定", (dialog, which) -> ActivityUtils.cleanConfig(activity))
                     .setNegativeButton("取消", null)
                     .create()
                     .show();
@@ -542,7 +542,7 @@ public class SettingsActivity extends PreferenceActivity {
                 }
             }
         }).start();
-
+        ActivityUtils.setData(activity);
     }
 
     @Override
