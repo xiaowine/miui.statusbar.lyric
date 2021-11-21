@@ -1,3 +1,5 @@
+[新仓库](https://github.com/577fkj/MIUIStatusBarLyric)
+
 <h1 align="center">MIUI 状态栏歌词</h1>
 
 <div align="center">
